@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaBars } from 'react-icons/fa';
 import {
     Nav,
     NavLink,
@@ -8,20 +9,22 @@ import {
     NavBtnLink
   } from './NavBarElements';
 
-const Navbar = () => {
+const Navbar = ({toggle}) => {
     return (
         <>
             <Nav>
                 <NavLink to="/">
                     Zargenda
                 </NavLink>
-                <Bars />
+                <Bars onClick={toggle}>
+                    <FaBars />
+                </Bars>
                 <NavMenu>
                     <NavLink to='/signup' activeStyle>
-                        Sign Up
+                        Registrarse
                     </NavLink>
                     <NavBtn>
-                        <NavBtnLink to="/"> Sign in</NavBtnLink>
+                        <NavBtnLink to="/"> Iniciar sesión</NavBtnLink>
                 </NavBtn>
                 </NavMenu>
                 

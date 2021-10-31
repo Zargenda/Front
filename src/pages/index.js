@@ -27,6 +27,7 @@ const Home = () => {
   var [pass, setPass] = useState("");
 
   return (
+    <>
     <form>
     <div style={column}>
       <Logo/>
@@ -53,6 +54,7 @@ const Home = () => {
       </a>
     </div>
     </form>
+    </>
   );
 };
 
