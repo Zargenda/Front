@@ -13,7 +13,14 @@ const form = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '5vh'
+  height: '2vh'
+};
+
+const button = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '10vh'
 };
 const Home = () => {
   var [correo, setEmail] = useState("");
@@ -25,19 +32,19 @@ const Home = () => {
       <Logo/>
     </div>
     <div style={form}>
-      <label >Correo: </label>
+      <label style={{marginLeft: '-200px'}}>Correo: </label>
+    </div>
+    <div style={button}>
+      <input style={{height: '50px', width: '260px'}} type="email" value={correo} onChange={e => setEmail(e.target.value)} />
     </div>
     <div style={form}>
-      <input type="email" value={correo} onChange={e => setEmail(e.target.value)} />
+      <label style={{marginLeft: '-160px'}} htmlFor="password">Contraseña: </label>
     </div>
-    <div style={form}>
-      <label htmlFor="password">Contraseña: </label>
+    <div style={button}>
+      <input style={{height: '50px', width: '260px'}} type="password" value={pass} onChange={e => setPass(e.target.value)} />
     </div>
-    <div style={form}>
-      <input type="password" value={pass} onChange={e => setPass(e.target.value)} />
-    </div>
-    <div style={form}>  
-      <button style={{ backgroundColor: "#2422BD", color: 'whitesmoke', borderRadius: '4px' }}> Iniciar sesión </button>
+    <div style={button}>  
+      <button style={{ backgroundColor: "#2422BD", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Iniciar sesión </button>
     </div>
     <div style={form}>  
       <a className="meh" href="/signup">
