@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 
 const row = {
   display: 'flex', 
@@ -42,6 +43,12 @@ const unclickableButton = {
 }
 
 const AdminMenu = () => {
+  const history = useHistory();
+
+  function handleClick(e, page) {
+    e.preventDefault();
+    history.push(page);
+  }
   return (
     <>
     <div style={column}>
@@ -49,7 +56,7 @@ const AdminMenu = () => {
       
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Datos </button>
-        <button style={clickableButton}> Carga de datos </button>
+        <button onClick={(e) => handleClick(e, "/dataLoad")} style={clickableButton}> Carga de datos </button>
         <button style={clickableButton}> Edición de datos </button>
       </div>
       <div style={column}>

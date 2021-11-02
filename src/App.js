@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './pages';
 import SignUp from './pages/signup';
 import AdminMenu from './pages/adminMenu';
+import DataLoad from './pages/dataLoad';
 import Sidebar from './components/Sidebar';
 import { useState } from "react";
 
@@ -20,6 +21,7 @@ function App() {
         <Route path='/' exact={true} component={Home} />
         <Route path='/signup' component={SignUp} />
         <Route path='/admin' component={AdminMenu} />
+        <Route path='/dataLoad' component={DataLoad} />
       </Switch>
     </Router>
   );
