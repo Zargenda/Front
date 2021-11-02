@@ -1,15 +1,14 @@
 import React from 'react'
 //import {ExcelRenderer, OutTable} from 'react-excel-renderer';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Col, Container} from "react-bootstrap";
 import { ReactExcel, readFile, generateObjects } from '@ramonak/react-excel';
 
 const column = {
     display: 'flex',
-    justifyContent: 'flex-start',
     marginLeft: '5%',
     alignItems: 'center',
-    marginTop: '5%',
+    marginTop: '2%',
     marginRight: '5%',
   };
 
@@ -17,7 +16,23 @@ const button = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '10vh'
+};
+
+const table = {
+    display: "flex", 
+    height: "50vh", 
+    overflow: "scroll", 
+    justifyContent: "center", 
+    marginLeft: "1%", 
+    marginRight: "1%"
+};
+
+const mobileTable = {
+    display: "flex", 
+    height: "400px", 
+    width: "340px",
+    scrollBehaviour: "smooth",
+    overflow: "scroll", 
 };
 
 const DataLoad = () => {    
@@ -41,17 +56,32 @@ const DataLoad = () => {
         });
     };
 
+    const [width, setWidth] = useState(window.innerWidth);
+
+    function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+    let isMobile = (width <= 768);
     return (
         <div class="row" style={column}>
             <Container fluid="md">
                 <Col>
-                    <h1>Carga de datos</h1>
+                    <div style={{justifyContent: "flex-start"}}>
+                        <h1>Carga de datos</h1>
+                    </div>
                     <input
                         type='file'
                         accept='.xlsx'
                         onChange={handleUpload}
                     />
-                    <div style={{height: "50vh", overflow: "scroll"}}>
+                    <div style={!isMobile ? table : mobileTable}>
                         <ReactExcel
                             initialData={initialData}
                             onSheetUpdate={(currentSheet) => setCurrentSheet(currentSheet)}
@@ -59,7 +89,7 @@ const DataLoad = () => {
                             reactExcelClassName='react-excel'
                         />
                     </div>
-                    <div style={button}>  
+                    <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
                         <button onClick={save} style={{ backgroundColor: "#2422BD", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
                     </div>
                 </Col>

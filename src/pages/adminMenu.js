@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
+import { useEffect, useState } from 'react';
 
 const row = {
   display: 'flex', 
@@ -8,17 +9,17 @@ const row = {
   alignItems: 'center', 
   justifyContent: 'center', 
   color: 'white',  
-  marginLeft: '5vh', 
   borderRadius: '5px'
 };
 
 const column = {
   display: 'flex', 
   flexDirection: 'column', 
-  marginTop: '5vh', 
+  marginTop: '5%',
+  marginBottom: '5%', 
   alignItems: 'center', 
-  marginLeft: '5vh',
-  height: '10vh', 
+  marginLeft: '5%',
+  marginRight: '5%',
 };
 
 const clickableButton = { 
@@ -49,10 +50,24 @@ const AdminMenu = () => {
     e.preventDefault();
     history.push(page);
   }
+
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+
+  let isMobile = (width <= 768);
   return (
     <>
     <div style={column}>
-    <div style={row}>
+    <div style={isMobile ? column : row}> 
       
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Datos </button>
@@ -65,7 +80,7 @@ const AdminMenu = () => {
       </div>
     </div>
     
-    <div style={row}>
+    <div style={isMobile ? column : row}>
       
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Horarios </button>
