@@ -76,7 +76,7 @@ const AdminMenu = () => {
         <button disabled='true' style={unclickableButton}> Usuarios </button>
         <button style={clickableButton}> Gestión usuarios privilegiados </button>
       </div>
-    </div>
+    </div> 
     
     <div style={isMobile ? column : row}>
       
