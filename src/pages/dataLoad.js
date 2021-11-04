@@ -90,7 +90,7 @@ const DataLoad = () => {
                         />
                     </div>
                     <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
-                        <button onClick={save} style={{ backgroundColor: "#2422BD", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
+                        <button onClick={save} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
                     </div>
                 </Col>
             </Container>

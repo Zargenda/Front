@@ -15,32 +15,30 @@ const row = {
 const column = {
   display: 'flex', 
   flexDirection: 'column', 
-  marginTop: '5%',
+  marginTop: '3%',
   marginBottom: '5%', 
   alignItems: 'center', 
-  marginLeft: '5%',
-  marginRight: '5%',
+  marginLeft: '15%',
+  marginRight: '15%',
 };
 
 const clickableButton = { 
   flex: 1,  
   backgroundColor: "white", 
   color: '#2422BD', 
-  borderRadius: '1px', 
   width: '100%', 
-  height: '100%', 
+  height: '160vh', 
   borderColor: 'whitesmoke' 
 }
 const unclickableButton = { 
   flex: 1, 
   alignItems: 'center', 
   justifyContent: 'center', 
-  backgroundColor: "#2422BD", 
+  backgroundColor: "#685cf4", 
   color: 'white', 
   borderRadius: '4px', 
   width: '50vh', 
-  height: '6vh', 
-  borderColor: 'blue' 
+  borderColor: '#685cf4' 
 }
 
 const AdminMenu = () => {
