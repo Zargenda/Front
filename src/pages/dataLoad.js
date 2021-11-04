@@ -22,9 +22,9 @@ const table = {
     display: "flex", 
     height: "50vh", 
     overflow: "scroll", 
-    justifyContent: "center", 
     marginLeft: "1%", 
-    marginRight: "1%"
+    marginRight: "1%",
+    width: "1200px",
 };
 
 const mobileTable = {
