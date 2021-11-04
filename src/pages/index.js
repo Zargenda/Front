@@ -7,21 +7,23 @@ const column = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '20vh'
+  height: '20vh',
+  marginTop: '5vh'
 };
 
 const form = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '2vh'
+  height: '2vh',
+  marginTop: '3vh'
 };
 
 const button = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '10vh'
+  marginTop: '5vh'
 };
 const Home = () => {
   var [correo, setEmail] = useState("");
@@ -53,12 +55,12 @@ const Home = () => {
       <input style={{height: '50px', width: '260px'}} type="password" value={pass} onChange={e => setPass(e.target.value)} />
     </div>
     <div style={button}>  
-      <button onClick={(e) => handleClick(e)} style={{ backgroundColor: "#2422BD", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Iniciar sesión </button>
+      <button onClick={(e) => handleClick(e)} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Iniciar sesión </button>
     </div>
     <div style={form}>  
       <a className="meh" href="/signup">
         <br />
-        <label style={{color: "#2422BD"}}>¿No tienes cuenta? Regístrate </label>
+        <label style={{color: "#685cf4"}}>¿No tienes cuenta? Regístrate </label>
       </a>
     </div>
     </form>

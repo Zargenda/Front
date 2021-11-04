@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './pages';
 import SignUp from './pages/signup';
 import AdminMenu from './pages/adminMenu';
+import DataLoad from './pages/dataLoad';
 import Sidebar from './components/Sidebar';
 import CreateCalendar from './pages/createCalendar.js';
 import { useState } from "react";
@@ -22,6 +23,7 @@ function App() {
         <Route path='/signup' component={SignUp} />
         <Route path='/admin' component={AdminMenu} />
         <Route path='/createCalendar' component={CreateCalendar}/>
+        <Route path='/dataLoad' component={DataLoad} />
       </Switch>
     </Router>
   );

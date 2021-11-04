@@ -14,7 +14,7 @@ const Navbar = ({toggle}) => {
         <>
             <Nav>
                 <NavLink to="/">
-                    Zargenda
+                    
                 </NavLink>
                 <Bars onClick={toggle}>
                     <FaBars />
