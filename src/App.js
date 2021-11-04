@@ -5,6 +5,7 @@ import Home from './pages';
 import SignUp from './pages/signup';
 import AdminMenu from './pages/adminMenu';
 import Sidebar from './components/Sidebar';
+import CreateCalendar from './pages/createCalendar.js';
 import { useState } from "react";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path='/' exact={true} component={Home} />
         <Route path='/signup' component={SignUp} />
         <Route path='/admin' component={AdminMenu} />
+        <Route path='/createCalendar' component={CreateCalendar}/>
       </Switch>
     </Router>
   );

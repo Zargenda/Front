@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from "react-router-dom";
 
 const row = {
   display: 'flex', 
@@ -42,6 +43,12 @@ const unclickableButton = {
 }
 
 const AdminMenu = () => {
+
+  const history = useHistory();
+  function handleClick(e) {
+    e.preventDefault();
+    history.push("/CreateCalendar");
+  }
   return (
     <>
     <div style={column}>
@@ -68,7 +75,7 @@ const AdminMenu = () => {
       </div>
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Calendarios </button>
-        <button style={clickableButton}> Crear calendarios </button>
+        <button onClick={(e) => handleClick(e)} style={clickableButton}> Crear calendarios </button>
         <button style={clickableButton}> Exportar calendarios </button>
       </div>
     </div>
