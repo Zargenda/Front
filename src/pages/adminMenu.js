@@ -44,11 +44,10 @@ const unclickableButton = {
 const AdminMenu = () => {
 
   const history = useHistory();
-  function handleClick(e) {
+  function handleClickCal(e) {
     e.preventDefault();
     history.push("/CreateCalendar");
   }
-  const history = useHistory();
 
   function handleClick(e, page) {
     e.preventDefault();
@@ -94,7 +93,7 @@ const AdminMenu = () => {
       </div>
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Calendarios </button>
-        <button onClick={(e) => handleClick(e)} style={clickableButton}> Crear calendarios </button>
+        <button onClick={(e) => handleClickCal(e)} style={clickableButton}> Crear calendarios </button>
         <button style={clickableButton}> Exportar calendarios </button>
       </div>
     </div>

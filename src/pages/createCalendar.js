@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from "react";
 import { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -22,175 +23,183 @@ const row = {
     marginTop: '3vh',
     color: 'black',
     marginLeft: '12vh',
+
 };
 
 const date = {
+    display: 'flex',
     marginLeft: '2vh',
+
 }
 
 const label2 = {
     marginLeft: '8vh',
+    display: 'flex',
+
 }
 const label3 = {
     marginLeft: '5vh',
+    display: 'flex',
+
 }
 
 const label4 = {
     marginLeft: '21vh',
+    display: 'flex',
+
 }
 
 const label5 = {
     marginLeft: '13vh',
+    display: 'flex',
+
 }
 
 const label6 = {
     marginLeft: '16vh',
+    display: 'flex',
+
 }
 
 const add = {
+    display: 'flex',
     marginLeft:'2vh',
     alignItems: 'center', 
     justifyContent: 'center', 
-    backgroundColor: "#2422BD", 
-    color: 'white', 
-    borderRadius: '1px', 
-    width: '5%', 
+    backgroundColor: "#685cf4", 
+    color: 'whitesmoke', 
+    borderRadius: '6px',
+    width: '8%', 
     height: '5%', 
-    borderColor: 'blue' 
+}
+
+const gen = {
+    display: 'flex',
+    marginLeft:'70vh',
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: "#685cf4", 
+    color: 'whitesmoke', 
+    borderRadius: '6px',
+    width: '8%', 
+    height: '5%', 
 }
 
 const input = {
+    display: 'flex',
     marginLeft: '2vh',
     height: '3vh',
     width: '30vh',
 }
 
 const cal = {
+    display: 'flex',
     marginLeft:'10vh',
     marginRight: '10vh',
 }
-var gen = false;
-var create = false;
 
-class form extends Component{  
-
-
-    state ={
-        fecha: new Date("2021","10","03")
-    }
-
-    onChange=fecha=>{
-        this.setState({fecha:fecha});
-    }
-
-    
-
-  
-
-    render(){
-
-       /* function createComponent(e){
-            create=true;
-            if (create) return <div class = 'festivo' style={row}>
-                    <label>Festivos</label>
-                    <label style={label2} > Inicio </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-
-                    <label style={label2} > Fin </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p> 
-               </div>;
-
-            create= false;
-        }*/
-
-        function handleClickGenerate(e){
-            const app = document.querySelector("#body")
-           app.insertAdjacentHTML('beforeend','<div  style={cal} data-provide="calendar"></div>');
-        }
-        
-        return(
-            <div id="body">
-                <div style={title}>
-                    <h1>Crear Calendario Anual</h1>
-                </div>
-
-                <div style={row}>
-                    <label>Primer cuatrimestre</label>
-                    <label style={label2} > Inicio </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-
-                    <label style={label2} > Fin </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-                </div>
-
-                <div style={row}>
-                    <label>Segundo cuatrimestre</label>
-                    <label style={label3} > Inicio </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-
-                    <label style={label2} > Fin </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-                </div>
-
-                <div class = 'festivo' style={row}>
-                    <label>Festivos</label>
-                    <label style={label4} > Inicio </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-
-                    <label style={label2} > Fin </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-                    <input style={input} type="text" name="fiesta"/><button style= {add}>+</button>
-                </div>
-
-                <div class = 'festivo' style={row}>
-                    <label>Cambios de día</label>
-                    <p style={label5} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-                    <input style={input} type="text" name="fiesta"/><button  style= {add}>+</button>
-                </div>
-                <div class = 'festivo' style={row}>
-                    <label>Evaluaciones</label>
-                    <label style={label6} > Inicio </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-
-                    <label style={label2} > Fin </label>
-                    <p style={date} ><DatePicker selected = {this.state.fecha} 
-                    onChange={this.onChange}
-                    /> </p>
-                    <input style={input} type="text" name="fiesta"/><button style= {add}>+</button>
-                </div>
-                <br/>
-                <br/>
-                <button style={add} onClick={(e) => handleClickGenerate(e)}>Generar</button>
-                <br/>
-                <br/>
-                <br/>
-                
-
-
-            </div>
-
-        );
-    }
+const body ={
+    padding: '0.5rem calc((100vw - 1000px) / 3)',
 }
 
-export default form;
+const mobileTable = {
+    display: "flex", 
+    height: "400px", 
+    width: "340px",
+    scrollBehaviour: "smooth",
+    overflow: "scroll", 
+};
+
+const table = {
+    display: "flex", 
+    height: "50vh", 
+    overflow: "scroll", 
+    marginLeft: "1%", 
+    marginRight: "1%",
+    width: "1200px",
+};
+
+const Form = () => {  
+    const [startDate, setStartDate] = useState(new Date());
+
+    return(
+        <div style={body}>
+            <div style={title}>
+                <h1>Crear Calendario Anual</h1>
+            </div>
+
+            <div style={row}>
+                <label>Primer cuatrimestre</label>
+                <label style={label2} > Inicio </label>
+                <p style={date} ><DatePicker id="1" selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+
+                <label style={label2} > Fin </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+            </div>
+
+            <div style={row}>
+                <label>Segundo cuatrimestre</label>
+                <label style={label3} > Inicio </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+
+                <label style={label2} > Fin </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+            </div>
+
+            <div class = 'festivo' style={row}>
+                <label>Festivos</label>
+                <label style={label4} > Inicio </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+
+                <label style={label2} > Fin </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+                <input style={input} type="text" name="fiesta"/><button style= {add}>+</button>
+            </div>
+
+            <div class = 'festivo' style={row}>
+                <label>Cambios de día</label>
+                <p style={label5} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+                <input style={input} type="text" name="fiesta"/><button  style= {add}>+</button>
+            </div>
+            <div class = 'festivo' style={row}>
+                <label>Evaluaciones</label>
+                <label style={label6} > Inicio </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+
+                <label style={label2} > Fin </label>
+                <p style={date} ><DatePicker selected = {startDate} 
+                onChange={(date) => setStartDate(date)}
+                /> </p>
+                <input style={input} type="text" name="fiesta"/><button style= {add}>+</button>
+            </div>
+            <br/>
+            <br/>
+            <button style={gen}>Generar</button>
+            <br/>
+            <br/>
+            <br/>
+            
+
+
+        </div>
+
+    )
+}
+
+export default Form
