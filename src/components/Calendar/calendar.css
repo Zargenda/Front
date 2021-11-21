@@ -1,0 +1,106 @@
+.calendarTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-family: Tahoma;
+    font-size: 14px;
+    border-width: 2px;
+    margin-left: 5%;
+    width: 60%
+}
+
+    .calendarTable td {
+        border-style: solid;
+        border-width: 0.5px;
+        overflow: hidden;
+        padding: 5px 5px;
+        word-break: normal;
+        border-color: lightgray;
+        text-align: left;
+        vertical-align: top;
+        border-width: 2px;
+    }
+
+    .calendarTable th {
+        border-style: solid;
+        border-width: 1px;
+        font-weight: normal;
+        overflow: hidden;
+        padding: 5px 5px;
+        word-break: normal;
+        background-color: black;
+        border-color: black;
+        border-width: 3px;
+        color: orange;
+        vertical-align: top;
+        text-align: center;
+    }
+
+    .calendarTable .header {
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        border-width: 3px;
+        border-color: black;
+        border-bottom-width:3px;
+        text-align:center
+    }
+    .calendarTable .headerWithoutBottom {
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        border-right-width: 3px;
+        border-top-width: 3px;
+        border-left-width: 3px;
+        border-color: black;
+        border-bottom-width: 0px;
+        text-align: center
+    }
+    .calendarTable .headerWithoutTop {
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        border-right-width: 3px;
+        border-bottom-width: 3px;
+        border-left-width: 3px;
+        border-color: black;
+        border-top-width: 0px;
+        text-align: center
+    }
+    .calendarTable .bottomBorder {
+        border-bottom-color: black;
+        border-bottom-width: 3px;
+    }
+
+    .calendarTable .rightBottomBorder {
+        border-right-color: black;
+        border-bottom-color: black;
+        border-right-width: 3px;
+        border-bottom-width: 3px;
+    }
+
+    .calendarTable .festive {
+        background-color: #C7E093;
+    }
+
+    .calendarTable .changeDay {
+        background-color: yellow;
+    }
+
+    .calendarTable .convocatory {
+        background-color: #FF99CC;
+    }
+
+    .calendarTable .continueConvocatory {
+        background-color: #FF33CC;
+    }
+
+    .calendarTable .culmExam {
+        background-color: #9966ff;
+    }
+
+    .calendarTable .rightBorder {
+        border-right-width: 3px;
+        border-right-color: black;
+    }
+
+

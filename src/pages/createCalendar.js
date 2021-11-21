@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Calendar from 'js-year-calendar';
 import 'js-year-calendar/dist/js-year-calendar.css';
 import 'js-year-calendar/locales/js-year-calendar.es';
-
+import CalendarTable from '../components/Calendar/calendar';
 const title = {
     display: 'flex',
     flexDirection: 'row',
@@ -194,7 +194,8 @@ const Form = () => {
             <br/>
             <br/>
             <br/>
-            
+            <CalendarTable/>
+
 
 
         </div>
