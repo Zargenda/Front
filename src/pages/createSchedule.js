@@ -7,6 +7,9 @@ import CalendarTable from '../components/Calendar/calendar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import TimePicker from 'react-time-picker'
+import 'react-calendar-timeline/lib/Timeline.css'
+import moment from 'moment'
+import CustomTimeline from './CustomTimeline'
 
 const title = {
     display: 'flex',
@@ -69,6 +72,7 @@ const CreateSchedule = () => {
     const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
     const [startClock, setStartClock] = useState('10:00');
     const [endClock, setEndClock] = useState('10:00');
+
 
     return(
         <div style={body}>
@@ -175,7 +179,7 @@ const CreateSchedule = () => {
             <br/>
             <br/>
             <br/>
-            <CalendarTable/>
+            <CustomTimeline/>
         </div>
 
     )
