@@ -10,7 +10,7 @@ const SignUp = () => {
         height: '90vh'
       }}
     >
-      <h1>Sign uuuuUp</h1>
+      <h1>Estamos trabajando en ello, vuelve pronto...</h1>
     </div>
   );
 };
