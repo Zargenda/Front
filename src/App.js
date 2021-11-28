@@ -8,6 +8,7 @@ import DataLoad from './pages/dataLoad';
 import Sidebar from './components/Sidebar';
 import CreateCalendar from './pages/createCalendar.js';
 import { useState } from "react";
+import CreateSchedule from './pages/createSchedule';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,6 +25,7 @@ function App() {
         <Route path='/admin' component={AdminMenu} />
         <Route path='/createCalendar' component={CreateCalendar}/>
         <Route path='/dataLoad' component={DataLoad} />
+        <Route path='/createSchedule' component={CreateSchedule} />
       </Switch>
     </Router>
   );

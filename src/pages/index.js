@@ -16,7 +16,7 @@ const form = {
   justifyContent: 'center',
   alignItems: 'center',
   height: '2vh',
-  marginTop: '3vh'
+  marginTop: '3vh',
 };
 
 const button = {
@@ -46,13 +46,13 @@ const Home = () => {
       <label style={{marginLeft: '-200px'}}>Correo: </label>
     </div>
     <div style={button}>
-      <input style={{height: '50px', width: '260px'}} type="email" value={correo} onChange={e => setEmail(e.target.value)} />
+      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="email" value={correo} onChange={e => setEmail(e.target.value)} />
     </div>
     <div style={form}>
       <label style={{marginLeft: '-160px'}} htmlFor="password">Contraseña: </label>
     </div>
     <div style={button}>
-      <input style={{height: '50px', width: '260px'}} type="password" value={pass} onChange={e => setPass(e.target.value)} />
+      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="password" value={pass} onChange={e => setPass(e.target.value)} />
     </div>
     <div style={button}>  
       <button onClick={(e) => handleClick(e)} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Iniciar sesión </button>
