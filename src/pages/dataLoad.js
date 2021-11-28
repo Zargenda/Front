@@ -41,6 +41,8 @@ const mobileTable = {
 const DataLoad = () => {    
     const [initialData, setInitialData] = useState(undefined);
     const [currentSheet, setCurrentSheet] = useState({});
+    const [errors, setErrors] = useState(["Error en la línea 12", "Error en la línea 64"]);
+    const [error, setError] = useState(true);
     const history = useHistory();
     const handleUpload = (event) => {
         const file = event.target.files[0];
@@ -93,9 +95,13 @@ const DataLoad = () => {
                             reactExcelClassName='react-excel'
                         />
                     </div>
+                    { error ? <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Se ha producido un error al cargar los datos. Inténtelo de nuevo</label> : null }
                     <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
                         <button onClick={save} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
                     </div>
+                    { error ? <div>
+                        <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Lista de errores</label>
+                        {errors.map(error => <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>{error}</label>) }</div> : null }
                 </Col>
             </Container>
         </div>
