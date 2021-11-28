@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import CreateCalendar from './pages/createCalendar.js';
 import { useState } from "react";
 import CreateSchedule from './pages/createSchedule';
+import DataEdit from './pages/dataEdit';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -26,6 +27,7 @@ function App() {
         <Route path='/createCalendar' component={CreateCalendar}/>
         <Route path='/dataLoad' component={DataLoad} />
         <Route path='/createSchedule' component={CreateSchedule} />
+        <Route path='/dataEdit' component={DataEdit} />
       </Switch>
     </Router>
   );

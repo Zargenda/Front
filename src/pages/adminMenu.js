@@ -75,7 +75,7 @@ const AdminMenu = () => {
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Datos </button>
         <button onClick={(e) => handleClick(e, "/dataLoad")} style={clickableButton}> Carga de datos </button>
-        <button style={clickableButton}> Edición de datos </button>
+        <button onClick={(e) => handleClick(e, "/dataEdit")} style={clickableButton}> Edición de datos </button>
       </div>
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Usuarios </button>

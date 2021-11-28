@@ -52,26 +52,9 @@ const mobileTable = {
     overflow: "scroll", 
 };
 
-const DataLoad = () => {    
-    const [initialData, setInitialData] = useState(undefined);
-    const [currentSheet, setCurrentSheet] = useState({});
-
-    const handleUpload = (event) => {
-        const file = event.target.files[0];
-        //read excel file
-        readFile(file)
-        .then((readedData) => setInitialData(readedData))
-        .catch((error) => console.error(error));
-    };
-
-    const save = () => {
-        const result = generateObjects(currentSheet);
-        //save array of objects to backend
-        fetch("/api/save", {
-            method: 'POST',
-            body: JSON.stringify(result)
-        });
-    };
+const DataEdit = () => {    
+    const data = [ {codigo: 'Matemáticas', nombre: '0001'}, {codigo: 'AOC2', nombre: '0002'} ];
+    const columns = [{title: 'Código', field: 'codigo'}, {title: 'Asignatura', field: 'nombre'}];
 
     const [width, setWidth] = useState(window.innerWidth);
 
@@ -91,28 +74,44 @@ const DataLoad = () => {
             <Container fluid="md">
                 <Col>
                     <div style={{justifyContent: "flex-start"}}>
-                        <h1>Carga de datos</h1>
+                        <h1>Edición de datos</h1>
                     </div>
-                    <input
-                        type='file'
-                        accept='.xlsx'
-                        onChange={handleUpload}
-                    />
-                    <div style={!isMobile ? table : mobileTable}>
-                        <ReactExcel
-                            initialData={initialData}
-                            onSheetUpdate={(currentSheet) => setCurrentSheet(currentSheet)}
-                            activeSheetClassName='active-sheet'
-                            reactExcelClassName='react-excel'
+                    
+                    <MaterialTable
+                        columns={columns}
+                        data={data}
+                        title="Asignaturas"
+                        actions={[
+                            { icon: Edit, tooltip: 'Editar', onClick: (event, rowData)=> alert('Estas editando')},
+                            { icon: Delete, tooltip: 'Eliminar', onClick: (event, rowData)=> window.confirm('Estas eliminando?')}
+                        ]}
+                        options={{
+                            actionsColumnIndex: -1
+                        }}
+                        localization={{
+                            header:{
+                                actions: 'Acciones'
+                            }
+                        }}
+                        icons={{ 
+                            Check: Check,
+                            DetailPanel: ChevronRight,
+                            Export: SaveAlt,
+                            Filter: FilterList,
+                            FirstPage: FirstPage,
+                            LastPage: LastPage,
+                            NextPage: ChevronRight,
+                            PreviousPage: ChevronLeft,
+                            Search: Search,
+                            ThirdStateCheck: Remove,
+                            Edit: Edit,
+                            Clear: Clear
+                          }}
                         />
-                    </div>
-                    <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
-                        <button onClick={save} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
-                    </div>
                 </Col>
             </Container>
         </div>
     )
 }
 
-export default DataLoad
+export default DataEdit
