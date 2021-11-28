@@ -1,8 +1,6 @@
 import React from 'react'
-//import {ExcelRenderer, OutTable} from 'react-excel-renderer';
 import { useState, useEffect } from "react";
 import { Col, Container} from "react-bootstrap";
-import { ReactExcel, readFile, generateObjects } from '@ramonak/react-excel';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import MaterialTable from 'material-table';
 
@@ -53,7 +51,7 @@ const mobileTable = {
 };
 
 const DataEdit = () => {    
-    const data = [ {codigo: 'Matemáticas', nombre: '0001'}, {codigo: 'AOC2', nombre: '0002'} ];
+    const data = [ {codigo: '0001', nombre: 'Matemáticas'}, {codigo: '0002', nombre: 'AOC2'} ];
     const columns = [{title: 'Código', field: 'codigo'}, {title: 'Asignatura', field: 'nombre'}];
 
     const [width, setWidth] = useState(window.innerWidth);

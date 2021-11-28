@@ -3,22 +3,8 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { Col, Container} from "react-bootstrap";
 import { ReactExcel, readFile, generateObjects } from '@ramonak/react-excel';
+import { useHistory } from "react-router-dom";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import MaterialTable from 'material-table';
-
-
-import Search from '@material-ui/icons/Search'
-import SaveAlt from '@material-ui/icons/SaveAlt'
-import ChevronLeft from '@material-ui/icons/ChevronLeft'
-import ChevronRight from '@material-ui/icons/ChevronRight'
-import FirstPage from '@material-ui/icons/FirstPage'
-import LastPage from '@material-ui/icons/LastPage'
-import Check from '@material-ui/icons/Check'
-import FilterList from '@material-ui/icons/FilterList'
-import Remove from '@material-ui/icons/Remove'
-import Delete from '@material-ui/icons/Delete'
-import Clear from '@material-ui/icons/Clear'
-import Edit from '@material-ui/icons/Edit'
 
 
 const column = {
@@ -55,7 +41,7 @@ const mobileTable = {
 const DataLoad = () => {    
     const [initialData, setInitialData] = useState(undefined);
     const [currentSheet, setCurrentSheet] = useState({});
-
+    const history = useHistory();
     const handleUpload = (event) => {
         const file = event.target.files[0];
         //read excel file
@@ -65,12 +51,13 @@ const DataLoad = () => {
     };
 
     const save = () => {
-        const result = generateObjects(currentSheet);
+        //const result = generateObjects(currentSheet);
         //save array of objects to backend
-        fetch("/api/save", {
-            method: 'POST',
-            body: JSON.stringify(result)
-        });
+        //fetch("/api/save", {
+        //    method: 'POST',
+        //    body: JSON.stringify(result)
+        //});
+        history.push("/dataEdit");
     };
 
     const [width, setWidth] = useState(window.innerWidth);
