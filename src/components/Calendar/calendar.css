@@ -1,37 +1,38 @@
+.calendarRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .calendarTable {
     border-collapse: collapse;
     border-spacing: 0;
     font-family: Tahoma;
-    font-size: 14px;
+    font-size: 20px;
     border-width: 2px;
-    margin-left: 5%;
-    width: 60%
 }
 
     .calendarTable td {
         border-style: solid;
-        border-width: 0.5px;
+        border-width: 0px;
         overflow: hidden;
-        padding: 5px 5px;
+        padding: 1px 2px;
         word-break: normal;
-        border-color: lightgray;
         text-align: left;
-        vertical-align: top;
-        border-width: 2px;
+        vertical-align: central;
     }
 
     .calendarTable th {
         border-style: solid;
         border-width: 1px;
         font-weight: normal;
-        overflow: hidden;
-        padding: 5px 5px;
+        padding: 1px 15px;
         word-break: normal;
         background-color: black;
         border-color: black;
         border-width: 3px;
         color: orange;
-        vertical-align: top;
+        vertical-align: central;
         text-align: center;
     }
 
@@ -41,9 +42,10 @@
         font-weight: bold;
         border-width: 3px;
         border-color: black;
-        border-bottom-width:3px;
-        text-align:center
+        border-bottom-width: 3px;
+        text-align: center
     }
+
     .calendarTable .headerWithoutBottom {
         background-color: white;
         color: black;
@@ -55,6 +57,7 @@
         border-bottom-width: 0px;
         text-align: center
     }
+
     .calendarTable .headerWithoutTop {
         background-color: white;
         color: black;
@@ -66,6 +69,7 @@
         border-top-width: 0px;
         text-align: center
     }
+
     .calendarTable .bottomBorder {
         border-bottom-color: black;
         border-bottom-width: 3px;
@@ -78,29 +82,36 @@
         border-bottom-width: 3px;
     }
 
-    .calendarTable .festive {
-        background-color: #C7E093;
-    }
-
-    .calendarTable .changeDay {
-        background-color: yellow;
-    }
-
-    .calendarTable .convocatory {
-        background-color: #FF99CC;
-    }
-
-    .calendarTable .continueConvocatory {
-        background-color: #FF33CC;
-    }
-
-    .calendarTable .culmExam {
-        background-color: #9966ff;
-    }
-
     .calendarTable .rightBorder {
         border-right-width: 3px;
         border-right-color: black;
     }
 
+.legendHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 
+.legendRow {
+    display: flex;
+    flex-direction: row;
+    border: 5px solid white;
+}
+
+.square {
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+}
+
+.squareWithBorder {
+    width: 16px;
+    height: 16px;
+    border: 2px solid black;
+}
+
+.legendText {
+    font-family: Tahoma;
+    font-size: 15px;
+}

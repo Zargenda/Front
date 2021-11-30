@@ -2,8 +2,8 @@ export const MONDAY = "L", TUESDAY = "M", WEDNESDAY = "X", THURSDAY = "J", FRIDA
 export const weekDayName = [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY];
 export const monthName = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
 export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCATORY = "CONVOCATORY",
-    CONTINUE_CONVOCATORY = "cONTINUE_CONVOCATORY", NO_SCHOOL = "NO_SCHOOL", SCHOOL = "SCHOOL",
-    CHANGE_DAY = "CHANGE_DAY", CULM_EXAM="CULM_EXAM";
+    SECOND_CONVOCATORY = "SECOND_CONVOCATORY", CONTINUE_CONVOCATORY = "CONTINUE_CONVOCATORY",
+    NO_SCHOOL = "NO_SCHOOL", SCHOOL = "SCHOOL", CHANGE_DAY = "CHANGE_DAY", CULM_EXAM="CULM_EXAM";
 export const JANUARY = "Ene";
 const WEEK_TOTAL = 7;
 
@@ -14,6 +14,7 @@ var schoolYears = {
     startYear: 0,
     endYear: 1
 };
+var legendList = new Map();
 
 function sortByDate(a, b) {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -29,12 +30,30 @@ function getDifferenceInDays(start, end) {
     return diffInSeg / (1000 * 3600 * 24);
 }
 
+const addLegend = (day) => {
+    let comment = day.comment;
+    if (comment != null) {
+        let d = new Date(day.date);
+        let formatDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear().toString().substr(-2);
+
+        if (legendList.get(comment) == null) {
+            legendList.set(comment, [day.type, formatDate]);
+        } else {
+            let lastDate = legendList.get(comment);
+            lastDate[2] = formatDate;
+            legendList.set(comment, lastDate);
+        }
+        console.log(legendList.get(comment));
+    }
+}
+
 const getDayInfo = (weekArray) => {
     let dayInfo = [];
     for (let i = 0; i < weekArray.length; i++) {
+        addLegend(weekArray[i])
         dayInfo.push(
             {
-                date: (new Date(weekArray[i].date)).getDate(),
+                date: new Date(weekArray[i].date).getDate(),
                 day: weekArray[i].day,
                 week: weekArray[i].week,
                 type: weekArray[i].type
@@ -61,6 +80,7 @@ const getWeeks = (monthArray) => {
 
 export const getConvertedData = (calendarArray) => {
     setSchoolYears(calendarArray[0].date);
+    legendList = new Map();
     calendarArray.sort(sortByDate);
     weekNumber = 1;
     finalWeek = Math.ceil(getDifferenceInDays(calendarArray[0].date, calendarArray[calendarArray.length - 1].date) / WEEK_TOTAL);
@@ -97,28 +117,45 @@ const setSchoolYears = (date) => {
 export const getStartYear = (date) => {
     return schoolYears.startYear;
 }
+export const getLegends = () => {
+    var legends = [];
+    for (const [key, value] of legendList) {
+        legends.push(
+            {
+                type: !value[0] ? null:value[0],
+                startDate: !value[1] ? null : value[1],
+                endDate: !value[2] ? null : value[2],
+                comment: key
+            }
+        )
+    }
+    return legends;
+}
 
 //---Style functions
-export const getTypeStyle = (type) => {
-    var style = "";
+export const getTypeColor = (type) => {
+    var color = "";
     switch (type) {
         case CHANGE_DAY:
-            style = "changeDay";
+            color = "yellow";
             break;
         case FESTIVE:
-            style = "festive";
+            color = "#C7E093";
             break;
         case CONVOCATORY:
-            style = "convocatory";
+            color = "#FF99CC";
             break;
         case CONTINUE_CONVOCATORY:
-            style = "continueConvocatory";
+            color = "#FF33CC";
+            break;
+        case SECOND_CONVOCATORY:
+            color = "#CC00CC";
             break;
         case CULM_EXAM:
-            style = "culmExam";
+            color = "#9966ff";
             break;
     }
-    return style;
+    return color;
 }
 
 export const getBorderStyle = (date, day, finalDay, finalWeek) => {
