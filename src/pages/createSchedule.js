@@ -10,6 +10,7 @@ import TimePicker from 'react-time-picker'
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
 import CustomTimeline from './CustomTimeline'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const title = {
     display: 'flex',
@@ -72,8 +73,25 @@ const CreateSchedule = () => {
     const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
     const [startClock, setStartClock] = useState('10:00');
     const [endClock, setEndClock] = useState('10:00');
+    const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
 
+    useEffect(() => {
+        saveValues()
+        
+    }, []);
 
+    async function saveValues(){
+        await AsyncStorage.setItem("selectedCareer", selectedCareer)
+        await AsyncStorage.setItem("selectedGrade", selectedGrade)
+        await AsyncStorage.setItem("selectedGroup", selectedGroup)
+        await AsyncStorage.setItem("selectedSemester", selectedSemester)
+        await AsyncStorage.setItem("selectedSubject", selectedSubject)
+        await AsyncStorage.setItem("selectedGenre", selectedGenre)
+        await AsyncStorage.setItem("selectedLocation", selectedLocation)
+        await AsyncStorage.setItem("selectedDay", selectedDay)
+        await AsyncStorage.setItem("startClock", startClock)
+        await AsyncStorage.setItem("endClock", endClock)
+    }
     return(
         <div style={body}>
             <div style={title}>
@@ -180,6 +198,10 @@ const CreateSchedule = () => {
             <br/>
             <br/>
             <CustomTimeline/>
+            <div>
+                <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Listado de incompatibilidades pendientes</label>
+                {errors.map(error => <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>{error}</label>) }
+            </div>
         </div>
 
     )

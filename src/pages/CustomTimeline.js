@@ -19,14 +19,30 @@ const clickableButton = {
   height: '5%', 
 }
 
-const itemInit = new Date("November 22, 2021 00:00:00")
-const itemEnd = new Date("November 22, 2021 24:00:00")
-
-
 export default class App extends Component {
   constructor(props) {
     super(props);
     const scheduleObj = null
+
+    this.data = [{
+          Id: 1,
+          Subject: 'Laboratorio ing software',
+          StartTime: new Date(2021, 8, 14, 9, 30),
+          EndTime: new Date(2021, 8, 14, 11, 0),
+          CalendarId: 1
+      }, {
+          Id: 2,
+          Subject: 'Sistemas legados',
+          StartTime: new Date(2021, 8, 13, 9, 30),
+          EndTime: new Date(2021, 8, 13, 11, 0),
+          CalendarId: 2
+      }, {
+          Id: 3,
+          Subject: 'Seguridad informática',
+          StartTime: new Date(2021, 8, 13, 9, 30),
+          EndTime: new Date(2021, 8, 13, 11, 0),
+          CalendarId: 1
+      }];
   }
 
   calendarCollections = [
@@ -47,7 +63,7 @@ export default class App extends Component {
             </div>
             <div className="content-area">
               <DropDownListComponent id="eventType" ref={(ddl) => this.eventTypeObj = ddl} dataSource={this.calendarCollections}
-                fields={{ text: "CalendarText", value: "CalendarId" }} placeholder="Tipo" index={0} popupHeight="200px" />
+                fields={{ text: "CalendarText", value: "CalendarId" }} placeholder="Tipo" popupHeight="200px" />
             </div>
           </div>
           :
@@ -68,7 +84,7 @@ export default class App extends Component {
       </td></tr>
       <tr><td className="e-textlabel">Tipo</td><td style={{ colspan: '4' }}>
       <DropDownListComponent id="eventType" ref={(ddl) => this.eventTypeObj = ddl} name="CalendarId" data-name="CalendarId" className="e-field e-input" dataSource={this.calendarCollections}
-                fields={{ text: "CalendarText", value: "CalendarId" }} placeholder="Tipo"  popupHeight="200px" />
+                fields={{ text: "CalendarText", value: "CalendarId" }} id={1} placeholder="Tipo"  popupHeight="200px" />
       </td></tr>
       <tr><td className="e-textlabel">Desde</td><td style={{ colspan: '4' }}>
         <DateTimePickerComponent id="StartTime" format='dd/MM/yy hh:mm a' data-name="StartTime" value={new Date(props.startTime || props.StartTime)}
@@ -79,8 +95,8 @@ export default class App extends Component {
           className="e-field"></DateTimePickerComponent>
       </td></tr>
       <tr><td className="e-textlabel">Clase</td><td style={{ colspan: '4' }}>
-        <textarea id="Description" className="e-field e-input" name="Description" rows={3} cols={50}
-          style={{ width: '100%', height: '60px !important', resize: 'vertical' }}></textarea>
+        <input id="Description" className="e-field e-input" name="Description" rows={3} cols={50}
+          style={{ width: '100%', height: '60px !important', resize: 'vertical' }}></input>
       </td></tr></tbody></table > : <div></div>);
   }
 
@@ -109,7 +125,7 @@ export default class App extends Component {
       }
       const addObj = {};
       addObj.Id = this.scheduleObj.getEventMaxID();
-      addObj.Subject = isNullOrUndefined(this.titleObj.value) ? 'Add title' : this.titleObj.value;
+      addObj.Subject = isNullOrUndefined(this.titleObj.value) ? 'Nueva asignatura' : this.titleObj.value;
       addObj.StartTime = new Date(+cellDetails.startTime);
       addObj.EndTime = new Date(+cellDetails.endTime);
       addObj.IsAllDay = cellDetails.isAllDay;
@@ -176,7 +192,7 @@ export default class App extends Component {
     return (
       <div>
         <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
-        <ScheduleComponent currentView='WorkWeek' startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
+        <ScheduleComponent currentView='WorkWeek' selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
         quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
           footer: this.footerTemplate.bind(this)

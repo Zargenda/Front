@@ -42,13 +42,14 @@ const DataLoad = () => {
     const [initialData, setInitialData] = useState(undefined);
     const [currentSheet, setCurrentSheet] = useState({});
     const [errors, setErrors] = useState(["Error en la línea 12", "Error en la línea 64"]);
-    const [error, setError] = useState(true);
+    const [error, setError] = useState(false);
     const history = useHistory();
+
     const handleUpload = (event) => {
         const file = event.target.files[0];
         //read excel file
         readFile(file)
-        .then((readedData) => setInitialData(readedData))
+        .then((readedData) => {setInitialData(readedData)})
         .catch((error) => console.error(error));
     };
 

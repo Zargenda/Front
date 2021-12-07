@@ -7,6 +7,7 @@
     "@material-ui/icons": "^4.11.2",
     "@mui/styles": "^5.2.3",
     "@ramonak/react-excel": "^1.0.1",
+    "@react-native-async-storage/async-storage": "^1.15.14",
     "@syncfusion/ej2-base": "^19.3.56",
     "@syncfusion/ej2-data": "^19.3.56",
     "@syncfusion/ej2-react-buttons": "^19.3.53",
