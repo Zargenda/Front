@@ -17,7 +17,9 @@ import Remove from '@material-ui/icons/Remove'
 import Delete from '@material-ui/icons/Delete'
 import Clear from '@material-ui/icons/Clear'
 import Edit from '@material-ui/icons/Edit'
-
+import {makeStyles} from '@material-ui/core/styles';
+import { Button, Modal, TextField } from '@material-ui/core';
+import axios from 'axios';
 
 const column = {
     display: 'flex',
@@ -27,46 +29,163 @@ const column = {
     marginRight: '5%',
   };
 
-const button = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-};
+const useStyles = makeStyles((theme) => ({
+    modal: {
+      position: 'absolute',
+      width: 400,
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    },
+    iconos:{
+      cursor: 'pointer'
+    }, 
+    inputMaterial:{
+      width: '100%'
+    }
+  }));
 
-const table = {
-    display: "flex", 
-    height: "50vh", 
-    overflow: "scroll", 
-    marginLeft: "1%", 
-    marginRight: "1%",
-    width: "1200px",
-};
+const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
 
-const mobileTable = {
-    display: "flex", 
-    height: "400px", 
-    width: "340px",
-    scrollBehaviour: "smooth",
-    overflow: "scroll", 
-};
-
-const DataEdit = () => {    
-    const data = [ {codigo: '0001', nombre: 'Matemáticas'}, {codigo: '0002', nombre: 'AOC2'} ];
-    const columns = [{title: 'Código', field: 'codigo'}, {title: 'Asignatura', field: 'nombre'}];
-
+const DataEdit = () => {   
+    const styles = useStyles(); 
+    const [data, setData] = useState([]);
+    const columns = [{title: 'Código', field: 'Cod_IOE'}, {title: 'Asignatura', field: 'Nombre'}];
+    const [modalEditar, setModalEditar]=useState(false);
+    const [modalEliminar, setModalEliminar]=useState(false);
+    const [modalInsertar, setModalInsertar]=useState(false);
     const [width, setWidth] = useState(window.innerWidth);
-
+    const [asignaturaSeleccionada, setAsignaturaSeleccionada]=useState({
+        Cod_IOE: '',
+        Nombre:'',
+      })
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
     }
     useEffect(() => {
         window.addEventListener('resize', handleWindowSizeChange);
+        fetchData()
         return () => {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
 
+    async function fetchData(){
+        await axios.get(baseUrl)
+        .then(response=>{
+            setData(response.data)
+            //console.log(data)            
+        })
+    }
+
     let isMobile = (width <= 768);
+
+    const handleChange=e=>{
+        const {name, value}=e.target;
+        setAsignaturaSeleccionada(prevState=>({
+          ...prevState,
+          [name]: value
+        }))
+    }
+
+    const peticionDelete=async()=>{
+        //await axios.delete(baseUrl)
+        //.then(response=>{
+        //  abrirCerrarModalEliminar();
+        //})
+        abrirCerrarModalEliminar();
+    }
+
+    const peticionPost=async()=>{
+        await axios.post(baseUrl)
+        .then(response=>{
+          //setData(data.concat(response.data))
+          abrirCerrarModalInsertar()
+        })
+    }
+
+    const peticionPut=async()=>{
+        /*await axios.put(baseUrl)
+        .then(response=>{
+          var dataNueva=data;
+          dataNueva.map(asignatura=>{
+            if(asignaturaSeleccionada.id===asignatura.id){
+              asignatura.nombre=asignaturaSeleccionada.nombre;
+              asignatura.lanzamiento=asignaturaSeleccionada.codigo;
+            }
+          })
+          setData(dataNueva);
+          abrirCerrarModalEditar();
+        })
+        */
+        abrirCerrarModalEditar();
+      }
+
+    const abrirCerrarModalEliminar=()=>{
+        setModalEliminar(!modalEliminar);
+    }
+
+    const abrirCerrarModalInsertar=()=>{
+        setModalInsertar(!modalInsertar);
+    }
+
+    const abrirCerrarModalEditar=()=>{
+    setModalEditar(!modalEditar);
+    }
+
+    const bodyInsertar=(
+    <div className={styles.modal}>
+        <h3>Agregar nueva asignatura</h3>
+        <TextField name="nombre" className={styles.inputMaterial} label="Nombre" onChange={handleChange}/>
+        <br />
+        <TextField name="empresa" className={styles.inputMaterial} label="Empresa" onChange={handleChange}/>
+        <br />
+        <TextField name="lanzamiento" className={styles.inputMaterial} label="Lanzamiento" onChange={handleChange}/>
+        <br />
+        <TextField name="unidades_vendidas" className={styles.inputMaterial} label="Unidades Vendidas" onChange={handleChange}/>
+        <br /><br />
+        <div align="right">
+        <Button color="primary" onClick={()=>peticionPost()}>Insertar</Button>
+        <Button onClick={()=>abrirCerrarModalInsertar()}>Cancelar</Button>
+        </div>
+    </div>
+    )
+
+    const bodyEditar=(
+        <div className={styles.modal}>
+          <h3>Editar asignatura</h3>
+          <TextField name="Nombre" className={styles.inputMaterial} label="Nombre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.Nombre}/>
+          <br />
+          <TextField name="Cod_IOE" className={styles.inputMaterial} label="Codigo" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.Cod_IOE}/>
+          <br />
+          <div align="right">
+            <Button color="primary" onClick={()=>peticionPut()}>Editar</Button>
+            <Button onClick={()=>abrirCerrarModalEditar()}>Cancelar</Button>
+          </div>
+        </div>
+      )
+
+    const bodyEliminar=(
+        <div className={styles.modal}>
+          <p>Estás seguro que deseas eliminar la asignatura <b></b> ? </p>
+          <div align="right">
+            <Button color="secondary" onClick={()=>peticionDelete()} >Sí</Button>
+            <Button onClick={()=>abrirCerrarModalEliminar()}>No</Button>
+    
+          </div>
+    
+        </div>
+    )
+
+    const seleccionarAsignatura=(asignatura, caso)=>{
+        setAsignaturaSeleccionada(asignatura);
+        (caso==='Editar')?abrirCerrarModalEditar():abrirCerrarModalEliminar()
+    }
+
     return (
         <div class="row" style={column}>
             <Container fluid="md">
@@ -80,8 +199,8 @@ const DataEdit = () => {
                         data={data}
                         title="Asignaturas"
                         actions={[
-                            { icon: Edit, tooltip: 'Editar', onClick: (event, rowData)=> alert('Estas editando')},
-                            { icon: Delete, tooltip: 'Eliminar', onClick: (event, rowData)=> window.confirm('Estas eliminando?')}
+                            { icon: Edit, tooltip: 'Editar', onClick: (event, rowData)=> seleccionarAsignatura(rowData, 'Editar')},
+                            { icon: Delete, tooltip: 'Eliminar', onClick: (event, rowData)=>seleccionarAsignatura(rowData, 'Eliminar')}
                         ]}
                         options={{
                             actionsColumnIndex: -1
@@ -108,6 +227,24 @@ const DataEdit = () => {
                         />
                 </Col>
             </Container>
+
+            <Modal
+                open={modalInsertar}
+                onClose={abrirCerrarModalInsertar}>
+                {bodyInsertar}
+            </Modal>
+
+            <Modal
+                open={modalEliminar}
+                onClose={abrirCerrarModalEliminar}>
+                {bodyEliminar}
+            </Modal>
+
+            <Modal
+                open={modalEditar}
+                onClose={abrirCerrarModalEditar}>
+                {bodyEditar}
+            </Modal>
         </div>
     )
 }
