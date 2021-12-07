@@ -4,6 +4,7 @@ import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { closest, isNullOrUndefined } from '@syncfusion/ej2-base';
+import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DataManager, Predicate, Query } from '@syncfusion/ej2-data';
 
 const clickableButton = {
@@ -34,7 +35,7 @@ export default class App extends Component {
     { CalendarText: 'Problemas', CalendarId: 3, CalendarColor: '#55B7EE' },
     { CalendarText: 'Seminario', CalendarId: 4, CalendarColor: '#686464' }
   ];
-
+  
 
   contentTemplate = (props) => {
     return (
@@ -51,18 +52,36 @@ export default class App extends Component {
           </div>
           :
           <div className="event-content">
-            <div className="meeting-type-wrap">
-              <label>Nombre</label>:
-              <span>{props.Subject}</span>
-            </div>
             <div className="meeting-subject-wrap">
-              <label>Hora</label>:
-              <span>{this.StartTime}</span>
+              <span>{props.Description}</span>
             </div>
           </div>
         }
       </div>
     );
+  }
+
+  editorTemplate = (props) => {
+    return ((props !== undefined) ? <table className="custom-event-editor" style={{ width: '100%', cellpadding: '5' }}><tbody>
+      <tr><td className="e-textlabel">Nombre</td><td style={{ colspan: '4' }}>
+        <input id="Summary" className="e-field e-input" type="text" name="Subject" style={{ width: '100%' }} />
+      </td></tr>
+      <tr><td className="e-textlabel">Tipo</td><td style={{ colspan: '4' }}>
+      <DropDownListComponent id="eventType" ref={(ddl) => this.eventTypeObj = ddl} name="CalendarId" data-name="CalendarId" className="e-field e-input" dataSource={this.calendarCollections}
+                fields={{ text: "CalendarText", value: "CalendarId" }} placeholder="Tipo"  popupHeight="200px" />
+      </td></tr>
+      <tr><td className="e-textlabel">Desde</td><td style={{ colspan: '4' }}>
+        <DateTimePickerComponent id="StartTime" format='dd/MM/yy hh:mm a' data-name="StartTime" value={new Date(props.startTime || props.StartTime)}
+          className="e-field"></DateTimePickerComponent>
+      </td></tr>
+      <tr><td className="e-textlabel">Hasta</td><td style={{ colspan: '4' }}>
+        <DateTimePickerComponent id="EndTime" format='dd/MM/yy hh:mm a' data-name="EndTime" value={new Date(props.endTime || props.EndTime)}
+          className="e-field"></DateTimePickerComponent>
+      </td></tr>
+      <tr><td className="e-textlabel">Clase</td><td style={{ colspan: '4' }}>
+        <textarea id="Description" className="e-field e-input" name="Description" rows={3} cols={50}
+          style={{ width: '100%', height: '60px !important', resize: 'vertical' }}></textarea>
+      </td></tr></tbody></table > : <div></div>);
   }
 
   getEventType (data) {
@@ -138,6 +157,16 @@ export default class App extends Component {
     );
   }
 
+  footerEditTemplate = (props) =>  {
+    return (
+      <div className="quick-info-footer">
+          <div className="event-footer">
+            <ButtonComponent id="edit" cssClass='e-flat' content="Guardar"  onClick={this.buttonClickActions.bind(this)} />
+          </div>
+      </div>
+    );
+  }
+
   onExportClick() {    
       this.scheduleObj.exportToICalendar();
   }
@@ -151,10 +180,10 @@ export default class App extends Component {
         quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
           footer: this.footerTemplate.bind(this)
-        }} >
+        }}  editorTemplate={this.editorTemplate.bind(this)}>
           <ResourcesDirective>
               <ResourceDirective field='CalendarId' title='Calendars' name='Calendars' dataSource={this.calendarCollections}
-                 textField='CalendarText' idField='CalendarId' colorField='CalendarColor'>
+                 textField='CalendarText' idField='CalendarId' colorField='CalendarColor' >
               </ResourceDirective>
             </ResourcesDirective>
            <ViewsDirective>

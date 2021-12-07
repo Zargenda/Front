@@ -9,6 +9,7 @@
     "@syncfusion/ej2-base": "^19.3.56",
     "@syncfusion/ej2-data": "^19.3.56",
     "@syncfusion/ej2-react-buttons": "^19.3.53",
+    "@syncfusion/ej2-react-calendars": "^19.3.56",
     "@syncfusion/ej2-react-dropdowns": "^19.3.56",
     "@syncfusion/ej2-react-inputs": "^19.3.53",
     "@syncfusion/ej2-react-schedule": "^19.3.55",
