@@ -7,8 +7,8 @@
 .calendarTable {
     border-collapse: collapse;
     border-spacing: 0;
-    font-family: Tahoma;
-    font-size: 20px;
+    font-family: Calibri;
+    font-size: 16px;
     border-width: 2px;
 }
 
@@ -16,10 +16,15 @@
         border-style: solid;
         border-width: 0px;
         overflow: hidden;
-        padding: 1px 2px;
+        padding: 1px 6px;
         word-break: normal;
         text-align: left;
-        vertical-align: central;
+        vertical-align: top;
+    }
+
+    .calendarTable pre {
+        font-family: Tahoma;
+        font-size: 16px;
     }
 
     .calendarTable th {
@@ -43,7 +48,7 @@
         border-width: 3px;
         border-color: black;
         border-bottom-width: 3px;
-        text-align: center
+        text-align: center;
     }
 
     .calendarTable .headerWithoutBottom {
@@ -96,22 +101,22 @@
 .legendRow {
     display: flex;
     flex-direction: row;
-    border: 5px solid white;
+    border: 3px solid white;
 }
 
 .square {
     width: 16px;
     height: 16px;
-    border: 2px solid white;
+    border: 1px solid white;
 }
 
 .squareWithBorder {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
     border: 2px solid black;
 }
 
 .legendText {
     font-family: Tahoma;
-    font-size: 15px;
+    font-size: 14px;
 }

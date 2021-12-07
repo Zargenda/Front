@@ -145,7 +145,7 @@ const Form = () => {
         { date: "2021-09-27", type: FESTIVE, day: MONDAY, week: 'a2', comment: "Festividad de todos los Santos" },
         { date: "2021-09-28", type: CHANGE_DAY, day: MONDAY, week: 'a2', comment: "horario de lunes" },
         { date: "2021-09-29", type: SECOND_CONVOCATORY, day: WEDNESDAY, week: 'a2', comment: "Exámenes 2ª conv" },
-        { date: "2021-09-30", type: CONTINUE_CONVOCATORY, day: THURSDAY, week: 'a2' },
+        { date: "2021-09-30", type: CONTINUE_CONVOCATORY, day: THURSDAY, week: 'a2', comment: "Pruebas eval continua" },
         { date: "2021-10-01", type: CONVOCATORY, day: FRIDAY, week: 'a2', comment: "Exámenes 1ª conv" },
         { date: "2021-10-02", type: FESTIVE, day: SATURDAY, week: 'a2' },
         { date: "2021-10-03", type: FESTIVE, day: SUNDAY, week: 'a2' },
@@ -234,9 +234,6 @@ const Form = () => {
             <br/>
             <button style={gen}>Generar</button>
             <br/>
-            <br/>
-            <br />
-            <LegendHeader />
             <br />
             <br />
             <h2> Primer semestre </h2>
@@ -246,6 +243,9 @@ const Form = () => {
             <h2> Segundo semestre </h2>
             <br />
             <CalendarTable calendarArray={calendarArray} />
+            <br />
+            <br />
+            <LegendHeader />
         </div>
 
     )

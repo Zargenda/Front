@@ -43,7 +43,7 @@ const addLegend = (day) => {
             lastDate[2] = formatDate;
             legendList.set(comment, lastDate);
         }
-        console.log(legendList.get(comment));
+        //console.log(legendList.get(comment));
     }
 }
 

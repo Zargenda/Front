@@ -19,7 +19,7 @@ const CalendarTable = ({ calendarArray }) => {
             var weekRows = actualWeek.dayInfo.map(function (actualDay, day) {
                 var color = getTypeColor(actualDay.type);
                 if (actualDay.type == NO_SCHOOL)
-                    return <td ket={i} />;
+                    return <td key={i} />;
                 var styleClass =
                     getBorderStyle(actualDay.date, actualDay.day, monthValues.finalMonthDay, actualWeek.finalWeek);
                 if (actualDay.day == SUNDAY || actualDay.day == SATURDAY || actualDay.type == FESTIVE) {
