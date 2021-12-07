@@ -95,6 +95,7 @@ const DataEdit = () => {
     const peticionDelete=async()=>{
         //await axios.delete(baseUrl)
         //.then(response=>{
+        //  setData(data.filter(asginatura=>asginatura.id!==asginaturaSeleccionada.id));
         //  abrirCerrarModalEliminar();
         //})
         abrirCerrarModalEliminar();
