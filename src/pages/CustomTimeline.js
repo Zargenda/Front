@@ -6,19 +6,25 @@ import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { closest, isNullOrUndefined } from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-alert'
 
 const clickableButton = {
   display: 'flex',
-  marginLeft:'70vh',
-  alignItems: 'center', 
   justifyContent: 'center', 
   backgroundColor: "#685cf4", 
   color: 'whitesmoke', 
   borderRadius: '6px',
-  width: '13%', 
+  width: '20%', 
   height: '5%', 
 }
-
+const row = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: '3vh',
+  color: 'black',
+  justifyContent: 'center', 
+};
 const gen = {
   display: 'flex',
   marginLeft:'70vh',
@@ -199,6 +205,10 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
+  onCreateClick() {    
+      alert("El calendario se ha creado con éxito.")
+  }
+
   getGenre(genre){
     var calendarId = 1
     switch(genre){
@@ -317,7 +327,10 @@ export default class App extends Component {
             <br/>
             <br/>
             <br/>
-        <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
+        <div style={row}>
+          <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
+          <button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>
+        </div>
         <ScheduleComponent currentView='WorkWeek' selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
         quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
