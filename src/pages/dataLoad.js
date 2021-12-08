@@ -49,12 +49,14 @@ const DataLoad = () => {
         const file = event.target.files[0];
         //read excel file
         readFile(file)
-        .then((readedData) => {setInitialData(readedData)})
+        .then((readedData) => {            
+            setInitialData(readedData)
+            })
         .catch((error) => console.error(error));
     };
 
     const save = () => {
-        //const result = generateObjects(currentSheet);
+        const result = generateObjects(currentSheet);
         //save array of objects to backend
         //fetch("/api/save", {
         //    method: 'POST',

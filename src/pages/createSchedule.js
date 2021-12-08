@@ -36,18 +36,6 @@ const label3 = {
 
 }
 
-const gen = {
-    display: 'flex',
-    marginLeft:'70vh',
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    backgroundColor: "#685cf4", 
-    color: 'whitesmoke', 
-    borderRadius: '6px',
-    width: '8%', 
-    height: '5%', 
-}
-
 const body ={
     padding: '0.5rem calc((100vw - 1000px) / 3)',
 }
@@ -58,7 +46,7 @@ const CreateSchedule = () => {
     const [groups, setGroups] = useState(["Mañanas", "Tardes " ]);
     const [semesters, setSemesters] = useState(["Primer semestre ", "Segundo semestre"]);
     const [subjects, setSubjects] = useState(["Gestión de proyecto software", "Lab Ing Soft"]);
-    const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas"]);
+    const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState(["A.1", "A.2", "A.3"]);
     const [days, setDays] = useState(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]);
     const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal"]);
@@ -92,6 +80,28 @@ const CreateSchedule = () => {
         await AsyncStorage.setItem("startClock", startClock)
         await AsyncStorage.setItem("endClock", endClock)
     }
+
+    const updateGenre = async (genre) => { 
+        setSelectedGenre(genre)
+        await AsyncStorage.setItem("selectedGenre", genre)
+    }
+    const updateDay = async (day) => { 
+        setSelectedDay(day)
+        await AsyncStorage.setItem("selectedDay", day)
+    }
+    const updateStartClock = async (clock) => { 
+        setStartClock(clock)
+        await AsyncStorage.setItem("startClock", clock)
+    }
+    const updateEndClock = async (clock) => { 
+        setEndClock(clock)
+        await AsyncStorage.setItem("endClock", clock)
+    }
+    const updateSubject = async (subject) => { 
+        setSelectedSubject(subject)
+        await AsyncStorage.setItem("selectedSubject", subject)
+    }
+
     return(
         <div style={body}>
             <div style={title}>
@@ -135,7 +145,7 @@ const CreateSchedule = () => {
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedSubject}  variant="light">
                     {subjects.map((subject) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedSubject(subject)}>{subject}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => updateSubject(subject)}>{subject}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>
@@ -145,7 +155,7 @@ const CreateSchedule = () => {
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedGenre}  variant="light">
                     {genres.map((genre) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedGenre(genre)}>{genre}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => updateGenre(genre)}>{genre}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <label style={label3}>Aula</label>
@@ -162,7 +172,7 @@ const CreateSchedule = () => {
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedDay}  variant="light">
                     {days.map((day) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedDay(day)}>{day}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => updateDay(day)}>{day}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <label style={label3}>Frecuencia</label>
@@ -178,14 +188,14 @@ const CreateSchedule = () => {
                 <label>Hora inicio</label>
                 <div style={label3}>
                     <TimePicker
-                        onChange={setStartClock}
+                        onChange={updateStartClock}
                         value={startClock}
                     />
                 </div>
                 <label style={label3}>Hora fin</label>
                 <div style={label3}>
                     <TimePicker
-                        onChange={setEndClock}
+                        onChange={updateEndClock}
                         value={endClock}
                     />
                 </div>
@@ -193,10 +203,7 @@ const CreateSchedule = () => {
 
             <br/>
             <br/>
-            <button style={gen}>Añadir</button>
-            <br/>
-            <br/>
-            <br/>
+            
             <CustomTimeline/>
             <div>
                 <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Listado de incompatibilidades pendientes</label>

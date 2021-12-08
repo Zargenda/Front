@@ -5,7 +5,7 @@ import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { closest, isNullOrUndefined } from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
-import { DataManager, Predicate, Query } from '@syncfusion/ej2-data';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const clickableButton = {
   display: 'flex',
@@ -16,6 +16,18 @@ const clickableButton = {
   color: 'whitesmoke', 
   borderRadius: '6px',
   width: '13%', 
+  height: '5%', 
+}
+
+const gen = {
+  display: 'flex',
+  marginLeft:'70vh',
+  alignItems: 'center', 
+  justifyContent: 'center', 
+  backgroundColor: "#685cf4", 
+  color: 'whitesmoke', 
+  borderRadius: '6px',
+  width: '8%', 
   height: '5%', 
 }
 
@@ -52,7 +64,6 @@ export default class App extends Component {
     { CalendarText: 'Seminario', CalendarId: 4, CalendarColor: '#686464' }
   ];
   
-
   contentTemplate = (props) => {
     return (
       <div className="quick-info-content">
@@ -187,10 +198,70 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
+  async onAddClick() {    
+    //this.scheduleObj.exportToICalendar();
+    var subjectName = await AsyncStorage.getItem("selectedSubject")
+    var startTime = await AsyncStorage.getItem("startClock")
+    var endTime = await AsyncStorage.getItem("endClock")
+    var genre = await AsyncStorage.getItem("selectedGenre")
+    var day = await AsyncStorage.getItem("selectedDay")
+    var newId = this.data.at(-1).Id + 1
+    var calendarId = 0
+    var dayNumber = 13
+    switch(genre){
+      case "Teoría":
+        calendarId = 1
+        break
+      case "Prácticas":
+        calendarId = 2
+        break
+      case "Problemas":
+        calendarId = 3
+        break
+      case "Seminario":
+        calendarId = 4
+        break
+    }
+    switch(day){
+      case "Lunes":
+        dayNumber = 13
+        break
+      case "Martes":
+        dayNumber = 14
+        break
+      case "Miércoles":
+        dayNumber = 15
+        break
+      case "Jueves":
+        dayNumber = 16
+        break
+      case "Viernes":
+        dayNumber = 17
+        break
+    }
+    var startHour = parseInt(startTime.slice(0, 2))
+    var startMin = parseInt(startTime.slice(3, 5))
+    var endHour = parseInt(endTime.slice(0, 2))
+    var endMin = parseInt(endTime.slice(3, 5))
+    var newSubject = {
+        Id: newId,
+        Subject: subjectName,
+        StartTime: new Date(2021, 8, dayNumber, startHour, startMin),
+        EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
+        CalendarId: calendarId
+    }
+    this.data.push(newSubject)
+  }
+
   render() {
 
     return (
+      
       <div>
+        <button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>
+            <br/>
+            <br/>
+            <br/>
         <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
         <ScheduleComponent currentView='WorkWeek' selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
         quickInfoTemplates={{
