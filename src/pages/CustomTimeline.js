@@ -41,7 +41,8 @@ export default class App extends Component {
           Subject: 'Laboratorio ing software',
           StartTime: new Date(2021, 8, 14, 9, 30),
           EndTime: new Date(2021, 8, 14, 11, 0),
-          CalendarId: 1
+          CalendarId: 1,
+          Description: "Aula 1.1"
       }, {
           Id: 2,
           Subject: 'Sistemas legados',
@@ -198,16 +199,8 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
-  async onAddClick() {    
-    //this.scheduleObj.exportToICalendar();
-    var subjectName = await AsyncStorage.getItem("selectedSubject")
-    var startTime = await AsyncStorage.getItem("startClock")
-    var endTime = await AsyncStorage.getItem("endClock")
-    var genre = await AsyncStorage.getItem("selectedGenre")
-    var day = await AsyncStorage.getItem("selectedDay")
-    var newId = this.data.at(-1).Id + 1
-    var calendarId = 0
-    var dayNumber = 13
+  getGenre(genre){
+    var calendarId = 1
     switch(genre){
       case "Teoría":
         calendarId = 1
@@ -222,6 +215,11 @@ export default class App extends Component {
         calendarId = 4
         break
     }
+    return calendarId
+  }
+
+  getDay(day){
+    var dayNumber = 13
     switch(day){
       case "Lunes":
         dayNumber = 13
@@ -239,16 +237,73 @@ export default class App extends Component {
         dayNumber = 17
         break
     }
+    return dayNumber
+  }
+
+  getRecurrence(frecuency, day){
+    var interval = "6"
+    var byday = "WE"
+    var recurrence = "FREQ=DAILY;BYDAY=WE;INTERVAL=14;"
+
+    switch(day){
+      case "Lunes":
+        byday = "MO"
+        break
+      case "Martes":
+        byday = "TU"
+        break
+      case "Miércoles":
+        byday = "WE"
+        break
+      case "Jueves":
+        byday = "TH"
+        break
+      case "Viernes":
+        byday = "FR"
+        break
+    }
+    switch(frecuency){
+      case "Semanal":
+        interval = 6
+        break
+      case "Quincenal":
+        interval = 14
+        break
+      case "Puntual":
+        return "Once"
+    }
+    recurrence = "FREQ=DAILY;BYDAY="+byday+";INTERVAL="+interval+";"
+    return recurrence
+  }
+
+  async onAddClick() {    
+    var subjectName = await AsyncStorage.getItem("selectedSubject")
+    var startTime = await AsyncStorage.getItem("startClock")
+    var endTime = await AsyncStorage.getItem("endClock")
+    var genre = await AsyncStorage.getItem("selectedGenre")
+    var day = await AsyncStorage.getItem("selectedDay")
+    var location = await AsyncStorage.getItem("selectedLocation")
+    var frecuency = await AsyncStorage.getItem("selectedFrecuency")
+    var newId = this.data.at(-1).Id + 1
+    var calendarId = 0
+    var dayNumber = 13
     var startHour = parseInt(startTime.slice(0, 2))
     var startMin = parseInt(startTime.slice(3, 5))
     var endHour = parseInt(endTime.slice(0, 2))
     var endMin = parseInt(endTime.slice(3, 5))
+
+    calendarId = this.getGenre(genre)
+    dayNumber = this.getDay(day)
+    var recurrence = this.getRecurrence(frecuency, day)
+    
     var newSubject = {
         Id: newId,
-        Subject: subjectName,
+        Subject: (calendarId != 4) ? subjectName : "Seminario",
         StartTime: new Date(2021, 8, dayNumber, startHour, startMin),
         EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
-        CalendarId: calendarId
+        CalendarId: calendarId,
+        Description: location,
+        RecurrenceRule: (recurrence != "Once") ? recurrence : null
     }
     this.data.push(newSubject)
   }

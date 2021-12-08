@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import 'js-year-calendar/dist/js-year-calendar.css';
 import 'js-year-calendar/locales/js-year-calendar.es';
-import CalendarTable from '../components/Calendar/calendar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import TimePicker from 'react-time-picker'
 import 'react-calendar-timeline/lib/Timeline.css'
-import moment from 'moment'
 import CustomTimeline from './CustomTimeline'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -49,7 +47,7 @@ const CreateSchedule = () => {
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState(["A.1", "A.2", "A.3"]);
     const [days, setDays] = useState(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]);
-    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal"]);
+    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal","Puntual"]);
     const [selectedCareer, setSelectedCareer] = useState("Ing informática");
     const [selectedGrade, setSelectedGrade] = useState("Primero");
     const [selectedGroup, setSelectedGroup] = useState("Mañanas");
@@ -100,6 +98,14 @@ const CreateSchedule = () => {
     const updateSubject = async (subject) => { 
         setSelectedSubject(subject)
         await AsyncStorage.setItem("selectedSubject", subject)
+    }
+    const updateLocation = async (location) => { 
+        setSelectedLocation(location)
+        await AsyncStorage.setItem("selectedLocation", location)
+    }
+    const updateFrecuency = async (frecuency) => { 
+        setSelectedFrecuency(frecuency)
+        await AsyncStorage.setItem("selectedFrecuency", frecuency)
     }
 
     return(
@@ -162,7 +168,7 @@ const CreateSchedule = () => {
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedLocation}  variant="light">
                     {locations.map((location) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedLocation(location)}>{location}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => updateLocation(location)}>{location}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>
@@ -179,7 +185,7 @@ const CreateSchedule = () => {
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedFrecuency}  variant="light">
                     {frecuency.map((frecuency) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedFrecuency(frecuency)}>{frecuency}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => updateFrecuency(frecuency)}>{frecuency}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>

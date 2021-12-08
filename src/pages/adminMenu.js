@@ -88,7 +88,7 @@ const AdminMenu = () => {
       <div style={column}>
         <button disabled='true' style={unclickableButton}> Horarios </button>
         <button onClick={(e) => handleClick(e, "/createSchedule")} style={clickableButton}> Crear horarios </button>
-        <button style={clickableButton}> Modificar horarios </button>
+        <button onClick={(e) => handleClick(e, "/editSchedule")} style={clickableButton}> Modificar horarios </button>
         <button style={clickableButton}> Consultar incompatibilidades </button>
       </div>
       <div style={column}>
