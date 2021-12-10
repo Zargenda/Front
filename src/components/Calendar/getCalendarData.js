@@ -1,5 +1,5 @@
 export const MONDAY = "L", TUESDAY = "M", WEDNESDAY = "X", THURSDAY = "J", FRIDAY = "V", SATURDAY = "S", SUNDAY = "D";
-export const weekDayName = [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY];
+export const weekDayName = ["sem",MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY];
 export const monthName = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
 export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCATORY = "CONVOCATORY",
     SECOND_CONVOCATORY = "SECOND_CONVOCATORY", CONTINUE_CONVOCATORY = "CONTINUE_CONVOCATORY",
@@ -46,6 +46,10 @@ const addLegend = (day) => {
         //console.log(legendList.get(comment));
     }
 }
+const isFestiveWeek = (weekArray) => {
+    let noFestiveDay = weekArray.filter(day => day.type == SCHOOL || day.type == CHANGE_DAY);
+    return noFestiveDay.length < 3;   
+}
 
 const getDayInfo = (weekArray) => {
     let dayInfo = [];
@@ -53,7 +57,7 @@ const getDayInfo = (weekArray) => {
         addLegend(weekArray[i])
         dayInfo.push(
             {
-                date: new Date(weekArray[i].date).getDate(),
+                date: weekArray[i].date,
                 day: weekArray[i].day,
                 week: weekArray[i].week,
                 type: weekArray[i].type
@@ -66,14 +70,23 @@ const getDayInfo = (weekArray) => {
 const getWeeks = (monthArray) => {
     let weeks = [];
     for (let i = 0; i < (monthArray.length / WEEK_TOTAL); i++) {
+        let dayInfo = getDayInfo(monthArray.slice(i * WEEK_TOTAL, (i + 1) * WEEK_TOTAL));
+        let thisWeekNumber = null;
+        let isFinalWeek = weekNumber == finalWeek;
+        if (!isFestiveWeek(dayInfo)) {
+            thisWeekNumber = weekNumber;
+            weekNumber++;
+        } else {
+            finalWeek--;
+            isFinalWeek = weekNumber - 1 == finalWeek;
+        }
         weeks.push(
             {
-                weekNumber: weekNumber,
-                dayInfo: getDayInfo(monthArray.slice(i * WEEK_TOTAL, (i + 1) * WEEK_TOTAL)),
-                finalWeek: weekNumber == finalWeek
+                weekNumber: thisWeekNumber,
+                dayInfo: dayInfo,
+                finalWeek: isFinalWeek,
             }
         );
-        weekNumber++;
     }
     return weeks;
 }
@@ -83,7 +96,7 @@ export const getConvertedData = (calendarArray) => {
     legendList = new Map();
     calendarArray.sort(sortByDate);
     weekNumber = 1;
-    finalWeek = Math.ceil(getDifferenceInDays(calendarArray[0].date, calendarArray[calendarArray.length - 1].date) / WEEK_TOTAL);
+    finalWeek = Math.ceil(getDifferenceInDays(calendarArray[0].date, calendarArray[calendarArray.length - 1].date) / WEEK_TOTAL) ;
     let numberMonths = Math.ceil(finalWeek / 4);
     let firstDayIndex = 0, firstDayMonth, lastDayMonth, lastDayIndex;
     let calendarData = [];
@@ -194,6 +207,16 @@ export const getWeekHeader = () => {
     return weekDayName.map((day, i) => {
         return (<th key={i}>{day}</th>);
     });
+}
+
+export const getWeekNumberStyle = (index, finalWeek) => {
+    let header = "rightBorder";
+    if (finalWeek) {
+        header = "rightBottomBorder";
+    } else if (index == 0) {
+        header = "rightTopBorder"
+    }
+    return header + " weekNumber";
 }
 
 export default getConvertedData;

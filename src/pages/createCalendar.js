@@ -63,8 +63,7 @@ const gen = {
     backgroundColor: "#685cf4", 
     color: 'whitesmoke', 
     borderRadius: '6px',
-    width: '8%', 
-    height: '5%', 
+    padding: '2px 4px'
 
 }
 
@@ -106,11 +105,12 @@ const scrollableList = {
     borderWidth: '2px',
     borderStyle: 'solid',
     borderColor: "#685cf4", 
-
+    padding: '10px 2px'
 
 }
 
 const deleteButton = {
+    verticalAlign: 'top',
     borderWidth: '0px',
     backgroundColor: "transparent", 
     color: "black", 
@@ -124,6 +124,11 @@ const scrollTitle = {
     justifyContent: 'center',
     marginTop: '3vh',
     color: 'black',
+}
+
+const inputAlign = {
+    marginTop: '6px',
+    fontSize: '14px',
 }
 
 const Form = () => {
@@ -147,41 +152,41 @@ const Form = () => {
     const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM"]
     const changeDayOptions = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     const calendarArray = [
-        { date: "2021-09-13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
-        { date: "2021-09-14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
-        { date: "2021-09-15", type: SCHOOL, day: WEDNESDAY, week: 'a1' },
-        { date: "2021-09-16", type: SCHOOL, day: THURSDAY, week: 'a1' },
-        { date: "2021-09-17", type: SCHOOL, day: FRIDAY, week: 'a1' },
-        { date: "2021-09-18", type: FESTIVE, day: SATURDAY, week: 'a1' },
-        { date: "2021-09-19", type: FESTIVE, day: SUNDAY, week: 'a1' },
-        { date: "2021-09-20", type: SCHOOL, day: MONDAY, week: 'b1' },
-        { date: "2021-09-21", type: SCHOOL, day: TUESDAY, week: 'b1' },
-        { date: "2021-09-22", type: SCHOOL, day: WEDNESDAY, week: 'b1' },
-        { date: "2021-09-23", type: SCHOOL, day: THURSDAY, week: 'b1' },
-        { date: "2021-09-24", type: SCHOOL, day: FRIDAY, week: 'b1' },
-        { date: "2021-09-25", type: FESTIVE, day: SATURDAY, week: 'b1' },
-        { date: "2021-09-26", type: FESTIVE, day: SUNDAY, week: 'b1' },
-        { date: "2021-09-27", type: FESTIVE, day: MONDAY, week: 'a2', comment: "Festividad de todos los Santos" },
-        { date: "2021-09-28", type: CHANGE_DAY, day: MONDAY, week: 'a2', comment: "horario de lunes" },
-        { date: "2021-09-29", type: SECOND_CONVOCATORY, day: WEDNESDAY, week: 'a2', comment: "Exámenes 2ª conv" },
-        { date: "2021-09-30", type: CONTINUE_CONVOCATORY, day: THURSDAY, week: 'a2', comment: "Pruebas eval continua" },
-        { date: "2021-10-01", type: CONVOCATORY, day: FRIDAY, week: 'a2', comment: "Exámenes 1ª conv" },
-        { date: "2021-10-02", type: FESTIVE, day: SATURDAY, week: 'a2' },
-        { date: "2021-10-03", type: FESTIVE, day: SUNDAY, week: 'a2' },
-        { date: "2021-10-04", type: SCHOOL, day: MONDAY, week: 'b2' },
-        { date: "2021-10-05", type: SCHOOL, day: TUESDAY, week: 'b2' },
-        { date: "2021-10-06", type: SCHOOL, day: WEDNESDAY, week: 'b2' },
-        { date: "2021-10-07", type: SCHOOL, day: THURSDAY, week: 'b2' },
-        { date: "2021-10-08", type: SCHOOL, day: FRIDAY, week: 'b2' },
-        { date: "2021-10-09", type: FESTIVE, day: SATURDAY, week: 'b2' },
-        { date: "2021-10-10", type: FESTIVE, day: SUNDAY, week: 'b2' },
-        { date: "2021-10-11", type: FESTIVE, day: MONDAY, week: 'a3', comment: "Festividad del Pilar" },
-        { date: "2021-10-12", type: FESTIVE, day: TUESDAY, week: 'a3', comment: "Festividad del Pilar" },
-        { date: "2021-10-13", type: FESTIVE, day: WEDNESDAY, week: 'a3', comment: "Festividad del Pilar" },
-        { date: "2021-10-14", type: FESTIVE, day: THURSDAY, week: 'a3', comment: "Festividad del Pilar" },
-        { date: "2021-10-15", type: CULM_EXAM, day: FRIDAY, week: 'a3', comment: "Exámenes CULM" },
-        { date: "2021-10-16", type: FESTIVE, day: SATURDAY, week: 'a3' },
-        { date: "2021-10-17", type: FESTIVE, day: SUNDAY, week: 'a3' },
+        { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
+        { date: "2021/09/14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
+        { date: "2021/09/15", type: SCHOOL, day: WEDNESDAY, week: 'a1' },
+        { date: "2021/09/16", type: SCHOOL, day: THURSDAY, week: 'a1' },
+        { date: "2021/09/17", type: SCHOOL, day: FRIDAY, week: 'a1' },
+        { date: "2021/09/18", type: FESTIVE, day: SATURDAY, week: 'a1' },
+        { date: "2021/09/19", type: FESTIVE, day: SUNDAY, week: 'a1' },
+        { date: "2021/09/20", type: SCHOOL, day: MONDAY, week: 'b1' },
+        { date: "2021/09/21", type: SCHOOL, day: TUESDAY, week: 'b1' },
+        { date: "2021/09/22", type: SCHOOL, day: WEDNESDAY, week: 'b1' },
+        { date: "2021/09/23", type: SCHOOL, day: THURSDAY, week: 'b1' },
+        { date: "2021/09/24", type: SCHOOL, day: FRIDAY, week: 'b1' },
+        { date: "2021/09/25", type: FESTIVE, day: SATURDAY, week: 'b1' },
+        { date: "2021/09/26", type: FESTIVE, day: SUNDAY, week: 'b1' },
+        { date: "2021/09/27", type: FESTIVE, day: MONDAY, week: 'a2', comment: "Festividad de todos los Santos" },
+        { date: "2021/09/28", type: CHANGE_DAY, day: MONDAY, week: 'a2', comment: "horario de lunes" },
+        { date: "2021/09/29", type: SECOND_CONVOCATORY, day: WEDNESDAY, week: 'a2', comment: "Exámenes 2ª conv" },
+        { date: "2021/09/30", type: CONTINUE_CONVOCATORY, day: THURSDAY, week: 'a2', comment: "Pruebas eval continua" },
+        { date: "2021/10/01", type: CONVOCATORY, day: FRIDAY, week: 'a2', comment: "Exámenes 1ª conv" },
+        { date: "2021/10/02", type: FESTIVE, day: SATURDAY, week: 'a2' },
+        { date: "2021/10/03", type: FESTIVE, day: SUNDAY, week: 'a2' },
+        { date: "2021/10/04", type: SCHOOL, day: MONDAY, week: 'b2' },
+        { date: "2021/10/05", type: SCHOOL, day: TUESDAY, week: 'b2' },
+        { date: "2021/10/06", type: SCHOOL, day: WEDNESDAY, week: 'b2' },
+        { date: "2021/10/07", type: SCHOOL, day: THURSDAY, week: 'b2' },
+        { date: "2021/10/08", type: SCHOOL, day: FRIDAY, week: 'b2' },
+        { date: "2021/10/09", type: FESTIVE, day: SATURDAY, week: 'b2' },
+        { date: "2021/10/10", type: FESTIVE, day: SUNDAY, week: 'b2' },
+        { date: "2021/10/11", type: FESTIVE, day: MONDAY, week: 'a3', comment: "Festividad del Pilar" },
+        { date: "2021/10/12", type: FESTIVE, day: TUESDAY, week: 'a3', comment: "Festividad del Pilar" },
+        { date: "2021/10/13", type: FESTIVE, day: WEDNESDAY, week: 'a3', comment: "Festividad del Pilar" },
+        { date: "2021/10/14", type: FESTIVE, day: THURSDAY, week: 'a3', comment: "Festividad del Pilar" },
+        { date: "2021/10/15", type: CULM_EXAM, day: FRIDAY, week: 'a3', comment: "Exámenes CULM" },
+        { date: "2021/10/16", type: FESTIVE, day: SATURDAY, week: 'a3' },
+        { date: "2021/10/17", type: FESTIVE, day: SUNDAY, week: 'a3' },
     ];
 
     const calendarComponent = (title, calendarArray) => {
@@ -279,19 +284,20 @@ const Form = () => {
         return (
             <div style={changeDayRow}>
                 <pre style={date}>
-                    <DatePicker selected={day.date}
-                        onChange={(date) => setChangeDayDate(i, date)}
-                        dateFormat="dd/MM/yyyy"
-                    />
+                    <div style={inputAlign}>
+                        <DatePicker selected={day.date}
+                            onChange={(date) => setChangeDayDate(i, date)}
+                            dateFormat="dd/MM/yyyy"
+                        />
+                    </div>
                     </pre>
                     <DropdownButton id="dropdown-item-button" title={day.to} variant="light">
                     {changeDayOptions.map((option) => (
                             <Dropdown.Item as="button" onClick={(dayTo) => setChangeDayTo(i, dayTo.target.innerText)}>{option}</Dropdown.Item>))}
-                </DropdownButton>
+                    </DropdownButton>
                 <pre style={date}>
-
                     <button style={deleteButton} onClick={() => removeChangeDay(i)}> x</button>
-                    </pre>
+                </pre>
             </div>
         );
     });
@@ -341,14 +347,23 @@ const Form = () => {
                         <Dropdown.Item as="button" onClick={(comment) => setExamComment(i, comment.target.innerText)}>{option}</Dropdown.Item>))}
                 </DropdownButton>
                 <pre style={date} >
+                    <pre style={inputAlign}>
                     <DatePicker selected={exam.startDate}
                         onChange={(date) => setExamStartDate(i, date)}
                         dateFormat="dd/MM/yyyy"
-                    /> - <DatePicker selected={exam.endDate}
-                        onChange={(date) => setExamEndDate(i, date)}
-                        dateFormat="dd/MM/yyyy"
-                    />
-                    <button style={deleteButton} onClick={() => removeExam(i)}> x</button>
+                        />
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={exam.endDate}
+                            onChange={(date) => setExamEndDate(i, date)}
+                            dateFormat="dd/MM/yyyy"
+                        />
+                    </pre>
+                    <pre style={date}>
+                        <button style={deleteButton} onClick={() => removeExam(i)}> x</button>
+                    </pre>
+
                 </pre>
             </div>
         );
