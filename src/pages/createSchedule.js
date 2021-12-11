@@ -35,7 +35,7 @@ const label3 = {
 }
 
 const body ={
-    padding: '0.5rem calc((100vw - 1000px) / 3)',
+    padding: '0.5rem calc((100vw - 165vh) / 3)',
 }
 
 const CreateSchedule = () => {  

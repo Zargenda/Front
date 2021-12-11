@@ -6,6 +6,8 @@ export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCAT
     NO_SCHOOL = "NO_SCHOOL", SCHOOL = "SCHOOL", CHANGE_DAY = "CHANGE_DAY", CULM_EXAM="CULM_EXAM";
 export const JANUARY = "Ene";
 const WEEK_TOTAL = 7;
+const weekDayIndex = new Map([[MONDAY, 0], [TUESDAY, 1], [WEDNESDAY, 2], [THURSDAY, 3], [FRIDAY, 4]]);
+
 
 //Global variables
 var weekNumber = 1;
@@ -15,6 +17,7 @@ var schoolYears = {
     endYear: 1
 };
 var legendList = new Map();
+var countByWeekDay = [0, 0, 0, 0, 0];
 
 function sortByDate(a, b) {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -53,14 +56,19 @@ const isFestiveWeek = (weekArray) => {
 
 const getDayInfo = (weekArray) => {
     let dayInfo = [];
+
     for (let i = 0; i < weekArray.length; i++) {
+        let weekDay = weekArray[i].day;
+        let dayType = weekArray[i].type;
+        if(dayType==SCHOOL || dayType==CHANGE_DAY )countByWeekDay[weekDayIndex.get(weekDay)]++;
+        console.log("---" + countByWeekDay)
         addLegend(weekArray[i])
         dayInfo.push(
             {
                 date: weekArray[i].date,
-                day: weekArray[i].day,
+                day: weekDay,
                 week: weekArray[i].week,
-                type: weekArray[i].type
+                type: dayType
             }
         );
     }
@@ -94,6 +102,7 @@ const getWeeks = (monthArray) => {
 export const getConvertedData = (calendarArray) => {
     setSchoolYears(calendarArray[0].date);
     legendList = new Map();
+    countByWeekDay = [0,0,0,0,0]
     calendarArray.sort(sortByDate);
     weekNumber = 1;
     finalWeek = Math.ceil(getDifferenceInDays(calendarArray[0].date, calendarArray[calendarArray.length - 1].date) / WEEK_TOTAL) ;
@@ -145,6 +154,14 @@ export const getLegends = () => {
     return legends;
 }
 
+export const getRealWeekNumber = (week) => {
+    let number = parseInt(week.substr(1)) * 2;
+    if (week.charAt(0) == 'a') {
+        number--;
+    } 
+    return number;
+}
+
 //---Style functions
 export const getTypeColor = (type) => {
     var color = "";
@@ -166,6 +183,9 @@ export const getTypeColor = (type) => {
             break;
         case CULM_EXAM:
             color = "#9966ff";
+            break;
+        case SCHOOL:
+            color = 'transparent';
             break;
     }
     return color;
@@ -205,7 +225,12 @@ export const getMonthHeader = (index, length, month) => {
 
 export const getWeekHeader = () => {
     return weekDayName.map((day, i) => {
-        return (<th key={i}>{day}</th>);
+        if(i==0)
+            return (<th key={i}>{day}</th>);
+        else 
+            return (<th key={i}>
+                <pre>{day}  <div class="whiteLetter">{countByWeekDay[i - 1]}</div></pre>
+            </th>);
     });
 }
 

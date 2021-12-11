@@ -27,7 +27,7 @@ const table = {
     overflow: "scroll", 
     marginLeft: "1%", 
     marginRight: "1%",
-    width: "1200px",
+    width: "85vw",
 };
 
 const mobileTable = {

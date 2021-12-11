@@ -1,6 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from "react";
-import { Component } from 'react';
+import { useState, useEffect, useRef } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Calendar from 'js-year-calendar';
@@ -9,18 +8,20 @@ import 'js-year-calendar/locales/js-year-calendar.es';
 import CalendarTable from '../components/Calendar/calendar';
 import LegendHeader from '../components/Calendar/legendHeader';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-
+import "../components/Calendar/calendar.css";
 import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, weekDayName
 } from "../components/Calendar/getCalendarData";
+
+
 
 const title = {
     display: 'flex',
     flexDirection: 'row',
     marginTop: '3vh',
     color: 'black',
-    marginLeft: '3vh',
+    marginLeft: '1.5vw',
     height: '10vh',
 };
 
@@ -29,6 +30,7 @@ const row = {
     flexDirection: 'row',
     justifyContent: 'space-around',
     color: 'black',
+    fontSize:'larger'
 };
 
 const changeDayRow = {
@@ -36,25 +38,25 @@ const changeDayRow = {
     flexDirection: 'row',
     justifyContent: 'start',
     color: 'black',
-    marginLeft: '12vh',
+    marginLeft: '4.5vw',
 };
 
 const date = {
     display: 'flex',
-    marginLeft: '2vh',
-    fontSize: '14px',
+    margin: 0,
 }
 
 const add = {
     display: 'flex',
-    marginLeft:'2vh',
+    marginLeft:'2vw',
     alignItems: 'center', 
     justifyContent: 'center', 
     backgroundColor: "#685cf4", 
     color: 'whitesmoke', 
-    borderRadius: '6px',
-    width: '20px', 
-    height: '20px', 
+    borderRadius: '1vh',
+    width: '3.5vh', 
+    height: '3.5vh', 
+    fontSize: 'larger'
 }
 
 const gen = {
@@ -62,20 +64,18 @@ const gen = {
     justifyContent: 'center', 
     backgroundColor: "#685cf4", 
     color: 'whitesmoke', 
-    borderRadius: '6px',
-    padding: '2px 4px'
+    borderRadius: '1vh',
+    padding: '0.3vh 0.6vh'
 
 }
 
 const input = {
-    display: 'flex',
-    marginLeft: '2vh',
     height: '4vh',
     width: '40vh',
 }
 
 const body ={
-    padding: '0.5rem calc((100vw - 1000px) / 3)',
+    padding: '0.5rem calc((100vw - 165vh) / 3)',
 }
 
 const mobileTable = {
@@ -97,25 +97,24 @@ const table = {
 
 const scrollableList = {
     overflow: "auto",
-    height: "120px", 
-    width: "150vh",
+    height: "23vh", 
     display: 'flex',
     flexDirection: 'column',
     marginLeft: '6%',
-    borderWidth: '2px',
+    borderWidth: '0.4vh',
     borderStyle: 'solid',
     borderColor: "#685cf4", 
-    padding: '10px 2px'
-
+    padding: '1.2vw 0.8vh',
 }
 
 const deleteButton = {
-    verticalAlign: 'top',
-    borderWidth: '0px',
+    borderWidth: '0vh',
+    borderColor: 'white',
     backgroundColor: "transparent", 
     color: "black", 
-    fontWeight:'bold',
-    fontSize: '18px',
+    fontSize: 'x-large',
+    marginBottom: '1vh',
+    overflow:'hidden'
 }
 
 const scrollTitle = {
@@ -124,19 +123,25 @@ const scrollTitle = {
     justifyContent: 'center',
     marginTop: '3vh',
     color: 'black',
+    fontSize: 'larger'
 }
 
 const inputAlign = {
-    marginTop: '6px',
-    fontSize: '14px',
+    fontSize: '2.3vh',
+    overflow:'hidden'
+}
+
+const dropList = {
+    display: 'flex',
+    width: '10vh',
 }
 
 const Form = () => {
-    const [startFirstQuarter, setStartFirstQuarter] = useState(new Date());
-    const [endFirstQuarter, setEndFirstQuarter] = useState(new Date());
-    const [startSecondQuarter, setStartSecondQuarter] = useState(new Date());
-    const [endSecondQuarter, setEndSecondQuarter] = useState(new Date());
-    const [festiveList, setFestiveList] = useState ([
+    const [startFirstQuarter, setStartFirstQuarter] = useState(null);
+    const [endFirstQuarter, setEndFirstQuarter] = useState(null);
+    const [startSecondQuarter, setStartSecondQuarter] = useState(null);
+    const [endSecondQuarter, setEndSecondQuarter] = useState(null);
+    const [festiveList, setFestiveList] = useState([
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
@@ -144,13 +149,14 @@ const Form = () => {
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" }
     ]);
     const [changeDayList, setChangeDayList] = useState([
-        { date: new Date(), to: "Lunes" }
+        { startDate: new Date(), comment: "Lunes" }
     ]);
+    const ANOTHER_EXAM = "Otros";
     const [examList, setExamList] = useState([
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" }
+        { startDate: new Date(), endDate: new Date(), comment: ANOTHER_EXAM, additional: "" }
     ]);
-    const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM"]
-    const changeDayOptions = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+    const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM", ANOTHER_EXAM];
+    const changeDayOptions = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const calendarArray = [
         { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
         { date: "2021/09/14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
@@ -176,8 +182,14 @@ const Form = () => {
         { date: "2021/10/04", type: SCHOOL, day: MONDAY, week: 'b2' },
         { date: "2021/10/05", type: SCHOOL, day: TUESDAY, week: 'b2' },
         { date: "2021/10/06", type: SCHOOL, day: WEDNESDAY, week: 'b2' },
-        { date: "2021/10/07", type: SCHOOL, day: THURSDAY, week: 'b2' },
-        { date: "2021/10/08", type: SCHOOL, day: FRIDAY, week: 'b2' },
+        {
+            date: "2021/10/07", type: SCHOOL, day: THURSDAY, week: 'b2',
+            comment: " Dias lectivos a efectos de lectura de tesis y tribunales extraordinarios de revisión de exámenes"
+        },
+        {
+            date: "2021/10/08", type: SCHOOL, day: FRIDAY, week: 'b2',
+            comment: " Dias lectivos a efectos de lectura de tesis y tribunales extraordinarios de revisión de exámenes"
+        },
         { date: "2021/10/09", type: FESTIVE, day: SATURDAY, week: 'b2' },
         { date: "2021/10/10", type: FESTIVE, day: SUNDAY, week: 'b2' },
         { date: "2021/10/11", type: FESTIVE, day: MONDAY, week: 'a3', comment: "Festividad del Pilar" },
@@ -188,6 +200,20 @@ const Form = () => {
         { date: "2021/10/16", type: FESTIVE, day: SATURDAY, week: 'a3' },
         { date: "2021/10/17", type: FESTIVE, day: SUNDAY, week: 'a3' },
     ];
+    //Scroll list
+    const scrollFestive = useRef(null);
+    const scrollExam = useRef(null);
+    const scrollChange = useRef(null);
+    function scrollToBottom(scroll) {
+        let bottom = scroll.current.scrollHeight - scroll.current.clientHeight;
+        scroll.current.scrollTo(0, bottom);
+
+    }
+    useEffect(() => {
+        scrollToBottom(scrollFestive)
+        scrollToBottom(scrollExam)
+        scrollToBottom(scrollChange)
+    });
 
     const calendarComponent = (title, calendarArray) => {
         return (<div> <br />
@@ -196,57 +222,64 @@ const Form = () => {
             <CalendarTable calendarArray={calendarArray} />
             <br />
         </div>);
-    }
+    };
 
     //---FestiveList functions
     const setFestiveStartDate = (i, startDate) => {
-        let newList = [...festiveList]
-        newList[i].startDate = startDate
-        setFestiveList(newList)
-    }
+        let newList = [...festiveList];
+        newList[i].startDate = startDate;
+        setFestiveList(newList);
+    };
 
     const setFestiveEndDate = (i, endDate) => {
         let newList = [...festiveList];
         newList[i].endDate = endDate;
         setFestiveList(newList);
-    }
+    };
 
     const setFestiveComment = (i, comment) => {
         let newList = [...festiveList];
         newList[i].comment = comment;
         setFestiveList(newList);
-    }
+    };
 
     const addFestive = () => {
         let newList = [...festiveList];
         newList.push({
-            startDate: new Date(),
-            endDate: new Date(),
-            comment: "Nueva festividad"
-        })
-        setFestiveList(newList)
-    }
+        });
+        setFestiveList(newList);
+    };
 
     const removeFestive = (index) => {
         let newList = [...festiveList];
-        newList.splice(index,1)
-        setFestiveList(newList)
-    }
+        newList.splice(index, 1);
+        setFestiveList(newList);
+    };
 
     const festiveLabels = festiveList.map((festive, i) => {
         return (
             <div style={row}>
-                <input style={input} type="text" value={festive.comment}
+                <input style={input} type="text" value={festive.comment} placeholder="Descripción"
                     onChange={(comment) => setFestiveComment(i, comment.target.value)} />
-                <pre style={date} >
-                    <DatePicker selected={festive.startDate}
-                        onChange={(date) => setFestiveStartDate(i, date)}
-                        dateFormat="dd/MM/yyyy"
-                    /> - <DatePicker selected={festive.endDate}
-                        onChange={(date) => setFestiveEndDate(i, date)}
-                        dateFormat="dd/MM/yyyy"
-                    /> 
-                    <button style={deleteButton} onClick={() => removeFestive(i)}> x</button>
+                <pre style={date}>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={festive.startDate}
+                            onChange={(date) => setFestiveStartDate(i, date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Inicio"
+                        />
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={festive.endDate}
+                            onChange={(date) => setFestiveEndDate(i, date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Fin"
+                        /> 
+                    </pre>
+                    <pre style={date}>
+                        <button style={deleteButton} onClick={() => removeFestive(i)}> x</button>
+                    </pre>
                 </pre>
             </div>
         );
@@ -255,21 +288,20 @@ const Form = () => {
     //---ChangeDayList functions
     const setChangeDayDate = (i, date) => {
         let newList = [...changeDayList];
-        newList[i].date = date;
+        newList[i].startDate = date;
         setChangeDayList(newList);
     };
 
-    const setChangeDayTo = (i, to) => {
+    const setChangeDayComment = (i, comment) => {
         let newList = [...changeDayList];
-        newList[i].to = to;
+        newList[i].comment = comment;
         setChangeDayList(newList);
     };
 
     const addChangeDay = () => {
         let newList = [...changeDayList];
         newList.push({
-            date: new Date(),
-            to: "Lunes"
+            comment: "Lunes"
         });
         setChangeDayList(newList);
     };
@@ -285,15 +317,18 @@ const Form = () => {
             <div style={changeDayRow}>
                 <pre style={date}>
                     <div style={inputAlign}>
-                        <DatePicker selected={day.date}
+                        <DatePicker selected={day.startDate}
                             onChange={(date) => setChangeDayDate(i, date)}
                             dateFormat="dd/MM/yyyy"
+                            placeholderText="Día a cambiar"
+                            wrapperClassName="datepicker"
                         />
+
                     </div>
                     </pre>
-                    <DropdownButton id="dropdown-item-button" title={day.to} variant="light">
+                    <DropdownButton id="dropdown-item-button" title={day.comment} variant="light">
                     {changeDayOptions.map((option) => (
-                            <Dropdown.Item as="button" onClick={(dayTo) => setChangeDayTo(i, dayTo.target.innerText)}>{option}</Dropdown.Item>))}
+                            <Dropdown.Item as="button" onClick={(dayTo) => setChangeDayComment(i, dayTo.target.innerText)}>{option}</Dropdown.Item>))}
                     </DropdownButton>
                 <pre style={date}>
                     <button style={deleteButton} onClick={() => removeChangeDay(i)}> x</button>
@@ -316,19 +351,21 @@ const Form = () => {
 
     const setExamComment = (i, comment) => {
         console.log(comment);
-
         let newList = [...examList];
-
         newList[i].comment = comment;
+        setExamList(newList);
+    };
+
+    const setExamAdditional = (i, comment) => {
+        let newList = [...examList];
+        newList[i].additional = comment;
         setExamList(newList);
     };
 
     const addExam = () => {
         let newList = [...examList];
         newList.push({
-            startDate: new Date(),
-            endDate: new Date(),
-            comment: "Nuevo período"
+            comment: ANOTHER_EXAM
         });
         setExamList(newList);
     };
@@ -340,17 +377,25 @@ const Form = () => {
     };
 
     const examLabel = examList.map((exam, i) => {
+
         return (
             <div style={row}>
+                <div style={dropList}>
                 <DropdownButton id="dropdown-item-button" title={exam.comment} variant="light">
                     {examOptions.map((option) => (
                         <Dropdown.Item as="button" onClick={(comment) => setExamComment(i, comment.target.innerText)}>{option}</Dropdown.Item>))}
-                </DropdownButton>
-                <pre style={date} >
+                    </DropdownButton>
+                </div>
+                {exam.comment == ANOTHER_EXAM ? <input style={input} type="text" value={exam.additional} placeholder="Descripción"
+                    onChange={(comment) => setExamAdditional(i, comment.target.value)} /> :
+                    <div style={input}/>
+                    }
+                <pre style={date}>
                     <pre style={inputAlign}>
                     <DatePicker selected={exam.startDate}
                         onChange={(date) => setExamStartDate(i, date)}
                         dateFormat="dd/MM/yyyy"
+                        placeholderText="Inicio"
                         />
                     </pre>
                     <pre style={inputAlign}> - </pre>
@@ -358,12 +403,12 @@ const Form = () => {
                         <DatePicker selected={exam.endDate}
                             onChange={(date) => setExamEndDate(i, date)}
                             dateFormat="dd/MM/yyyy"
+                            placeholderText="Fin"
                         />
                     </pre>
                     <pre style={date}>
                         <button style={deleteButton} onClick={() => removeExam(i)}> x</button>
                     </pre>
-
                 </pre>
             </div>
         );
@@ -377,25 +422,42 @@ const Form = () => {
             <div style={row}>
                 <label>Primer cuatrimestre</label>
                 <pre style={date}>
-                    <DatePicker id="1" selected={startFirstQuarter} 
-                        onChange={(date) => setStartFirstQuarter(date)}
-                        dateFormat="dd/MM/yyyy"
-                    /> - <DatePicker selected={endFirstQuarter}
+                    <pre style={inputAlign}>
+                        <DatePicker id="1" selected={startFirstQuarter}
+                            onChange={(date) => setStartFirstQuarter(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Inicio"
+                        />
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={endFirstQuarter}
                             onChange={(date) => setEndFirstQuarter(date)}
                             dateFormat="dd/MM/yyyy"
-                    />
+                            placeholderText="Fin"
+                        />
+                    </pre>
                 </pre>
             </div>
+            <br/>
             <div style={row}>
                 <label>Segundo cuatrimestre</label>
                 <pre style={date}>
-                    <DatePicker selected={startSecondQuarter} 
-                        onChange={(date) => setStartSecondQuarter(date)}
-                        dateFormat="dd/MM/yyyy"
-                    /> - <DatePicker selected={endSecondQuarter}
-                        onChange={(date) => setEndSecondQuarter(date)}
-                        dateFormat="dd/MM/yyyy"
-                    />
+                    <pre style={inputAlign}>
+                        <DatePicker selected={startSecondQuarter}
+                            onChange={(date) => setStartSecondQuarter(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Inicio"
+                        /> 
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={endSecondQuarter}
+                            onChange={(date) => setEndSecondQuarter(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Fin"
+                        />
+                    </pre>
                 </pre>
             </div>
             <div style={scrollTitle}>
@@ -403,7 +465,7 @@ const Form = () => {
                 <button style={add} onClick={addFestive}>+</button>
             </div>
             <br />
-            <div style={scrollableList}>
+            <div style={scrollableList} ref={scrollFestive}>
                 {festiveLabels}
             </div>
             <div style={scrollTitle}>
@@ -411,7 +473,7 @@ const Form = () => {
                 <button style={add} onClick={addChangeDay}>+</button>
             </div>
             <br />
-            <div style={scrollableList}>
+            <div style={scrollableList} ref={scrollChange}>
                 {changeDayLabel}
             </div>
             <div style={scrollTitle}>
@@ -419,7 +481,7 @@ const Form = () => {
                 <button style={add} onClick={addExam}>+</button>
             </div>
             <br />
-            <div style={scrollableList}>
+            <div style={scrollableList} ref={scrollExam}>
                 {examLabel}
             </div>
             <br/>

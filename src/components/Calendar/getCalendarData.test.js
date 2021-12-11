@@ -1,7 +1,7 @@
 ﻿import {
     getConvertedData, getTypeColor, getBorderStyle, getMonthHeader, getStartYear, getWeekHeader,
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, getLegends, SECOND_CONVOCATORY
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, getLegends, SECOND_CONVOCATORY, getRealWeekNumber
 } from "./getCalendarData";
 
 test('get converted calendar data', () => {
@@ -165,3 +165,9 @@ test('get border style', () => {
     }
 })
 
+test('get real week number', () => {
+    const weekArray = ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4", "a5", "b5", "a6", "b6"]
+    for (let i = 0; i < weekArray.length; i++) {
+        expect(getRealWeekNumber(weekArray[i])).toBe(i+1)
+    }
+})

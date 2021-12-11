@@ -3,7 +3,7 @@ import { React, useState } from "react";
 import "./calendar.css";
 import {
     getConvertedData, getTypeColor, getBorderStyle, getMonthHeader, getStartYear,
-    getWeekHeader, NO_SCHOOL, FESTIVE, SATURDAY, SUNDAY, getLegends, getWeekNumberStyle
+    getWeekHeader, NO_SCHOOL, FESTIVE, SATURDAY, SUNDAY, getLegends, getWeekNumberStyle, getRealWeekNumber, SCHOOL, CHANGE_DAY
 } from "./getCalendarData";
 import { makeStyles } from '@material-ui/core/styles';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     modal: {
         position: 'absolute',
         backgroundColor: theme.palette.background.paper,
-        border: '2px solid graylight',
+        border: '0.4vh solid graylight',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
         top: '50%',
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         top: '50%',
         left: '50%',
         borderStyle: 'outset',
-        borderRadius: '6px',
+        borderRadius: '1vh',
     },
     iconos: {
         cursor: 'pointer'
@@ -32,34 +32,38 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 const CalendarTable = ({ calendarArray }) => {
-    const styles = useStyles(); 
+    const styles = useStyles();
 
     const [changeModal, setChangeModal] = useState(false);
     const [changeDate, setChangeDate] = useState("09/12/2021");
     const [changeDateOption, setChangeDateOption] = useState("Normal");
 
-    const changeDayOptions = ["A", "B", "Normal"]
+    const changeDayOptions = ["A", "B", "Normal"];
 
     const yearCalendar = Object.values(getConvertedData(calendarArray));
     const legendInfo = getLegends();
-    const openModal = (date) => {
+    const openModal = (date, option) => {
         setChangeDate(date);
-        setChangeModal(true);
-    }
+        let letter = option.charAt(0);
+        console.log("--"+letter)
+        if (!(letter == 'a' || letter == 'b')) setChangeDateOption("Normal");
+        else setChangeDateOption(letter.toUpperCase())
+        toggleModal();
+    };
 
     const toggleModal = () => {
-        setChangeModal(!changeModal)
-    }
+        setChangeModal(!changeModal);
+    };
 
     const saveModal = () => {
         let opt = changeDateOption;
 
 
-        toggleModal()
-    }
-    const modal =(
-            <div className={styles.modal}>
-                <h4>Cambiar semana </h4>
+        toggleModal();
+    };
+    const modal = (
+        <div className={styles.modal}>
+            <h4>Cambiar semana </h4>
             <div class="modalTitle">
                 <p class="modalTitle">{changeDate}</p>
                 <DropdownButton id="dropdown-item-button" title={changeDateOption} variant="light">
@@ -67,13 +71,13 @@ const CalendarTable = ({ calendarArray }) => {
                         <Dropdown.Item as="button" onClick={(option) => setChangeDateOption(option.target.innerText)}>{option}</Dropdown.Item>))}
                 </DropdownButton>
             </div>
-                <div align="right">
-                    <Button color="primary" onClick={() => saveModal()}>Editar</Button>
-                    <Button onClick={() => toggleModal()}>Cancelar</Button>
-                </div>
+            <div align="right">
+                <Button color="primary" onClick={() => saveModal()}>Editar</Button>
+                <Button onClick={() => toggleModal()}>Cancelar</Button>
             </div>
-        );
-    
+        </div>
+    );
+
 
     const tBodies = yearCalendar.map((monthValues, index) => {
         const weekValues = Object.values(monthValues.weeks);
@@ -82,19 +86,26 @@ const CalendarTable = ({ calendarArray }) => {
             const weekNumber = actualWeek.weekNumber;
 
             var weekRows = actualWeek.dayInfo.map(function (actualDay, day) {
+                const dateValue = new Date(actualDay.date).getDate();
                 var color = getTypeColor(actualDay.type);
+                var cursor = 'default'
                 if (actualDay.type == NO_SCHOOL)
                     return <td key={i} />;
                 var styleClass =
-                    getBorderStyle(actualDay.date, actualDay.day, monthValues.finalMonthDay, actualWeek.finalWeek);
+                    getBorderStyle(dateValue, actualDay.day, monthValues.finalMonthDay, actualWeek.finalWeek);
                 if (actualDay.day == SUNDAY || actualDay.day == SATURDAY || actualDay.type == FESTIVE) {
-                    return <td class={styleClass} style={{ backgroundColor: color}} key={day + 2}>
-                        <pre> {new Date(actualDay.date).getDate()}</pre>
+                    return <td class={styleClass} style={{ backgroundColor: color }} key={day + 2}>
+                        <pre> {dateValue}</pre>
                     </td>;
-                } 
-                return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date)}>
-                    <pre> {new Date(actualDay.date).getDate()} {actualDay.day}{actualDay.week} {actualDay.day}{weekNumber}</pre>
-                </td>;
+                }
+                if(actualDay.type==SCHOOL || actualDay.type==CHANGE_DAY) 
+                    return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date, actualDay.week)}>
+                        <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
+                    </td>;
+                else
+                    return <td class={styleClass} style={{ backgroundColor: color}} key={day + 2}>
+                        <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
+                    </td>;
             });
 
             return (
@@ -123,7 +134,7 @@ const CalendarTable = ({ calendarArray }) => {
         }
 
         return (
-            <div>
+            <div class="legendHeader">
                 <div class="legendRow">
                     <div class="square" style={{ backgroundColor: color }} />
                     {text}
@@ -150,7 +161,7 @@ const CalendarTable = ({ calendarArray }) => {
                 onClose={toggleModal}>
                 {modal}
             </Modal>
-            <div> {legendsList} </div>
+                <div> {legendsList} </div>
         </div>
     );
 };
