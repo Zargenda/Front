@@ -216,8 +216,6 @@ const Form = () => {
         })
         const total = festiveList.concat(changeDayList).concat(examWithoutAdditional)
         console.log("TOTAL----------"+JSON.stringify(total))
-       // var json = new JSONObject(JSON.stringify(total));
-        //console.log("JSON--------"+json)
     }
 
     //Scroll list
@@ -239,7 +237,7 @@ const Form = () => {
         return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} />
+            <CalendarTable calendarArray={calendarArray} editable={true}/>
             <br />
         </div>);
     };
