@@ -2,6 +2,8 @@ import React from 'react';
 import { ReactComponent as Logo } from '../images/zargenda.svg';
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Session, SessionRole, SessionEmail} from './session';
 
 const column = {
   display: 'flex',
@@ -26,14 +28,37 @@ const button = {
   marginTop: '5vh'
 };
 const Home = () => {
-  var [correo, setEmail] = useState("");
+  var [email, setEmail] = useState("");
   var [pass, setPass] = useState("");
 
   const history = useHistory();
+  const {sessionActive, setSessionActive} = React.useContext(Session);
+  const {sessionEmail, setSessionEmail} = React.useContext(SessionEmail);
+  const {sessionRole, setSessionRole} = React.useContext(SessionRole);
 
-  function handleClick(e) {
+  async function handleClick(e) {
     e.preventDefault();
-    history.push("/admin");
+    /*await axios.get(baseUrl)
+      .then(response=>{
+        if(!response.data){
+          //error
+        }else{
+          //éxito
+          await AsyncStorage.setItem("email", email)
+        }
+      })*/
+    if(email == "user"){
+      await AsyncStorage.setItem("email", email)
+      setSessionActive(true)
+      setSessionEmail(email)
+      setSessionRole("Usuario")
+      history.push("/user");      
+    } else{
+      setSessionActive(true)
+      setSessionEmail(email)
+      setSessionRole("Administrador")
+      history.push("/admin");
+    }   
   }
 
   return (
@@ -46,7 +71,7 @@ const Home = () => {
       <label style={{marginLeft: '-200px'}}>Correo: </label>
     </div>
     <div style={button}>
-      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="email" value={correo} onChange={e => setEmail(e.target.value)} />
+      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="email" value={email} onChange={e => setEmail(e.target.value)} />
     </div>
     <div style={form}>
       <label style={{marginLeft: '-160px'}} htmlFor="password">Contraseña: </label>
