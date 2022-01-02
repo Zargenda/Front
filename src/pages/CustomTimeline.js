@@ -321,7 +321,6 @@ export default class App extends Component {
   render() {
 
     return (
-      
       <div>
         <button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>
             <br/>

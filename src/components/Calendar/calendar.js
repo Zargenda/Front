@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         border: '0.4vh solid graylight',
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
+        padding: theme.spacing(3, 6, 3),
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     },
     inputMaterial: {
         width: '100%'
+    },
+    modalButton: {
+        marginTop:'1vw'
     }
 }));
 const CalendarTable = ({ calendarArray }) => {
@@ -37,8 +40,11 @@ const CalendarTable = ({ calendarArray }) => {
     const [changeModal, setChangeModal] = useState(false);
     const [changeDate, setChangeDate] = useState("09/12/2021");
     const [changeDateOption, setChangeDateOption] = useState("Normal");
+    const [changeDateType, setChangeDateType] = useState("Festivo");
+    const [changeDateComment, setChangeDateComment] = useState("Comment");
 
     const changeDayOptions = ["A", "B", "Normal"];
+    const typeOptions = ["Normal", "Festivo", "Cambio de día", "Evaluación"];
 
     const yearCalendar = Object.values(getConvertedData(calendarArray));
     const legendInfo = getLegends();
@@ -58,20 +64,29 @@ const CalendarTable = ({ calendarArray }) => {
     const saveModal = () => {
         let opt = changeDateOption;
 
-
         toggleModal();
     };
     const modal = (
         <div className={styles.modal}>
-            <h4>Cambiar semana </h4>
+            <h4>Editar {changeDate}</h4>
             <div class="modalTitle">
-                <p class="modalTitle">{changeDate}</p>
+                <p class="modalTitle">Semana</p>
                 <DropdownButton id="dropdown-item-button" title={changeDateOption} variant="light">
                     {changeDayOptions.map((option) => (
                         <Dropdown.Item as="button" onClick={(option) => setChangeDateOption(option.target.innerText)}>{option}</Dropdown.Item>))}
                 </DropdownButton>
             </div>
-            <div align="right">
+            <div class="modalTitle">
+                <p class="modalTitle">Tipo</p>
+                <DropdownButton id="dropdown-item-button" title={changeDateType} variant="light">
+                    {typeOptions.map((option) => (
+                        <Dropdown.Item as="button" onClick={(option) => setChangeDateType(option.target.innerText)}>{option}</Dropdown.Item>))}
+                </DropdownButton>
+            </div>
+                <input type="text" value={changeDateComment} placeholder="Descripción"
+                    onChange={(comment) => setChangeDateComment(comment.target.value)} />
+            
+            <div className={styles.modalButton} align="right">
                 <Button color="primary" onClick={() => saveModal()}>Editar</Button>
                 <Button onClick={() => toggleModal()}>Cancelar</Button>
             </div>

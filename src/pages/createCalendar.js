@@ -13,7 +13,9 @@ import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, weekDayName
 } from "../components/Calendar/getCalendarData";
+import axios from 'axios';
 
+const baseUrl = 'https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
 
 
 const title = {
@@ -157,7 +159,7 @@ const Form = () => {
     ]);
     const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM", ANOTHER_EXAM];
     const changeDayOptions = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-    const calendarArray = [
+    const [calendarArray, setCalendarArray] = useState([
         { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
         { date: "2021/09/14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
         { date: "2021/09/15", type: SCHOOL, day: WEDNESDAY, week: 'a1' },
@@ -199,7 +201,25 @@ const Form = () => {
         { date: "2021/10/15", type: CULM_EXAM, day: FRIDAY, week: 'a3', comment: "Exámenes CULM" },
         { date: "2021/10/16", type: FESTIVE, day: SATURDAY, week: 'a3' },
         { date: "2021/10/17", type: FESTIVE, day: SUNDAY, week: 'a3' },
-    ];
+    ]);
+    //Request
+    const saveCalendar = async () => {
+        
+        //await axios.post(baseUrl)
+        //.then(response=>{
+        //  setCalendarArray(data.filter(asginatura=>asginatura.id!==asginaturaSeleccionada.id));
+        //})
+        const examWithoutAdditional = [...examList].map(function (exam) {
+            if (exam.comment == ANOTHER_EXAM)
+                return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.additional }
+            return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.comment }
+        })
+        const total = festiveList.concat(changeDayList).concat(examWithoutAdditional)
+        console.log("TOTAL----------"+JSON.stringify(total))
+       // var json = new JSONObject(JSON.stringify(total));
+        //console.log("JSON--------"+json)
+    }
+
     //Scroll list
     const scrollFestive = useRef(null);
     const scrollExam = useRef(null);
@@ -487,7 +507,7 @@ const Form = () => {
             <br/>
             <br/>
             <div style={scrollTitle}>
-                <button style={gen}>Generar</button>
+                <button onClick={() => saveCalendar()} style={gen}  >Generar</button>
             </div>
             <br />
             <div>
@@ -496,7 +516,6 @@ const Form = () => {
                 <LegendHeader />
             </div>
         </div>
-
     )
 }
 
