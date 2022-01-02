@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop:'1vw'
     }
 }));
-const CalendarTable = ({ calendarArray }) => {
+const CalendarTable = ({ calendarArray, editable }) => {
     const styles = useStyles();
 
     const [changeModal, setChangeModal] = useState(false);
@@ -113,7 +113,7 @@ const CalendarTable = ({ calendarArray }) => {
                         <pre> {dateValue}</pre>
                     </td>;
                 }
-                if(actualDay.type==SCHOOL || actualDay.type==CHANGE_DAY) 
+                if((actualDay.type==SCHOOL || actualDay.type==CHANGE_DAY) && editable)
                     return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date, actualDay.week)}>
                         <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
                     </td>;
@@ -122,7 +122,7 @@ const CalendarTable = ({ calendarArray }) => {
                         <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
                     </td>;
             });
-
+            console.log("JSON" + editable)
             return (
                 <tr key={i}>
                     {monthName}

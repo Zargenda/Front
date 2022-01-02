@@ -13,6 +13,7 @@ import DataEdit from './pages/dataEdit';
 import EditSchedule from './pages/editSchedule';
 import UserMenu from './pages/userMenu';
 import {Session, SessionRole, SessionEmail} from './pages/session';
+import UserCalendar from './pages/userCalendar';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -40,6 +41,7 @@ function App() {
               <Route path='/dataEdit' component={DataEdit} />
               <Route path='/editSchedule' component={EditSchedule} />
               <Route path='/user' component={UserMenu} />
+              <Route path='/userCalendar' component={UserCalendar} />
             </Switch>
           </Router>
         </SessionRole.Provider>

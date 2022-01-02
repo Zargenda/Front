@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { ReactComponent as Logo } from '../images/zargenda.svg';
@@ -70,7 +70,7 @@ const UserMenu = () => {
       <Logo/>
     </div>
     <div style={button}>  
-      <button onClick={(e) => handleClick(e, "/CreateCalendar")} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '40px', width: '300px' }}> Consultar Calendario Académico </button>
+              <button onClick={(e) => handleClick(e, "/UserCalendar")} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '40px', width: '300px' }}> Consultar Calendario Académico </button>
     </div>
     <div style={form}>
     </div>
