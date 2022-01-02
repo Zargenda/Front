@@ -11,6 +11,7 @@ import { useState } from "react";
 import CreateSchedule from './pages/createSchedule';
 import DataEdit from './pages/dataEdit';
 import EditSchedule from './pages/editSchedule';
+import UserMenu from './pages/userMenu';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,6 +31,7 @@ function App() {
         <Route path='/createSchedule' component={CreateSchedule} />
         <Route path='/dataEdit' component={DataEdit} />
         <Route path='/editSchedule' component={EditSchedule} />
+        <Route path='/user' component={UserMenu} />
       </Switch>
     </Router>
   );
