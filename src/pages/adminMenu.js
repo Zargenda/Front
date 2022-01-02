@@ -44,6 +44,7 @@ const unclickableButton = {
 const AdminMenu = () => {
 
   const history = useHistory();
+  
   function handleClickCal(e) {
     e.preventDefault();
     history.push("/CreateCalendar");
