@@ -3,11 +3,15 @@ import { React, useState } from "react";
 import "./calendar.css";
 import {
     getConvertedData, getTypeColor, getBorderStyle, getMonthHeader, getStartYear,
-    getWeekHeader, NO_SCHOOL, FESTIVE, SATURDAY, SUNDAY, getLegends, getWeekNumberStyle, getRealWeekNumber, SCHOOL, CHANGE_DAY
+    getWeekHeader, NO_SCHOOL, FESTIVE, SATURDAY, SUNDAY, CONVOCATORY, SECOND_CONVOCATORY,
+    CONTINUE_CONVOCATORY, CULM_EXAM, getLegends, getWeekNumberStyle, getRealWeekNumber, SCHOOL,
+    CHANGE_DAY, changeDayOptions, getWeekdayName
+
 } from "./getCalendarData";
 import { makeStyles } from '@material-ui/core/styles';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { Button, Modal } from '@material-ui/core';
+import { Calendar } from "@syncfusion/ej2-react-calendars";
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -15,12 +19,10 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
         border: '0.4vh solid graylight',
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(3, 6, 3),
+        padding: theme.spacing(3, 7, 3),
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        top: '50%',
-        left: '50%',
         borderStyle: 'outset',
         borderRadius: '1vh',
     },
@@ -32,7 +34,15 @@ const useStyles = makeStyles((theme) => ({
     },
     modalButton: {
         marginTop:'1vw'
+    },
+    input: {
+        height: '4vh',
+        width: '40vh',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
     }
+
 }));
 const CalendarTable = ({ calendarArray, editable }) => {
     const styles = useStyles();
@@ -43,14 +53,37 @@ const CalendarTable = ({ calendarArray, editable }) => {
     const [changeDateType, setChangeDateType] = useState("Festivo");
     const [changeDateComment, setChangeDateComment] = useState("Comment");
 
-    const changeDayOptions = ["A", "B", "Normal"];
-    const typeOptions = ["Normal", "Festivo", "Cambio de día", "Evaluación"];
+    const changeWeekOptions = ["A", "B", "Normal"];
+    const CHANGE_DAY_OPTION = "Cambio de día", FESTIVO = "Festivo", NORMAL = "Normal", EVALUACION = "Evaluación";
+    const typeOptions = [NORMAL, FESTIVO, CHANGE_DAY_OPTION, EVALUACION];
 
     const yearCalendar = Object.values(getConvertedData(calendarArray));
     const legendInfo = getLegends();
-    const openModal = (date, option) => {
-        setChangeDate(date);
-        let letter = option.charAt(0);
+    const getTypeName = (type) => {
+        switch (type) {
+            case FESTIVE:
+                return FESTIVO
+            case CHANGE_DAY:
+                return CHANGE_DAY_OPTION
+            case CONVOCATORY:
+            case SECOND_CONVOCATORY:
+            case CONTINUE_CONVOCATORY:
+            case CULM_EXAM:
+                return EVALUACION
+            default:
+                return NORMAL
+        }
+    }
+    const openModal = (date) => {
+        let dateInfo = calendarArray.find(d=>d.date==date)
+        setChangeDate(dateInfo.date);
+        let type = dateInfo.type
+        setChangeDateType(getTypeName(type));
+        if (type == CHANGE_DAY)
+            setChangeDateComment(getWeekdayName(dateInfo.day))
+        else 
+            setChangeDateComment(dateInfo.comment)
+        let letter = dateInfo.week.charAt(0);
         console.log("--"+letter)
         if (!(letter == 'a' || letter == 'b')) setChangeDateOption("Normal");
         else setChangeDateOption(letter.toUpperCase())
@@ -66,13 +99,32 @@ const CalendarTable = ({ calendarArray, editable }) => {
 
         toggleModal();
     };
+
+    const modalTypeInput = () => {
+        if (changeDateType == NORMAL)
+            return (null)
+        if (changeDateType == CHANGE_DAY_OPTION)
+            return (
+                <div class="modalTitle">
+                    <p class="modalTitle">Cambiar a </p>
+                    <DropdownButton id="dropdown-item-button" title={changeDateComment} variant="light">
+                        {changeDayOptions.map((option) => (
+                            <Dropdown.Item as="button" onClick={(option) => setChangeDateComment(option.target.innerText)}>{option}</Dropdown.Item>))}
+                    </DropdownButton>
+                </div>)
+            else 
+                return (<input type="text" className={styles.input} value={changeDateComment} placeholder="Descripción"
+                    onChange={(comment) => setChangeDateComment(comment.target.value)} />);
+
+    }
+
     const modal = (
         <div className={styles.modal}>
             <h4>Editar {changeDate}</h4>
             <div class="modalTitle">
                 <p class="modalTitle">Semana</p>
                 <DropdownButton id="dropdown-item-button" title={changeDateOption} variant="light">
-                    {changeDayOptions.map((option) => (
+                    {changeWeekOptions.map((option) => (
                         <Dropdown.Item as="button" onClick={(option) => setChangeDateOption(option.target.innerText)}>{option}</Dropdown.Item>))}
                 </DropdownButton>
             </div>
@@ -80,12 +132,10 @@ const CalendarTable = ({ calendarArray, editable }) => {
                 <p class="modalTitle">Tipo</p>
                 <DropdownButton id="dropdown-item-button" title={changeDateType} variant="light">
                     {typeOptions.map((option) => (
-                        <Dropdown.Item as="button" onClick={(option) => setChangeDateType(option.target.innerText)}>{option}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={(option) => { setChangeDateType(option.target.innerText); setChangeDateComment("")}}>{option}</Dropdown.Item>))}
                 </DropdownButton>
             </div>
-                <input type="text" value={changeDateComment} placeholder="Descripción"
-                    onChange={(comment) => setChangeDateComment(comment.target.value)} />
-            
+            {modalTypeInput()}
             <div className={styles.modalButton} align="right">
                 <Button color="primary" onClick={() => saveModal()}>Editar</Button>
                 <Button onClick={() => toggleModal()}>Cancelar</Button>
@@ -108,13 +158,18 @@ const CalendarTable = ({ calendarArray, editable }) => {
                     return <td key={i} />;
                 var styleClass =
                     getBorderStyle(dateValue, actualDay.day, monthValues.finalMonthDay, actualWeek.finalWeek);
-                if (actualDay.day == SUNDAY || actualDay.day == SATURDAY || actualDay.type == FESTIVE) {
+                if (actualDay.day == SUNDAY || actualDay.day == SATURDAY) {
                     return <td class={styleClass} style={{ backgroundColor: color }} key={day + 2}>
                         <pre> {dateValue}</pre>
                     </td>;
+                } else if (actualDay.type == FESTIVE) {
+                    return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} 
+                        onClick={() => openModal(actualDay.date)}>
+                        <pre> {dateValue} </pre>
+                    </td>;
                 }
-                if((actualDay.type==SCHOOL || actualDay.type==CHANGE_DAY) && editable)
-                    return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date, actualDay.week)}>
+                if(editable)
+                    return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date)}>
                         <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
                     </td>;
                 else

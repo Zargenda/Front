@@ -5,9 +5,13 @@ export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCAT
     SECOND_CONVOCATORY = "SECOND_CONVOCATORY", CONTINUE_CONVOCATORY = "CONTINUE_CONVOCATORY",
     NO_SCHOOL = "NO_SCHOOL", SCHOOL = "SCHOOL", CHANGE_DAY = "CHANGE_DAY", CULM_EXAM="CULM_EXAM";
 export const JANUARY = "Ene";
+export const ANOTHER_EXAM = "Otros";
+export const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM", ANOTHER_EXAM];
+const LUNES = "Lunes", MARTES = "Martes", MIERCOLES = "Miercoles", JUEVES = "Jueves", VIERNES = "Viernes"
+export const changeDayOptions = [LUNES, MARTES, MIERCOLES, JUEVES, VIERNES];
+
 const WEEK_TOTAL = 7;
 const weekDayIndex = new Map([[MONDAY, 0], [TUESDAY, 1], [WEDNESDAY, 2], [THURSDAY, 3], [FRIDAY, 4]]);
-
 
 //Global variables
 var weekNumber = 1;
@@ -18,6 +22,16 @@ var schoolYears = {
 };
 var legendList = new Map();
 var countByWeekDay = [0, 0, 0, 0, 0];
+
+export function getWeekdayName(day) {
+    let index = weekDayName.findIndex(d=> d==day)
+    if (index == 0 || index > 5)
+        return ""
+    else 
+        return changeDayOptions[index-1]
+}
+
+
 
 function sortByDate(a, b) {
     return new Date(a.date).getTime() - new Date(b.date).getTime();
@@ -49,6 +63,7 @@ const addLegend = (day) => {
         //console.log(legendList.get(comment));
     }
 }
+
 const isFestiveWeek = (weekArray) => {
     let noFestiveDay = weekArray.filter(day => day.type == SCHOOL || day.type == CHANGE_DAY);
     return noFestiveDay.length < 3;   

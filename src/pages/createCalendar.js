@@ -11,7 +11,8 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import "../components/Calendar/calendar.css";
 import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, weekDayName
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, 
+    ANOTHER_EXAM, examOptions, changeDayOptions
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
 
@@ -153,12 +154,10 @@ const Form = () => {
     const [changeDayList, setChangeDayList] = useState([
         { startDate: new Date(), comment: "Lunes" }
     ]);
-    const ANOTHER_EXAM = "Otros";
     const [examList, setExamList] = useState([
         { startDate: new Date(), endDate: new Date(), comment: ANOTHER_EXAM, additional: "" }
     ]);
-    const examOptions = ["Pruebas eval continua", "Exámenes 1ª conv", "Exámenes 2ª conv", "Exámenes CULM", ANOTHER_EXAM];
-    const changeDayOptions = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
     const [calendarArray, setCalendarArray] = useState([
         { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
         { date: "2021/09/14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
