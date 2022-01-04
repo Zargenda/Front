@@ -201,20 +201,55 @@ const Form = () => {
         { date: "2021/10/16", type: FESTIVE, day: SATURDAY, week: 'a3' },
         { date: "2021/10/17", type: FESTIVE, day: SUNDAY, week: 'a3' },
     ]);
+
+    useEffect(() => {
+        fetchCalendar();
+    }, []);
+
+    async function fetchCalendar() {
+        /*await axios.get(baseUrl)
+            .then(response => {
+                setCalendarArray(response.data);
+                //console.log("CALENDARARRAY--"+data)            
+            });*/
+    }
     //Request
-    const saveCalendar = async () => {
-        
-        //await axios.post(baseUrl)
-        //.then(response=>{
-        //  setCalendarArray(data.filter(asginatura=>asginatura.id!==asginaturaSeleccionada.id));
-        //})
+    async function saveCalendar() {
+        saveQuarters()
         const examWithoutAdditional = [...examList].map(function (exam) {
             if (exam.comment == ANOTHER_EXAM)
                 return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.additional }
             return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.comment }
         })
         const total = festiveList.concat(changeDayList).concat(examWithoutAdditional)
+        /*await axios.post(baseUrl, {data:total})
+          .then(response=>{
+            if(!response.data){
+              //error
+            }else{
+              //éxito
+            }
+          })*/
         console.log("TOTAL----------"+JSON.stringify(total))
+    }
+
+    async function saveQuarters() {
+        let quarters = {
+             startFirstQuarter: startFirstQuarter,
+             endFirstQuarter: endFirstQuarter,
+             startSecondQuarter: startSecondQuarter,
+             endSecondQuarter: endSecondQuarter
+        }
+        console.log("QUARTERS---"+quarters)
+        /*await axios.post(baseUrl, quaters)
+          .then(response=>{
+            if(!response.data){
+              //error
+            }else{
+              //éxito
+            }
+          })*/
+        //history.push("/");
     }
 
     //Scroll list

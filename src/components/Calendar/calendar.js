@@ -5,7 +5,7 @@ import {
     getConvertedData, getTypeColor, getBorderStyle, getMonthHeader, getStartYear,
     getWeekHeader, NO_SCHOOL, FESTIVE, SATURDAY, SUNDAY, CONVOCATORY, SECOND_CONVOCATORY,
     CONTINUE_CONVOCATORY, CULM_EXAM, getLegends, getWeekNumberStyle, getRealWeekNumber, SCHOOL,
-    CHANGE_DAY, changeDayOptions, getWeekdayName
+    CHANGE_DAY, changeDayOptions, getWeekdayName, examOptions, getWeekConst
 
 } from "./getCalendarData";
 import { makeStyles } from '@material-ui/core/styles';
@@ -52,14 +52,16 @@ const CalendarTable = ({ calendarArray, editable }) => {
     const [changeDateOption, setChangeDateOption] = useState("Normal");
     const [changeDateType, setChangeDateType] = useState("Festivo");
     const [changeDateComment, setChangeDateComment] = useState("Comment");
+    const [changeDayInfo, setChangeDayInfo] = useState({});
 
-    const changeWeekOptions = ["A", "B", "Normal"];
+    const changeWeekOptions = ["a", "b", "Normal"];
     const CHANGE_DAY_OPTION = "Cambio de día", FESTIVO = "Festivo", NORMAL = "Normal", EVALUACION = "Evaluación";
     const typeOptions = [NORMAL, FESTIVO, CHANGE_DAY_OPTION, EVALUACION];
 
     const yearCalendar = Object.values(getConvertedData(calendarArray));
     const legendInfo = getLegends();
     const getTypeName = (type) => {
+        //let map = new Map([[CHANGE_DAY, CHANGE_DAY_OPTION], [FESTIVE, FESTIVO]]);
         switch (type) {
             case FESTIVE:
                 return FESTIVO
@@ -75,7 +77,8 @@ const CalendarTable = ({ calendarArray, editable }) => {
         }
     }
     const openModal = (date) => {
-        let dateInfo = calendarArray.find(d=>d.date==date)
+        let dateInfo = calendarArray.find(d => d.date == date)
+        setChangeDayInfo(dateInfo)
         setChangeDate(dateInfo.date);
         let type = dateInfo.type
         setChangeDateType(getTypeName(type));
@@ -86,7 +89,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
         let letter = dateInfo.week.charAt(0);
         console.log("--"+letter)
         if (!(letter == 'a' || letter == 'b')) setChangeDateOption("Normal");
-        else setChangeDateOption(letter.toUpperCase())
+        else setChangeDateOption(letter)
         toggleModal();
     };
 
@@ -94,9 +97,45 @@ const CalendarTable = ({ calendarArray, editable }) => {
         setChangeModal(!changeModal);
     };
 
+    const getTypeConst = () => {
+        if (changeDateType == NORMAL)
+            return SCHOOL
+        else if (changeDateType != EVALUACION)
+            return changeDateType
+        else 
+            if (changeDateComment.includes("continua"))
+                return CONTINUE_CONVOCATORY
+            else if (changeDateComment.includes("1"))
+                return CONVOCATORY
+            else if(changeDateComment.includes("2"))
+                return SECOND_CONVOCATORY
+            else if(changeDateComment.includes("CULM"))
+                return CULM_EXAM
+    }
+    const getWeekDay = () => {
+        if (changeDateType != CHANGE_DAY_OPTION)
+            return changeDayInfo.day;
+        else
+            return getWeekConst(changeDateComment);
+    }
     const saveModal = () => {
         let opt = changeDateOption;
-
+        let dateInfo = {
+            date: changeDate,
+            type: getTypeConst(),
+            day: getWeekDay(),
+            comment: changeDateComment,
+            week: changeDateOption
+        };
+        console.log("MODAL---" + JSON.stringify(dateInfo))
+        /*await axios.post(baseUrl, dateInfo)
+      .then(response=>{
+        if(!response.data){
+          //error
+        }else{
+          //éxito
+        }
+      })*/
         toggleModal();
     };
 
@@ -109,6 +148,14 @@ const CalendarTable = ({ calendarArray, editable }) => {
                     <p class="modalTitle">Cambiar a </p>
                     <DropdownButton id="dropdown-item-button" title={changeDateComment} variant="light">
                         {changeDayOptions.map((option) => (
+                            <Dropdown.Item as="button" onClick={(option) => setChangeDateComment(option.target.innerText)}>{option}</Dropdown.Item>))}
+                    </DropdownButton>
+                </div>)
+        else if (changeDateType == EVALUACION)
+            return (
+                <div className={styles.input}>
+                    <DropdownButton id="dropdown-item-button" title={changeDateComment} variant="light">
+                        {examOptions.map((option) => (
                             <Dropdown.Item as="button" onClick={(option) => setChangeDateComment(option.target.innerText)}>{option}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>)

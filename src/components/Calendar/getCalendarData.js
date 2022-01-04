@@ -1,4 +1,5 @@
-export const MONDAY = "L", TUESDAY = "M", WEDNESDAY = "X", THURSDAY = "J", FRIDAY = "V", SATURDAY = "S", SUNDAY = "D";
+export const MONDAY = "M", TUESDAY = "M", WEDNESDAY = "X", THURSDAY = "J", FRIDAY = "V", SATURDAY = "S", SUNDAY = "D";
+
 export const weekDayName = ["sem",MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY];
 export const monthName = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
 export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCATORY = "CONVOCATORY",
@@ -12,6 +13,7 @@ export const changeDayOptions = [LUNES, MARTES, MIERCOLES, JUEVES, VIERNES];
 
 const WEEK_TOTAL = 7;
 const weekDayIndex = new Map([[MONDAY, 0], [TUESDAY, 1], [WEDNESDAY, 2], [THURSDAY, 3], [FRIDAY, 4]]);
+const weekDayNameConst = new Map([[MONDAY, LUNES], [TUESDAY, MARTES], [WEDNESDAY, MIERCOLES], [THURSDAY, JUEVES], [FRIDAY, VIERNES]]);
 
 //Global variables
 var weekNumber = 1;
@@ -23,13 +25,14 @@ var schoolYears = {
 var legendList = new Map();
 var countByWeekDay = [0, 0, 0, 0, 0];
 
-export function getWeekdayName(day) {
-    let index = weekDayName.findIndex(d=> d==day)
-    if (index == 0 || index > 5)
-        return ""
-    else 
-        return changeDayOptions[index-1]
+export function getWeekConst(day) {
+    return [...weekDayNameConst].find(([key, val]) => val == day)[0];
 }
+
+export function getWeekdayName(day) {
+    return weekDayNameConst.get(day)
+}
+
 
 
 
