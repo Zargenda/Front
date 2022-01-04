@@ -3,7 +3,7 @@ import { Inject, ScheduleComponent, WorkWeek, ViewsDirective, ViewDirective, ICa
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-import { closest, isNullOrUndefined } from '@syncfusion/ej2-base';
+import { addClass, Browser, closest, extend, Internationalization, isNullOrUndefined, removeClass, remove, compile } from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-alert'
@@ -37,11 +37,10 @@ const gen = {
   height: '5%', 
 }
 
-export default class App extends Component {
+export default class App extends Component {  
   constructor(props) {
     super(props);
-    const scheduleObj = null
-
+    const scheduleObj = null    
     this.data = [{
           Id: 1,
           Subject: 'Laboratorio ing software',
@@ -63,13 +62,15 @@ export default class App extends Component {
           CalendarId: 1
       }];
   }
-
+  
   calendarCollections = [
     { CalendarText: 'Teoría', CalendarId: 1, CalendarColor: '#55B7EE' },
     { CalendarText: 'Prácticas', CalendarId: 2, CalendarColor: '#FB84F0' },
     { CalendarText: 'Problemas', CalendarId: 3, CalendarColor: '#55B7EE' },
     { CalendarText: 'Seminario', CalendarId: 4, CalendarColor: '#686464' }
   ];
+
+  intl = new Internationalization();
   
   contentTemplate = (props) => {
     return (
@@ -286,6 +287,32 @@ export default class App extends Component {
     return recurrence
   }
 
+  dateHeaderTemplate = (props) => {
+    console.log("Las props son" +this.getDateHeaderText(props.date))
+    var dateArray = this.getDateHeaderText(props.date).split(" ");
+    return (<div><div>{this.parseDay(dateArray[1])}</div></div>);
+  }
+
+  getDateHeaderText(value) {
+    return this.intl.formatDate(value, { skeleton: 'Ed' });
+  }
+
+  parseDay(day){
+    switch(day){
+      case "Mon":
+        return "Lunes"
+      case "Tue":
+        return "Martes"
+      case "Wed":
+        return "Miércoles"
+      case "Thu":
+        return "Jueves"
+      case "Fri":
+        return "Viernes"
+    }
+
+  }
+
   async onAddClick() {    
     var subjectName = await AsyncStorage.getItem("selectedSubject")
     var startTime = await AsyncStorage.getItem("startClock")
@@ -330,8 +357,8 @@ export default class App extends Component {
           <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
           <button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>
         </div>
-        <ScheduleComponent currentView='WorkWeek' selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
-        quickInfoTemplates={{
+        <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
+         dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
           footer: this.footerTemplate.bind(this)
         }}  editorTemplate={this.editorTemplate.bind(this)}>
