@@ -13,6 +13,7 @@ import DataEdit from './pages/dataEdit';
 import EditSchedule from './pages/editSchedule';
 import UserMenu from './pages/userMenu';
 import {Session, SessionRole, SessionEmail} from './pages/session';
+import {ScheduleData} from './pages/scheduleData';
 import UserCalendar from './pages/userCalendar';
 import Incompatibilities from './pages/incompatibilities';
 
@@ -21,6 +22,17 @@ function App() {
   const [sessionActive, setSessionActive] = useState(false);
   const [sessionEmail, setSessionEmail] = useState("");
   const [sessionRole, setSessionRole] = useState("");
+  const [selectedCareer, setSelectedCareer] = useState("Ing informática");
+  const [selectedGrade, setSelectedGrade] = useState("Primero");
+  const [selectedGroup, setSelectedGroup] = useState("Mañanas");
+  const [selectedSemester, setSelectedSemester] = useState("Primer semestre");
+  const [selectedSubject, setSelectedSubject] = useState("Gestión de proyecto software");
+  const [selectedGenre, setSelectedGenre] = useState("Teoría");
+  const [selectedLocation, setSelectedLocation] = useState("A.1");
+  const [selectedDay, setSelectedDay] = useState("Lunes");
+  const [startClock, setStartClock] = useState('10:00');
+  const [endClock, setEndClock] = useState('10:00');
+
   const toggle = () => {
     setIsOpen(!isOpen)
   }
@@ -29,6 +41,11 @@ function App() {
     <Session.Provider value={{sessionActive, setSessionActive}}>
       <SessionEmail.Provider value={{sessionEmail, setSessionEmail}}>
         <SessionRole.Provider value={{sessionRole, setSessionRole}}>
+        <ScheduleData.Provider value={{ selectedCareer: [selectedCareer, setSelectedCareer], selectedGrade: [selectedGrade, setSelectedGrade]
+        , selectedGroup: [selectedGroup, setSelectedGroup], selectedGenre: [selectedGenre, setSelectedGenre]
+        , selectedLocation: [selectedLocation, setSelectedLocation], selectedSemester: [selectedSemester, setSelectedSemester]
+        , selectedSubject: [selectedSubject, setSelectedSubject], selectedDay: [selectedDay, setSelectedDay]
+        , startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]}}>
           <Router>
           <Sidebar isOpen={isOpen} toggle={toggle}/>
           <Navbar toggle={toggle}/>
@@ -46,6 +63,7 @@ function App() {
               <Route path='/incompatibilities' component={Incompatibilities} />
             </Switch>
           </Router>
+          </ScheduleData.Provider>
         </SessionRole.Provider>
       </SessionEmail.Provider>
     </Session.Provider>

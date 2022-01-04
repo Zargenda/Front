@@ -9,6 +9,7 @@ import TimePicker from 'react-time-picker'
 import 'react-calendar-timeline/lib/Timeline.css'
 import CustomTimeline from './CustomTimeline'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ScheduleData} from './scheduleData';
 
 const title = {
     display: 'flex',
@@ -47,61 +48,39 @@ const CreateSchedule = () => {
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState(["A.1", "A.2", "A.3"]);
     const [days, setDays] = useState(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]);
-    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal","Puntual"]);
-    const [selectedCareer, setSelectedCareer] = useState("Ing informática");
-    const [selectedGrade, setSelectedGrade] = useState("Primero");
-    const [selectedGroup, setSelectedGroup] = useState("Mañanas");
-    const [selectedSemester, setSelectedSemester] = useState("Primer semestre");
-    const [selectedSubject, setSelectedSubject] = useState("Gestión de proyecto software");
-    const [selectedGenre, setSelectedGenre] = useState("Teoría");
-    const [selectedLocation, setSelectedLocation] = useState("A.1");
-    const [selectedDay, setSelectedDay] = useState("Lunes");
-    const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
-    const [startClock, setStartClock] = useState('10:00');
-    const [endClock, setEndClock] = useState('10:00');
+    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal","Puntual"]);    
+    const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");    
     const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
-
+    const {selectedCareer, selectedGrade, selectedGroup, selectedSemester, selectedSubject,
+        selectedGenre, selectedLocation, selectedDay, startClock, endClock} = React.useContext(ScheduleData);
+    const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
+    const [selectedGradeObj, setSelectedGradeObj] = selectedGrade
+    const [selectedGroupObj, setSelectedGroupObj] = selectedGroup
+    const [selectedSemesterObj, setSelectedSemesterObj] = selectedSemester
+    const [selectedSubjectObj, setSelectedSubjectObj] = selectedSubject
+    const [selectedGenreObj, setSelectedGenreObj] = selectedGenre
+    const [selectedLocationObj, setSelectedLocationObj] = selectedLocation
+    const [selectedDayObj, setSelectedDayObj] = selectedDay
+    const [startClockObj, setStartClockObj] = startClock
+    const [endClockObj, setEndClockObj] = endClock
     useEffect(() => {
-        saveValues()
+        //saveValues()
         
     }, []);
 
     async function saveValues(){
-        await AsyncStorage.setItem("selectedCareer", selectedCareer)
-        await AsyncStorage.setItem("selectedGrade", selectedGrade)
-        await AsyncStorage.setItem("selectedGroup", selectedGroup)
-        await AsyncStorage.setItem("selectedSemester", selectedSemester)
-        await AsyncStorage.setItem("selectedSubject", selectedSubject)
-        await AsyncStorage.setItem("selectedGenre", selectedGenre)
-        await AsyncStorage.setItem("selectedLocation", selectedLocation)
-        await AsyncStorage.setItem("selectedDay", selectedDay)
-        await AsyncStorage.setItem("startClock", startClock)
-        await AsyncStorage.setItem("endClock", endClock)
+        setSelectedCareerObj(selectedCareerObj)
+        setSelectedCareerObj(selectedCareerObj)
+        setSelectedCareerObj(selectedCareerObj)
+        setSelectedCareerObj(selectedCareerObj)
+        setSelectedCareerObj(selectedCareerObj)
     }
 
-    const updateGenre = async (genre) => { 
-        setSelectedGenre(genre)
-        await AsyncStorage.setItem("selectedGenre", genre)
-    }
-    const updateDay = async (day) => { 
-        setSelectedDay(day)
-        await AsyncStorage.setItem("selectedDay", day)
-    }
     const updateStartClock = async (clock) => { 
-        setStartClock(clock)
-        await AsyncStorage.setItem("startClock", clock)
+        setStartClockObj(clock)
     }
     const updateEndClock = async (clock) => { 
-        setEndClock(clock)
-        await AsyncStorage.setItem("endClock", clock)
-    }
-    const updateSubject = async (subject) => { 
-        setSelectedSubject(subject)
-        await AsyncStorage.setItem("selectedSubject", subject)
-    }
-    const updateLocation = async (location) => { 
-        setSelectedLocation(location)
-        await AsyncStorage.setItem("selectedLocation", location)
+        setEndClockObj(clock)
     }
     const updateFrecuency = async (frecuency) => { 
         setSelectedFrecuency(frecuency)
@@ -122,26 +101,26 @@ const CreateSchedule = () => {
             </div>
 
             <div style={row}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedCareer}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedCareerObj}  variant="light">
                     {careers.map((career) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedCareer(career)}>{career}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedCareerObj(career)}>{career}</Dropdown.Item>))}
                     </DropdownButton>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedGrade}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedGradeObj}  variant="light">
                     {grades.map((grade) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedGrade(grade)}>{grade}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedGradeObj(grade)}>{grade}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedGroup}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedGroupObj}  variant="light">
                     {groups.map((group) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedGroup(group)}>{group}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedGroupObj(group)}>{group}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedSemester}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedSemesterObj}  variant="light">
                     {semesters.map((semester) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedSemester(semester)}>{semester}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedSemesterObj(semester)}>{semester}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>
@@ -149,9 +128,9 @@ const CreateSchedule = () => {
             <div style={row}>
                 <label>Asignaturas disponibles</label>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedSubject}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedSubjectObj}  variant="light">
                     {subjects.map((subject) => (
-                        <Dropdown.Item as="button" onClick={() => updateSubject(subject)}>{subject}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedSubjectObj(subject)}>{subject}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>
@@ -159,16 +138,16 @@ const CreateSchedule = () => {
             <div style={row}>
                 <label>Tipo</label>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedGenre}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedGenreObj}  variant="light">
                     {genres.map((genre) => (
-                        <Dropdown.Item as="button" onClick={() => updateGenre(genre)}>{genre}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedGenreObj(genre)}>{genre}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <label style={label3}>Aula</label>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedLocation}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedLocationObj}  variant="light">
                     {locations.map((location) => (
-                        <Dropdown.Item as="button" onClick={() => updateLocation(location)}>{location}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedLocationObj(location)}>{location}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
             </div>
@@ -176,9 +155,9 @@ const CreateSchedule = () => {
             <div style={row}>
                 <label>Días</label>
                 <div style={label3}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedDay}  variant="light">
+                    <DropdownButton id="dropdown-item-button"  title={selectedDayObj}  variant="light">
                     {days.map((day) => (
-                        <Dropdown.Item as="button" onClick={() => updateDay(day)}>{day}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => setSelectedDayObj(day)}>{day}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <label style={label3}>Frecuencia</label>
