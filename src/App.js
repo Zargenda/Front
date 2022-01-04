@@ -14,6 +14,7 @@ import EditSchedule from './pages/editSchedule';
 import UserMenu from './pages/userMenu';
 import {Session, SessionRole, SessionEmail} from './pages/session';
 import UserCalendar from './pages/userCalendar';
+import Incompatibilities from './pages/incompatibilities';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
@@ -42,6 +43,7 @@ function App() {
               <Route path='/editSchedule' component={EditSchedule} />
               <Route path='/user' component={UserMenu} />
               <Route path='/userCalendar' component={UserCalendar} />
+              <Route path='/incompatibilities' component={Incompatibilities} />
             </Switch>
           </Router>
         </SessionRole.Provider>
