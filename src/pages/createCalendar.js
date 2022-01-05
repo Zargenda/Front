@@ -12,9 +12,14 @@ import "../components/Calendar/calendar.css";
 import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, 
-    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray
+    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
+import { jsPDF } from "jspdf";
+import UserCalendar from '../pages/userCalendar';
+import html2canvas from 'html2canvas';
+import { Inject, ScheduleComponent, WorkWeek, ViewsDirective, ViewDirective, ICalendarExport, DragAndDrop, ResourcesDirective, ResourceDirective } from "@syncfusion/ej2-react-schedule";
+
 
 const baseUrl = 'https://localhost:8000'
 
@@ -129,6 +134,15 @@ const scrollTitle = {
     fontSize: 'larger'
 }
 
+const buttonRow = {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: '3vh',
+    color: 'black',
+    fontSize: 'larger'
+}
+
 const inputAlign = {
     fontSize: '2.3vh',
     overflow:'hidden'
@@ -138,6 +152,9 @@ const dropList = {
     display: 'flex',
     width: '10vh',
 }
+
+const doc = new jsPDF();
+
 
 const Form = () => {
     const [startFirstQuarter, setStartFirstQuarter] = useState(null);
@@ -158,10 +175,8 @@ const Form = () => {
         { startDate: new Date(), endDate: new Date(), comment: ANOTHER_EXAM, additional: "" }
     ]);
 
-    const [calendarArray, setCalendarArray] = useState([]);
     const [firstCalendarArray, setFirstCalendarArray] = useState([])
     const [secondCalendarArray, setSecondCalendarArray] = useState([])
-
 
     useEffect(() => {
         fetchCalendar();
@@ -175,6 +190,9 @@ const Form = () => {
                 setSecondCalendarArray(getQuarterArray(calendarArray,2))
                 //console.log("CALENDARARRAY--"+data)            
             });*/
+        var calendarArray = ([]);
+        setFirstCalendarArray(getQuarterArray(calendarArray, 1));
+        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
     }
     //Request
     async function saveCalendar() {
@@ -229,15 +247,6 @@ const Form = () => {
         scrollToBottom(scrollExam)
         scrollToBottom(scrollChange)
     });
-
-    const calendarComponent = (title, calendarArray) => {
-        return (<div> <br />
-            <h2> {title} </h2>
-            <br />
-            <CalendarTable calendarArray={calendarArray} editable={true}/>
-            <br />
-        </div>);
-    };
 
     //---FestiveList functions
     const setFestiveStartDate = (i, startDate) => {
@@ -392,7 +401,6 @@ const Form = () => {
     };
 
     const examLabel = examList.map((exam, i) => {
-
         return (
             <div style={row}>
                 <div style={dropList}>
@@ -429,6 +437,41 @@ const Form = () => {
         );
     });
 
+    const calendarComponent = (title, calendarArray, key) => {
+        return (<div id={key}> <br />
+            <h2> {title} </h2>
+            <br />
+            <CalendarTable calendarArray={calendarArray} editable={true} />
+            <br />
+        </div>);
+    };
+
+    const CalendarRender = () => (<div id="Calendar">
+        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
+        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
+        {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
+    </div>)
+
+    const savePdf = () => {
+        if (firstCalendarArray.length > 0) {
+            const input = document.getElementById('Calendar');
+            html2canvas(input)
+                .then((canvas) => {
+                    let imgWidth = 208;
+                    let imgHeight = canvas.height * imgWidth / canvas.width;
+                    const year = getStartYear();
+                    const imgData = canvas.toDataURL('img/png');
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    pdf.addImage(imgData, 'PNG', imgWidth * 0.09, imgHeight * 0.01, imgWidth * 0.8, imgHeight * 0.8);
+                    pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
+                });
+        }
+    }
+    const [scheduleObj, setScheduleObj] = useState(new ScheduleComponent())
+    const saveICS = () => {
+        
+    }
+    
     return(
         <div style={body}>
             <div style={title}>
@@ -501,15 +544,13 @@ const Form = () => {
             </div>
             <br/>
             <br/>
-            <div style={scrollTitle}>
+            <div style={buttonRow}>
+                <button onClick={savePdf} style={gen}>Exportar a PDF</button>
                 <button onClick={() => saveCalendar()} style={gen}  >Generar</button>
+                {/*<button onClick={saveICS} style={gen}>Exportar a iCalendar</button>*/}
             </div>
             <br />
-            <div>
-                {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
-                {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
-                {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
-            </div>
+            <CalendarRender/>
         </div>
     )
 }

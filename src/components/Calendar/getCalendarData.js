@@ -136,8 +136,11 @@ export function getWeekDayByIndex(index) {
 }
 
 const alignFirstWeek = (array) => {
-    let firstDay = array.find(d => d.comment == START_QUARTER)
+    let firstDay = array.find(d => d.comment == START_QUARTER);
+    console.log("FIRSTDAY" + JSON.stringify(array));
     var calendarArray = [...array]
+            console.log("FIRSTDAY" + JSON.stringify(calendarArray))
+
     if (firstDay.day != MONDAY) {
         let date = new Date(firstDay.date)
         console.log((weekDayIndex.get(firstDay.day)-1))
@@ -151,6 +154,7 @@ const alignFirstWeek = (array) => {
                 week: ""
             }
             calendarArray.push(newDate)
+            console.log("NEWDATE "+ JSON.stringify(newDate))
         }
     }
     return calendarArray;
@@ -176,18 +180,20 @@ const alignEndWeek = (array) => {
 }
 
 export const getQuarterArray = (array, number) => {
-    let secondIndex = array.slice(1, array.length - 1).findIndex(d => d.comment == START_QUARTER);
+    if (array != null && array.length == 0) return [];
+    let calendarArray = array.sort(sortByDate);
+    let secondIndex = calendarArray.slice(1, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER);
     let quarterArray;
     if (number == 1) 
-        quarterArray = array.slice(0, secondIndex+1)
+        quarterArray = calendarArray.slice(0, secondIndex+1)
     else 
-        quarterArray = array.slice(secondIndex+1, array.length)
-    console.log("QUARTERAR"+JSON.stringify(quarterArray))
+        quarterArray = calendarArray.slice(secondIndex+1, calendarArray.length)
+    //console.log("QUARTERAR"+JSON.stringify(quarterArray))
     return quarterArray
 }
 
 export const getConvertedData = (array) => {
-   // console.log("GETCONVERT"+JSON.stringify(array))
+    //console.log("GETCONVERT"+JSON.stringify(array))
     if(array==null || array.length==0) return []
     setSchoolYears(array[0].date);
     legendList = new Map();
@@ -196,6 +202,8 @@ export const getConvertedData = (array) => {
 
     let firstWeekCalendar = alignFirstWeek(array)
     firstWeekCalendar.sort(sortByDate);
+    //console.log("firstWeek" + JSON.stringify(firstWeekCalendar))
+
     let calendarArray = alignEndWeek(firstWeekCalendar)
     calendarArray.sort(sortByDate);
     //console.log("ENDCALENDAR" + JSON.stringify(calendarArray))

@@ -54,7 +54,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
     const [changeDateType, setChangeDateType] = useState("Festivo");
     const [changeDateComment, setChangeDateComment] = useState("Comment");
     const [changeDayInfo, setChangeDayInfo] = useState({});
-    console.log("TBODY--" + JSON.stringify(calendarArray))
+    //console.log("TBODY--" + JSON.stringify(calendarArray))
 
     const changeWeekOptions = ["a", "b", "Normal"];
     const CHANGE_DAY_OPTION = "Cambio de día", FESTIVO = "Festivo", NORMAL = "Normal", EVALUACION = "Evaluación";
@@ -273,7 +273,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
                     <thead>
                         <tr>
                             <th class="header">{getStartYear()}</th>
-                            getWeekHeader()
+                            {getWeekHeader()}
                         </tr>
                     </thead>
                     {tBodies}
