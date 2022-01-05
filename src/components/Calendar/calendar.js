@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     }
 
 }));
+
 const CalendarTable = ({ calendarArray, editable }) => {
     const styles = useStyles();
 
@@ -53,6 +54,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
     const [changeDateType, setChangeDateType] = useState("Festivo");
     const [changeDateComment, setChangeDateComment] = useState("Comment");
     const [changeDayInfo, setChangeDayInfo] = useState({});
+    console.log("TBODY--" + JSON.stringify(calendarArray))
 
     const changeWeekOptions = ["a", "b", "Normal"];
     const CHANGE_DAY_OPTION = "Cambio de día", FESTIVO = "Festivo", NORMAL = "Normal", EVALUACION = "Evaluación";
@@ -112,6 +114,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
             else if(changeDateComment.includes("CULM"))
                 return CULM_EXAM
     }
+
     const getWeekDay = () => {
         if (changeDateType != CHANGE_DAY_OPTION)
             return changeDayInfo.day;
@@ -200,11 +203,10 @@ const CalendarTable = ({ calendarArray, editable }) => {
             var weekRows = actualWeek.dayInfo.map(function (actualDay, day) {
                 const dateValue = new Date(actualDay.date).getDate();
                 var color = getTypeColor(actualDay.type);
-                var cursor = 'default'
                 if (actualDay.type == NO_SCHOOL)
                     return <td key={i} />;
                 var styleClass =
-                    getBorderStyle(dateValue, actualDay.day, monthValues.finalMonthDay, actualWeek.finalWeek);
+                    getBorderStyle(actualDay.date, actualDay.day);
                 if (actualDay.day == SUNDAY || actualDay.day == SATURDAY) {
                     return <td class={styleClass} style={{ backgroundColor: color }} key={day + 2}>
                         <pre> {dateValue}</pre>
@@ -215,16 +217,20 @@ const CalendarTable = ({ calendarArray, editable }) => {
                         <pre> {dateValue} </pre>
                     </td>;
                 }
-                if(editable)
-                    return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date)}>
-                        <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
-                    </td>;
+                if (editable)
+                    if (actualDay.week == "0")
+                        return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date)}>
+                            <pre> {dateValue}</pre>
+                        </td>;
+                    else
+                        return <td class={styleClass} style={{ backgroundColor: color, cursor: 'pointer' }} key={day + 2} onClick={() => openModal(actualDay.date)}>
+                            <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
+                        </td>;
                 else
                     return <td class={styleClass} style={{ backgroundColor: color}} key={day + 2}>
                         <pre> {dateValue} {actualDay.day}{actualDay.week} {actualDay.day}{getRealWeekNumber(actualDay.week)}</pre>
                     </td>;
             });
-            console.log("JSON" + editable)
             return (
                 <tr key={i}>
                     {monthName}
@@ -261,25 +267,25 @@ const CalendarTable = ({ calendarArray, editable }) => {
     });
 
     return (
-        <div class="calendarRow">
-            <div>
+                <div class="calendarRow">
+            {calendarArray.length > 0 ? <div>
                 <table class="calendarTable">
                     <thead>
                         <tr>
                             <th class="header">{getStartYear()}</th>
-                            {getWeekHeader()}
+                            getWeekHeader()
                         </tr>
                     </thead>
                     {tBodies}
                 </table>
-            </div>
-            <Modal
-                open={changeModal}
-                onClose={toggleModal}>
-                {modal}
-            </Modal>
-                <div> {legendsList} </div>
-        </div>
+            </div> : null}
+                    <Modal
+                        open={changeModal}
+                        onClose={toggleModal}>
+                        {modal}
+                    </Modal>
+                    <div> {legendsList} </div>
+                </div> : null
     );
 };
 

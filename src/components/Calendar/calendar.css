@@ -36,7 +36,17 @@
         white-space: nowrap;
         display: flex;
         flex-direction: row;
-        justify-content: space-evenly;
+        text-align:right
+    }
+    .calendarTable preHeader {
+        font-family: Tahoma;
+        font-size: larger;
+        margin-right: 2vw;
+        margin-left: 1vw;
+        white-space: nowrap;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     .calendarTable th {
