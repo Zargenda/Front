@@ -307,7 +307,7 @@ export default class App extends Component {
         EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
         CalendarId: calendarId,
         Description: location,
-        Frecuency: frecuency
+        Frecuency: frecuency,
     }
     var dataAux = this.state.data
     dataAux.push(newSubject)

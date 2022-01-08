@@ -43,7 +43,8 @@ const CreateSchedule = () => {
     const [careers, setCareers] = useState(["Ing. informática", "Magisterio      ", "Teleco          "]);
     const [grades, setGrades] = useState(["Primero", "Segundo", "Tercero", "Cuarto ", "Quinto ", "Sexto  "]);
     const [groups, setGroups] = useState(["Mañanas", "Tardes " ]);
-    const [semesters, setSemesters] = useState(["Primer semestre ", "Segundo semestre"]);
+    const [semesters, setSemesters] = useState(["Primer semestre ", "Segundo semestre", "Año completo"]);
+    const [buildings, setBuildings] = useState(["Ada Byron", "Torres Quevedo"]);
     const [subjects, setSubjects] = useState(["Gestión de proyecto software", "Lab Ing Soft"]);
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState(["A.1", "A.2", "A.3"]);
@@ -52,11 +53,12 @@ const CreateSchedule = () => {
     const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");    
     const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
     const {selectedCareer, selectedGrade, selectedGroup, selectedSemester, selectedSubject,
-        selectedGenre, selectedLocation, selectedDay, startClock, endClock} = React.useContext(ScheduleData);
+        selectedGenre, selectedLocation, selectedDay, startClock, endClock, selectedBuilding} = React.useContext(ScheduleData);
     const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
     const [selectedGradeObj, setSelectedGradeObj] = selectedGrade
     const [selectedGroupObj, setSelectedGroupObj] = selectedGroup
     const [selectedSemesterObj, setSelectedSemesterObj] = selectedSemester
+    const [selectedBuildingObj, setSelectedBuildingObj] = selectedBuilding
     const [selectedSubjectObj, setSelectedSubjectObj] = selectedSubject
     const [selectedGenreObj, setSelectedGenreObj] = selectedGenre
     const [selectedLocationObj, setSelectedLocationObj] = selectedLocation
@@ -141,6 +143,13 @@ const CreateSchedule = () => {
                     <DropdownButton id="dropdown-item-button"  title={selectedGenreObj}  variant="light">
                     {genres.map((genre) => (
                         <Dropdown.Item as="button" onClick={() => setSelectedGenreObj(genre)}>{genre}</Dropdown.Item>))}
+                    </DropdownButton>
+                </div>
+                <label style={label3}>Edificio</label>
+                <div style={label3}>
+                    <DropdownButton id="dropdown-item-button"  title={selectedBuildingObj}  variant="light">
+                    {buildings.map((building) => (
+                        <Dropdown.Item as="button" onClick={() => setSelectedBuildingObj(building)}>{building}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 <label style={label3}>Aula</label>

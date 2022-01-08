@@ -27,6 +27,7 @@ function App() {
   const [selectedGroup, setSelectedGroup] = useState("Mañanas");
   const [selectedSemester, setSelectedSemester] = useState("Primer semestre");
   const [selectedSubject, setSelectedSubject] = useState("Gestión de proyecto software");
+  const [selectedBuilding, setSelectedBuilding] = useState("Ada Byron");
   const [selectedGenre, setSelectedGenre] = useState("Teoría");
   const [selectedLocation, setSelectedLocation] = useState("A.1");
   const [selectedDay, setSelectedDay] = useState("Lunes");
@@ -45,7 +46,7 @@ function App() {
         , selectedGroup: [selectedGroup, setSelectedGroup], selectedGenre: [selectedGenre, setSelectedGenre]
         , selectedLocation: [selectedLocation, setSelectedLocation], selectedSemester: [selectedSemester, setSelectedSemester]
         , selectedSubject: [selectedSubject, setSelectedSubject], selectedDay: [selectedDay, setSelectedDay]
-        , startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]}}>
+        , selectedBuilding: [selectedBuilding, setSelectedBuilding], startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]}}>
           <Router>
           <Sidebar isOpen={isOpen} toggle={toggle}/>
           <Navbar toggle={toggle}/>

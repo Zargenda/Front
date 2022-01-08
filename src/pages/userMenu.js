@@ -38,8 +38,8 @@ const UserMenu = () => {
   const [grades, setGrades] = useState(["Primero", "Segundo", "Tercero", "Cuarto ", "Quinto ", "Sexto  "]);
   const [semesters, setSemesters] = useState(["Primer semestre ", "Segundo semestre"]);
   const [selectedCareer, setSelectedCareer] = useState("Teoría");
-  const [selectedGrade, setSelectedGrade] = useState("Teoría");
-  const [selectedSemester, setSelectedSemester] = useState("Teoría");
+  const [selectedGrade, setSelectedGrade] = useState("Primero");
+  const [selectedSemester, setSelectedSemester] = useState("Primer semestre");
   const history = useHistory();
 
   function handleClick(e, page) {
