@@ -8,6 +8,7 @@ import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-alert'
 import {ScheduleData} from './scheduleData';
+import axios from 'axios';
 
 const clickableButton = {
   display: 'flex',
@@ -210,8 +211,21 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
-  onCreateClick() {    
-      alert("El calendario se ha creado con éxito.")
+  async onCreateClick() {    
+    await axios.request({
+              url: 'http://localhost:8080/mock/uploadHorarios',
+              method: 'post',
+              data: {
+                'horarios': JSON.stringify(this.state.data),
+              },
+            }).then(response => {
+              if(!response.data){
+                  console.log("Error fetching data")
+              }else{
+                  console.log("Success: "+JSON.stringify(response))
+              }                           
+          });
+      //alert("El calendario se ha creado con éxito.")
   }
 
   getGenre(genre){
@@ -300,6 +314,7 @@ export default class App extends Component {
     calendarId = this.getGenre(genre)
     dayNumber = this.getDay(day)
     
+    console.log("La fecha es: "+new Date(2021, 8, dayNumber, startHour, startMin))
     var newSubject = {
         Id: newId,
         Subject: (calendarId != 4) ? subjectName : "Seminario",

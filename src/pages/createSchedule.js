@@ -10,6 +10,7 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import CustomTimeline from './CustomTimeline'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScheduleData} from './scheduleData';
+import axios from 'axios';
 
 const title = {
     display: 'flex',
@@ -39,11 +40,13 @@ const body ={
     padding: '0.5rem calc((100vw - 165vh) / 3)',
 }
 
+const baseUrl = "http://localhost:8080/mock"
+
 const CreateSchedule = () => {  
-    const [careers, setCareers] = useState(["Ing. informática", "Magisterio      ", "Teleco          "]);
-    const [grades, setGrades] = useState(["Primero", "Segundo", "Tercero", "Cuarto ", "Quinto ", "Sexto  "]);
-    const [groups, setGroups] = useState(["Mañanas", "Tardes " ]);
-    const [semesters, setSemesters] = useState(["Primer semestre ", "Segundo semestre", "Año completo"]);
+    const [careers, setCareers] = useState([]);
+    const [grades, setGrades] = useState([]);
+    const [groups, setGroups] = useState([]);
+    const [semesters, setSemesters] = useState([]);
     const [buildings, setBuildings] = useState(["Ada Byron", "Torres Quevedo"]);
     const [subjects, setSubjects] = useState(["Gestión de proyecto software", "Lab Ing Soft"]);
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
@@ -67,8 +70,19 @@ const CreateSchedule = () => {
     const [endClockObj, setEndClockObj] = endClock
     useEffect(() => {
         //saveValues()
-        
+        fetchCareers()
     }, []);
+
+    async function fetchCareers() {
+        await axios.get(baseUrl+"/getPlanes")
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{
+                    setCareers(response.data)
+                }                           
+            });
+    }
 
     async function saveValues(){
         setSelectedCareerObj(selectedCareerObj)
@@ -76,6 +90,20 @@ const CreateSchedule = () => {
         setSelectedCareerObj(selectedCareerObj)
         setSelectedCareerObj(selectedCareerObj)
         setSelectedCareerObj(selectedCareerObj)
+    }
+
+    async function onCareerSelected(career){        
+        setSelectedCareerObj(career)
+        await axios.get(baseUrl+"/getInfoPlan?plan="+career)
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{                  
+                    setSemesters(response.data.Semester)
+                    setGrades(response.data.Grade)
+                    setGroups(response.data.Group)
+                }                           
+            });
     }
 
     const updateStartClock = async (clock) => { 
@@ -105,7 +133,7 @@ const CreateSchedule = () => {
             <div style={row}>
                     <DropdownButton id="dropdown-item-button"  title={selectedCareerObj}  variant="light">
                     {careers.map((career) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedCareerObj(career)}>{career}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => onCareerSelected(career)}>{career}</Dropdown.Item>))}
                     </DropdownButton>
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedGradeObj}  variant="light">

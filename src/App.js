@@ -22,10 +22,10 @@ function App() {
   const [sessionActive, setSessionActive] = useState(false);
   const [sessionEmail, setSessionEmail] = useState("");
   const [sessionRole, setSessionRole] = useState("");
-  const [selectedCareer, setSelectedCareer] = useState("Ing informática");
-  const [selectedGrade, setSelectedGrade] = useState("Primero");
-  const [selectedGroup, setSelectedGroup] = useState("Mañanas");
-  const [selectedSemester, setSelectedSemester] = useState("Primer semestre");
+  const [selectedCareer, setSelectedCareer] = useState("Seleccione uno");
+  const [selectedGrade, setSelectedGrade] = useState("Seleccione uno");
+  const [selectedGroup, setSelectedGroup] = useState("Seleccione uno");
+  const [selectedSemester, setSelectedSemester] = useState("Seleccione uno");
   const [selectedSubject, setSelectedSubject] = useState("Gestión de proyecto software");
   const [selectedBuilding, setSelectedBuilding] = useState("Ada Byron");
   const [selectedGenre, setSelectedGenre] = useState("Teoría");
