@@ -22,6 +22,7 @@ const column = {
   marginRight: '15%',
 };
 
+
 const clickableButton = { 
   flex: 1,  
   backgroundColor: "white", 
@@ -78,12 +79,14 @@ const AdminMenu = () => {
         <button onClick={(e) => handleClick(e, "/dataLoad")} style={clickableButton}> Carga de datos </button>
         <button onClick={(e) => handleClick(e, "/dataEdit")} style={clickableButton}> Edición de datos </button>
       </div>
-      <div style={column}>
-        <button disabled='true' style={unclickableButton}> Usuarios </button>
-        <button style={clickableButton}> Gestión usuarios privilegiados </button>
-      </div>
     </div> 
-    
+    <div style={isMobile ? column : row}> 
+      <div style={column}>
+          <button disabled='true' style={unclickableButton}> Calendarios </button>
+          <button onClick={(e) => handleClickCal(e)} style={clickableButton}> Crear calendarios </button>
+          <button style={clickableButton}> Exportar calendarios </button>
+      </div>
+    </div>  
     <div style={isMobile ? column : row}>
       
       <div style={column}>
@@ -92,11 +95,7 @@ const AdminMenu = () => {
         <button onClick={(e) => handleClick(e, "/editSchedule")} style={clickableButton}> Modificar horarios </button>
         <button  onClick={(e) => handleClick(e, "/incompatibilities")} style={clickableButton}> Consultar incompatibilidades </button>
       </div>
-      <div style={column}>
-        <button disabled='true' style={unclickableButton}> Calendarios </button>
-        <button onClick={(e) => handleClickCal(e)} style={clickableButton}> Crear calendarios </button>
-        <button style={clickableButton}> Exportar calendarios </button>
-      </div>
+
     </div>
     </div>
     </>
