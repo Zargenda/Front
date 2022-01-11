@@ -16,7 +16,8 @@ import {
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
 
-const baseUrl = 'https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
+const baseUrl = 'http://localhost:8080'
+
 
 
 const title = {
@@ -207,11 +208,11 @@ const Form = () => {
     }, []);
 
     async function fetchCalendar() {
-        /*await axios.get(baseUrl)
+        await axios.get(baseUrl+'/ObtenerC')
             .then(response => {
+                console.log("CALENDARARRAY--"+response)            
                 setCalendarArray(response.data);
-                //console.log("CALENDARARRAY--"+data)            
-            });*/
+            });
     }
     //Request
     async function saveCalendar() {
