@@ -190,6 +190,7 @@ const Form = () => {
                 setSecondCalendarArray(getQuarterArray(calendarArray,2))
                 //console.log("CALENDARARRAY--"+data)            
             });
+        console.log((JSON.stringify(firstCalendarArray)).length)
         /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
         setSecondCalendarArray(getQuarterArray(calendarArray, 2))

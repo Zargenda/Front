@@ -288,7 +288,7 @@ const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
                         {modal}
                     </Modal>
                     <div> {legendsList} </div>
-                </div> : null
+                </div>
     );
 };
 
