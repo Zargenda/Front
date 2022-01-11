@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const CalendarTable = ({ calendarArray, editable }) => {
+const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
     const styles = useStyles();
 
     const [changeModal, setChangeModal] = useState(false);
@@ -141,6 +141,7 @@ const CalendarTable = ({ calendarArray, editable }) => {
             //éxito
             }
         })
+        await fetchCalendar();
         toggleModal();
     };
 

@@ -183,11 +183,6 @@ const Form = () => {
     }, []);
 
     async function fetchCalendar() {
-        /*await axios.get(baseUrl+'/ObtenerC')
-            .then(response => {
-                console.log("CALENDARARRAY--"+response)            
-                setCalendarArray(response.data);
-            });*/
         await axios.get(baseUrl+'/ObtenerC')
             .then(response => {
                 var calendarArray = response.data;
@@ -197,11 +192,11 @@ const Form = () => {
             });
         /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
-        setSecondCalendarArray(getQuarterArray(calendarArray, 2))*/
+        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+        console.log("FETCHCALENDAR")*/
     }
     //Request
     async function saveCalendar() {
-        await saveQuarters()
         const examWithoutAdditional = [...examList].map(function (exam) {
             if (exam.comment == ANOTHER_EXAM)
                 return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.additional }
@@ -216,7 +211,20 @@ const Form = () => {
               //éxito
             }
           })
+        await fetchCalendar()
         console.log("TOTAL----------"+JSON.stringify(total))
+    }
+
+    async function deleteCalendar() {
+        await axios.get(baseUrl + '/')
+            .then(response => {
+                if (!response.data) {
+                    //error
+                } else {
+                    //éxito
+                }
+            })
+        await fetchCalendar()
     }
 
     async function saveQuarters() {
@@ -236,6 +244,7 @@ const Form = () => {
               //éxito
             }
           })
+        await fetchCalendar()
         //history.push("/");
     }
 
@@ -447,7 +456,7 @@ const Form = () => {
         return (<div id={key}> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} />
+            <CalendarTable calendarArray={calendarArray} editable={true} fetchCalendar={fetchCalendar} />
             <br />
         </div>);
     };
@@ -552,7 +561,10 @@ const Form = () => {
             <br/>
             <div style={buttonRow}>
                 <button onClick={savePdf} style={gen}>Exportar a PDF</button>
-                <button onClick={() => saveCalendar()} style={gen}  >Generar</button>
+                {firstCalendarArray.length <= 0 ? <button onClick={() => saveQuarters()} style={gen}>Generar</button> :
+                        <button onClick={() => saveCalendar()} style={gen}>Modificar</button>
+                }
+                {firstCalendarArray.length > 0 ? <button onClick={() => deleteCalendar()} style={gen}>Eliminar</button> :null}
                 {/*<button onClick={saveICS} style={gen}>Exportar a iCalendar</button>*/}
             </div>
             <br />
