@@ -161,6 +161,8 @@ const Form = () => {
     const [endFirstQuarter, setEndFirstQuarter] = useState("");
     const [startSecondQuarter, setStartSecondQuarter] = useState("");
     const [endSecondQuarter, setEndSecondQuarter] = useState("");
+    const [startSecondConvocatory, setStartSecondConvocatory] = useState("");
+    const [endSecondConvocatory, setEndSecondConvocatory] = useState("");
     const [festiveList, setFestiveList] = useState([
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
@@ -177,6 +179,7 @@ const Form = () => {
 
     const [firstCalendarArray, setFirstCalendarArray] = useState([])
     const [secondCalendarArray, setSecondCalendarArray] = useState([])
+    const [thirdCalendarArray, setThirdCalendarArray] = useState([])
 
     useEffect(() => {
         fetchCalendar();
@@ -187,13 +190,16 @@ const Form = () => {
             .then(response => {
                 var calendarArray = response.data;
                 setFirstCalendarArray(getQuarterArray(calendarArray, 1))
-                setSecondCalendarArray(getQuarterArray(calendarArray,2))
+                setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+                setThirdCalendarArray(getQuarterArray(calendarArray, 3))
                 //console.log("CALENDARARRAY--"+data)            
             });
-        /*var calendarArray = ([]);
+       /* var calendarArray = ([]);
+        
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
         setSecondCalendarArray(getQuarterArray(calendarArray, 2))
-        console.log("FETCHCALENDAR")*/
+        setThirdCalendarArray(getQuarterArray(calendarArray, 3))*/
+        console.log("FETCHCALENDAR")
     }
     function addOneDay(date) {
         return new Date(new Date(date).getTime() + dayInSeconds)
@@ -242,7 +248,9 @@ const Form = () => {
             startFirstQuarter: addOneDay(startFirstQuarter),
             endFirstQuarter: addOneDay(endFirstQuarter),
             startSecondQuarter: addOneDay(startSecondQuarter),
-            endSecondQuarter: addOneDay(endSecondQuarter)
+            endSecondQuarter: addOneDay(endSecondQuarter),
+            startSecondConvocatory: addOneDay(startSecondConvocatory),
+            endSecondConvocatory: addOneDay(endSecondConvocatory)
         }
         console.log("QUARTERS---"+JSON.stringify(quarters))
         await axios.post(baseUrl+"/IniciarC", {quarters})
@@ -461,18 +469,19 @@ const Form = () => {
         );
     });
 
-    const calendarComponent = (title, calendarArray, key) => {
-        return (<div id={key}> <br />
+    const calendarComponent = (title, calendarArray, enable) => {
+        return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} fetchCalendar={fetchCalendar} />
+            <CalendarTable calendarArray={calendarArray} editable={enable} fetchCalendar={fetchCalendar} enableHeader={enable}/>
             <br />
         </div>);
     };
 
     const CalendarRender = () => (<div id="Calendar">
-        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
-        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
+        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray, true) : null}
+        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray, true) : null}
+        {thirdCalendarArray.length > 0 ? calendarComponent("Período exámenes 2ª Convocatoria", thirdCalendarArray, false) : null}
         {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
     </div>)
 
@@ -536,6 +545,26 @@ const Form = () => {
                     <pre style={inputAlign}>
                         <DatePicker selected={endSecondQuarter}
                             onChange={(date) => setEndSecondQuarter(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Fin"
+                        />
+                    </pre>
+                </pre>
+            </div>
+            <div style={row}>
+                <label>Segunda convocatoria</label>
+                <pre style={date}>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={startSecondConvocatory}
+                            onChange={(date) => setStartSecondConvocatory(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Inicio"
+                        />
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={endSecondConvocatory}
+                            onChange={(date) => setEndSecondConvocatory(date)}
                             dateFormat="dd/MM/yyyy"
                             placeholderText="Fin"
                         />

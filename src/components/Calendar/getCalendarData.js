@@ -182,12 +182,17 @@ const alignEndWeek = (array) => {
 export const getQuarterArray = (array, number) => {
     if (array != null && array.length == 0) return [];
     let calendarArray = array.sort(sortByDate);
-    let secondIndex = calendarArray.slice(1, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER);
+    let secondIndex = calendarArray.slice(1, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER) + 1;
+    let thirdIndex = calendarArray.slice(secondIndex + 2, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER) + secondIndex + 2;
+    console.log("INDICES--" + secondIndex + "/" + thirdIndex
+        + JSON.stringify(calendarArray.slice(secondIndex + 1, calendarArray.length - 1)))
     let quarterArray;
     if (number == 1) 
-        quarterArray = calendarArray.slice(0, secondIndex+1)
+        quarterArray = calendarArray.slice(0, secondIndex)
+    else if (number == 2)
+        quarterArray = calendarArray.slice(secondIndex, thirdIndex)
     else 
-        quarterArray = calendarArray.slice(secondIndex+1, calendarArray.length)
+        quarterArray = calendarArray.slice(thirdIndex, calendarArray.length)
     //console.log("QUARTERAR"+JSON.stringify(quarterArray))
     return quarterArray
 }
@@ -342,15 +347,20 @@ export const getMonthHeader = (index, length, month) => {
     return header;
 }
 
-export const getWeekHeader = () => {
-    return weekDayName.map((day, i) => {
-        if(i==0)
-            return (<th key={i}>{day}</th>);
-        else 
-            return (<th key={i}>
-                <preHeader>{day}<div class="whiteLetter">{countByWeekDay[i - 1]}</div></preHeader>
-            </th>);
-    });
+export const getWeekHeader = (enable) => {
+    if(enable)
+        return weekDayName.map((day, i) => {
+            if(i==0)
+                return (<th key={i}>{day}</th>);
+            else 
+                return (<th key={i}>
+                    <preHeader>{day}<div class="whiteLetter">{countByWeekDay[i - 1]}</div></preHeader>
+                </th>);
+        });
+    else
+        return weekDayName.map((day, i) => {
+                return (<th key={i}>{day}</th>);
+        });
 }
 
 export const getWeekNumberStyle = (index, finalWeek) => {

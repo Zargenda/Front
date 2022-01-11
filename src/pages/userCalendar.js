@@ -42,6 +42,7 @@ const doc = new jsPDF();
 const UserCalendar = () => {
     const [firstCalendarArray, setFirstCalendarArray] = useState([]);
     const [secondCalendarArray, setSecondCalendarArray] = useState([]);
+    const [thirdCalendarArray, setThirdCalendarArray] = useState([])
 
 
     useEffect(() => {
@@ -54,30 +55,34 @@ const UserCalendar = () => {
                 var calendarArray = response.data;
                 setFirstCalendarArray(getQuarterArray(calendarArray, 1));
                 setSecondCalendarArray(getQuarterArray(calendarArray, 2));
+                setThirdCalendarArray(getQuarterArray(calendarArray, 3))
                 //console.log("CALENDARARRAY--"+data)            
             });
+
         /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
         setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+        setThirdCalendarArray(getQuarterArray(calendarArray, 3))
         console.log("FETCHCALENDAR")*/
     }
 
 
 
-    const calendarComponent = (title, calendarArray) => {
+    const calendarComponent = (title, calendarArray, enable) => {
         return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} fetchCalendar={fetchCalendar} />
+            <CalendarTable calendarArray={calendarArray} editable={enable} fetchCalendar={fetchCalendar} enableHeader={enable} />
             <br />
         </div>);
     };
 
     const CalendarRender = () => (<div id="Calendar">
-        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
-        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
+        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray, true) : null}
+        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray, true) : null}
+        {thirdCalendarArray.length > 0 ? calendarComponent("Período exámenes 2ª Convocatoria", thirdCalendarArray, false) : null}
         {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
-    </div>);
+    </div>)
 
     const savePdf = () => {
         if (firstCalendarArray.length > 0) {
