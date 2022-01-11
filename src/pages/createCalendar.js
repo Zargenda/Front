@@ -163,19 +163,9 @@ const Form = () => {
     const [endSecondQuarter, setEndSecondQuarter] = useState("");
     const [startSecondConvocatory, setStartSecondConvocatory] = useState("");
     const [endSecondConvocatory, setEndSecondConvocatory] = useState("");
-    const [festiveList, setFestiveList] = useState([
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
-        { startDate: new Date(), endDate: new Date(), comment: "Festividad" }
-    ]);
-    const [changeDayList, setChangeDayList] = useState([
-        { startDate: new Date(), comment: "Lunes" }
-    ]);
-    const [examList, setExamList] = useState([
-        { startDate: new Date(), endDate: new Date(), comment: ANOTHER_EXAM, additional: "" }
-    ]);
+    const [festiveList, setFestiveList] = useState([]);
+    const [changeDayList, setChangeDayList] = useState([]);
+    const [examList, setExamList] = useState([]);
 
     const [firstCalendarArray, setFirstCalendarArray] = useState([])
     const [secondCalendarArray, setSecondCalendarArray] = useState([])
@@ -490,13 +480,12 @@ const Form = () => {
             const input = document.getElementById('Calendar');
             html2canvas(input)
                 .then((canvas) => {
-                    let imgWidth = 180;
-                    let imgHeight = canvas.height * imgWidth / canvas.width;
+                    let imgWidth = 200;
+                    let imgHeight = 340;
                     const year = getStartYear();
                     const imgData = canvas.toDataURL('img/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', imgWidth, imgHeight, imgWidth, imgHeight);
-                    pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
+                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8); pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
                 });
         }
     }

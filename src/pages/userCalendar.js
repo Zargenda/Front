@@ -89,13 +89,12 @@ const UserCalendar = () => {
             const input = document.getElementById('Calendar');
             html2canvas(input)
                 .then((canvas) => {
-                    let imgWidth = 208;
-                    let imgHeight = canvas.height * imgWidth / canvas.width;
+                    let imgWidth = 200;
+                    let imgHeight = 340;
                     const year = getStartYear();
                     const imgData = canvas.toDataURL('img/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', imgWidth * 0.09, imgHeight * 0.01, imgWidth * 0.8, imgHeight * 0.8);
-                    pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
+                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8); pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
                 });
         }
     }
