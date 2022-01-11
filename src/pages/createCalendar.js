@@ -12,7 +12,7 @@ import "../components/Calendar/calendar.css";
 import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, 
-    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear
+    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear, dayInSeconds
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
 import { jsPDF } from "jspdf";
@@ -161,6 +161,8 @@ const Form = () => {
     const [endFirstQuarter, setEndFirstQuarter] = useState("");
     const [startSecondQuarter, setStartSecondQuarter] = useState("");
     const [endSecondQuarter, setEndSecondQuarter] = useState("");
+    const [startSecondConvocatory, setStartSecondConvocatory] = useState("");
+    const [endSecondConvocatory, setEndSecondConvocatory] = useState("");
     const [festiveList, setFestiveList] = useState([
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
         { startDate: new Date(), endDate: new Date(), comment: "Festividad" },
@@ -177,6 +179,7 @@ const Form = () => {
 
     const [firstCalendarArray, setFirstCalendarArray] = useState([])
     const [secondCalendarArray, setSecondCalendarArray] = useState([])
+    const [thirdCalendarArray, setThirdCalendarArray] = useState([])
 
     useEffect(() => {
         fetchCalendar();
@@ -187,23 +190,34 @@ const Form = () => {
             .then(response => {
                 var calendarArray = response.data;
                 setFirstCalendarArray(getQuarterArray(calendarArray, 1))
-                setSecondCalendarArray(getQuarterArray(calendarArray,2))
+                setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+                setThirdCalendarArray(getQuarterArray(calendarArray, 3))
                 //console.log("CALENDARARRAY--"+data)            
             });
         console.log((JSON.stringify(firstCalendarArray)).length)
         /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
         setSecondCalendarArray(getQuarterArray(calendarArray, 2))
-        console.log("FETCHCALENDAR")*/
+        setThirdCalendarArray(getQuarterArray(calendarArray, 3))*/
+        console.log("FETCHCALENDAR")
+    }
+    function addOneDay(date) {
+        return new Date(new Date(date).getTime() + dayInSeconds)
+    }
+    function addOneDayArray(array) {
+        return [...array].map(function (elem) {
+            return { startDate: addOneDay(elem.startDate), endDate: addOneDay(elem.endDate), comment: elem.comment }
+        })
     }
     //Request
     async function saveCalendar() {
         const examWithoutAdditional = [...examList].map(function (exam) {
             if (exam.comment == ANOTHER_EXAM)
-                return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.additional }
-            return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.comment }
+                return { startDate: addOneDay(exam.startDate), endDate: addOneDay(exam.endDate), comment: exam.additional }
+            return { startDate: addOneDay(exam.startDate), endDate: addOneDay(exam.endDate), comment: exam.comment }
         })
-        const total = festiveList.concat(changeDayList).concat(examWithoutAdditional)
+
+        const total = addOneDayArray(festiveList).concat(addOneDayArray(changeDayList)).concat(examWithoutAdditional)
         await axios.post(baseUrl+'/ModificarC', {total})
           .then(response=>{
             if(!response.data){
@@ -217,7 +231,7 @@ const Form = () => {
     }
 
     async function deleteCalendar() {
-        await axios.get(baseUrl + '/')
+        await axios.post(baseUrl + '/ResetC')
             .then(response => {
                 if (!response.data) {
                     //error
@@ -231,10 +245,12 @@ const Form = () => {
     async function saveQuarters() {
         let quarters = {
             //todo callendario controller 24l
-             startFirstQuarter: startFirstQuarter,
-             endFirstQuarter: endFirstQuarter,
-             startSecondQuarter: startSecondQuarter,
-             endSecondQuarter: endSecondQuarter
+            startFirstQuarter: addOneDay(startFirstQuarter),
+            endFirstQuarter: addOneDay(endFirstQuarter),
+            startSecondQuarter: addOneDay(startSecondQuarter),
+            endSecondQuarter: addOneDay(endSecondQuarter),
+            startSecondConvocatory: addOneDay(startSecondConvocatory),
+            endSecondConvocatory: addOneDay(endSecondConvocatory)
         }
         console.log("QUARTERS---"+JSON.stringify(quarters))
         await axios.post(baseUrl+"/IniciarC", {quarters})
@@ -453,18 +469,19 @@ const Form = () => {
         );
     });
 
-    const calendarComponent = (title, calendarArray, key) => {
-        return (<div id={key}> <br />
+    const calendarComponent = (title, calendarArray, enable) => {
+        return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} fetchCalendar={fetchCalendar} />
+            <CalendarTable calendarArray={calendarArray} editable={enable} fetchCalendar={fetchCalendar} enableHeader={enable}/>
             <br />
         </div>);
     };
 
     const CalendarRender = () => (<div id="Calendar">
-        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
-        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
+        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray, true) : null}
+        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray, true) : null}
+        {thirdCalendarArray.length > 0 ? calendarComponent("Período exámenes 2ª Convocatoria", thirdCalendarArray, false) : null}
         {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
     </div>)
 
@@ -473,12 +490,12 @@ const Form = () => {
             const input = document.getElementById('Calendar');
             html2canvas(input)
                 .then((canvas) => {
-                    let imgWidth = 208;
+                    let imgWidth = 180;
                     let imgHeight = canvas.height * imgWidth / canvas.width;
                     const year = getStartYear();
                     const imgData = canvas.toDataURL('img/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', imgWidth * 0.09, imgHeight * 0.01, imgWidth * 0.8, imgHeight * 0.8);
+                    pdf.addImage(imgData, 'PNG', imgWidth, imgHeight, imgWidth, imgHeight);
                     pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
                 });
         }
@@ -528,6 +545,26 @@ const Form = () => {
                     <pre style={inputAlign}>
                         <DatePicker selected={endSecondQuarter}
                             onChange={(date) => setEndSecondQuarter(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Fin"
+                        />
+                    </pre>
+                </pre>
+            </div>
+            <div style={row}>
+                <label>Segunda convocatoria</label>
+                <pre style={date}>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={startSecondConvocatory}
+                            onChange={(date) => setStartSecondConvocatory(date)}
+                            dateFormat="dd/MM/yyyy"
+                            placeholderText="Inicio"
+                        />
+                    </pre>
+                    <pre style={inputAlign}> - </pre>
+                    <pre style={inputAlign}>
+                        <DatePicker selected={endSecondConvocatory}
+                            onChange={(date) => setEndSecondConvocatory(date)}
                             dateFormat="dd/MM/yyyy"
                             placeholderText="Fin"
                         />

@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
+const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar }) => {
     const styles = useStyles();
 
     const [changeModal, setChangeModal] = useState(false);
@@ -125,8 +125,10 @@ const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
     }
     const saveModal = async () => {
         let opt = changeDateOption;
+        let date = new Date(changeDate.getTime() + dayInSeconds)
+
         let dateInfo = {
-            date: changeDate,
+            date: date,
             type: getTypeConst(),
             day: getWeekDay(),
             comment: changeDateComment,
@@ -271,18 +273,18 @@ const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
 
     return (
                 <div class="calendarRow">
-            {calendarArray.length > 0 ? <div>
+            {calendarArray.length > 0? <div>
                 <table class="calendarTable">
-                    <thead>
+                     <thead>
                         <tr>
                             <th class="header">{getStartYear()}</th>
-                            {getWeekHeader()}
+                            {getWeekHeader(enableHeader)}
                         </tr>
                     </thead>
                     {tBodies}
                 </table>
             </div> : null}
-                    <Modal
+                <Modal
                         open={changeModal}
                         onClose={toggleModal}>
                         {modal}

@@ -12,7 +12,7 @@ import axios from 'axios';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 
-const baseUrl = 'https://localhost:8000';
+const baseUrl = 'http://localhost:8080';
 
 const body = {
     padding: '0.5rem calc((100vw - 165vh) / 3)',
@@ -42,6 +42,7 @@ const doc = new jsPDF();
 const UserCalendar = () => {
     const [firstCalendarArray, setFirstCalendarArray] = useState([]);
     const [secondCalendarArray, setSecondCalendarArray] = useState([]);
+    const [thirdCalendarArray, setThirdCalendarArray] = useState([])
 
 
     useEffect(() => {
@@ -49,34 +50,39 @@ const UserCalendar = () => {
     }, []);
 
     async function fetchCalendar() {
-        /*await axios.get(baseUrl+)
+        await axios.get(baseUrl + '/ObtenerC')
             .then(response => {
                 var calendarArray = response.data;
-                setFirstCalendarArray(getQuarterArray(calendarArray, 1))
-                setSecondCalendarArray(getQuarterArray(calendarArray,2))
+                setFirstCalendarArray(getQuarterArray(calendarArray, 1));
+                setSecondCalendarArray(getQuarterArray(calendarArray, 2));
+                setThirdCalendarArray(getQuarterArray(calendarArray, 3))
                 //console.log("CALENDARARRAY--"+data)            
-            });*/
-        var calendarArray = ([])
+            });
+
+        /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
-        setSecondCalendarArray(getQuarterArray(calendarArray, 2));
+        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+        setThirdCalendarArray(getQuarterArray(calendarArray, 3))
+        console.log("FETCHCALENDAR")*/
     }
 
 
 
-    const calendarComponent = (title, calendarArray) => {
+    const calendarComponent = (title, calendarArray, enable) => {
         return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} />
+            <CalendarTable calendarArray={calendarArray} editable={enable} fetchCalendar={fetchCalendar} enableHeader={enable} />
             <br />
         </div>);
     };
 
     const CalendarRender = () => (<div id="Calendar">
-        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray) : null}
-        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray) : null}
+        {firstCalendarArray.length > 0 ? calendarComponent("Primer semestre", firstCalendarArray, true) : null}
+        {secondCalendarArray.length > 0 ? calendarComponent("Segundo semestre", secondCalendarArray, true) : null}
+        {thirdCalendarArray.length > 0 ? calendarComponent("Período exámenes 2ª Convocatoria", thirdCalendarArray, false) : null}
         {firstCalendarArray.length > 0 ? <LegendHeader /> : null}
-    </div>);
+    </div>)
 
     const savePdf = () => {
         if (firstCalendarArray.length > 0) {
