@@ -51,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
+//const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
+const baseUrl='https://localhost:8080/getAsignaturas'
 
 const DataEdit = () => {   
     const styles = useStyles(); 
@@ -79,8 +80,8 @@ const DataEdit = () => {
     async function fetchData(){
         await axios.get(baseUrl)
         .then(response=>{
-            setData(response.data)
-            //console.log(data)            
+            //setData(response.data)
+            console.log(data)            
         })
     }
 

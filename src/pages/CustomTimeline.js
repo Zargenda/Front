@@ -211,21 +211,32 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
-  async onCreateClick() {    
-    await axios.request({
-              url: 'http://localhost:8080/mock/uploadHorarios',
-              method: 'post',
-              data: {
-                'horarios': JSON.stringify(this.state.data),
-              },
-            }).then(response => {
+  async onCreateClick() {   
+    const map = new Map(); 
+    var scheduleAux = {id: 0, curso: this.context.selectedGrade[0], 
+      semestre: this.context.selectedSemester[0], 
+      grupo: this.context.selectedGroup[0],
+      nombrePlan: this.context.selectedCareer[0]
+    }
+    var dataAux = this.state.data
+    for (var i = 0; i < dataAux.length; i++) {
+      dataAux[i].StartTime = dataAux[i].StartTime.toISOString()
+      dataAux[i].EndTime = dataAux[i].EndTime.toISOString()
+      dataAux[i].idPadre = 1
+    }
+    scheduleAux.horarioAsignaturas = dataAux
+
+    await axios.post('http://localhost:8080/horarios/uploadHorarioA',
+                scheduleAux
+            ).then(response => {
               if(!response.data){
                   console.log("Error fetching data")
               }else{
+                  alert("El calendario se ha creado con éxito.")
                   console.log("Success: "+JSON.stringify(response))
               }                           
           });
-      //alert("El calendario se ha creado con éxito.")
+      
   }
 
   getGenre(genre){
@@ -295,14 +306,13 @@ export default class App extends Component {
   }
 
   async onAddClick() {        
-    console.log("El contexto es" +JSON.stringify(this.context))
     var subjectName = this.context.selectedSubject[0]    
     var startTime = this.context.startClock[0]   
     var endTime = this.context.endClock[0]   
     var genre = this.context.selectedGenre[0]   
     var day = this.context.selectedDay[0]   
     var location = this.context.selectedLocation[0]   
-    var frecuency = await AsyncStorage.getItem("selectedFrecuency")
+    var frecuency = this.context.selectedFrecuency[0]   
     var newId = this.state.data.at(-1).Id + 1
     var calendarId = 0
     var dayNumber = 13
@@ -314,7 +324,6 @@ export default class App extends Component {
     calendarId = this.getGenre(genre)
     dayNumber = this.getDay(day)
     
-    console.log("La fecha es: "+new Date(2021, 8, dayNumber, startHour, startMin))
     var newSubject = {
         Id: newId,
         Subject: (calendarId != 4) ? subjectName : "Seminario",

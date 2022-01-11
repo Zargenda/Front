@@ -22,17 +22,18 @@ function App() {
   const [sessionActive, setSessionActive] = useState(false);
   const [sessionEmail, setSessionEmail] = useState("");
   const [sessionRole, setSessionRole] = useState("");
-  const [selectedCareer, setSelectedCareer] = useState("Seleccione uno");
-  const [selectedGrade, setSelectedGrade] = useState("Seleccione uno");
-  const [selectedGroup, setSelectedGroup] = useState("Seleccione uno");
-  const [selectedSemester, setSelectedSemester] = useState("Seleccione uno");
-  const [selectedSubject, setSelectedSubject] = useState("Gestión de proyecto software");
+  const [selectedCareer, setSelectedCareer] = useState("Seleccione carrera");
+  const [selectedGrade, setSelectedGrade] = useState("Seleccione curso");
+  const [selectedGroup, setSelectedGroup] = useState("Seleccione grupo");
+  const [selectedSemester, setSelectedSemester] = useState("Seleccione semestre");
+  const [selectedSubject, setSelectedSubject] = useState("Seleccione una");
   const [selectedBuilding, setSelectedBuilding] = useState("Ada Byron");
   const [selectedGenre, setSelectedGenre] = useState("Teoría");
-  const [selectedLocation, setSelectedLocation] = useState("A.1");
+  const [selectedLocation, setSelectedLocation] = useState("Seleccione una");
   const [selectedDay, setSelectedDay] = useState("Lunes");
   const [startClock, setStartClock] = useState('10:00');
   const [endClock, setEndClock] = useState('10:00');
+  const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
 
   const toggle = () => {
     setIsOpen(!isOpen)
@@ -46,7 +47,8 @@ function App() {
         , selectedGroup: [selectedGroup, setSelectedGroup], selectedGenre: [selectedGenre, setSelectedGenre]
         , selectedLocation: [selectedLocation, setSelectedLocation], selectedSemester: [selectedSemester, setSelectedSemester]
         , selectedSubject: [selectedSubject, setSelectedSubject], selectedDay: [selectedDay, setSelectedDay]
-        , selectedBuilding: [selectedBuilding, setSelectedBuilding], startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]}}>
+        , selectedBuilding: [selectedBuilding, setSelectedBuilding], startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]
+        , selectedFrecuency: [selectedFrecuency, setSelectedFrecuency]}}>
           <Router>
           <Sidebar isOpen={isOpen} toggle={toggle}/>
           <Navbar toggle={toggle}/>
