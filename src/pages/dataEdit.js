@@ -52,19 +52,19 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 //const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
-const baseUrl='https://localhost:8080/getAsignaturas'
+const baseUrl= "http://localhost:8080/asignaturas"
 
 const DataEdit = () => {   
     const styles = useStyles(); 
     const [data, setData] = useState([]);
-    const columns = [{title: 'Código', field: 'Cod_IOE'}, {title: 'Asignatura', field: 'Nombre'}];
+    const columns = [{title: 'Código', field: 'id'}, {title: 'Asignatura', field: 'nombre'}];
     const [modalEditar, setModalEditar]=useState(false);
     const [modalEliminar, setModalEliminar]=useState(false);
     const [modalInsertar, setModalInsertar]=useState(false);
     const [width, setWidth] = useState(window.innerWidth);
     const [asignaturaSeleccionada, setAsignaturaSeleccionada]=useState({
-        Cod_IOE: '',
-        Nombre:'',
+        id: '',
+        nombre:'',
       })
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -78,11 +78,15 @@ const DataEdit = () => {
     }, []);
 
     async function fetchData(){
-        await axios.get(baseUrl)
-        .then(response=>{
-            //setData(response.data)
-            console.log(data)            
-        })
+      await axios.get(baseUrl+"/getAsignaturas")
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{
+                  console.log("El data essss "+JSON.stringify(response.data))
+                  setData(response.data)
+                }                           
+            });
     }
 
     let isMobile = (width <= 768);
@@ -162,9 +166,9 @@ const DataEdit = () => {
     const bodyEditar=(
         <div className={styles.modal}>
           <h3>Editar asignatura</h3>
-          <TextField name="Nombre" className={styles.inputMaterial} label="Nombre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.Nombre}/>
+          <TextField name="nombre" className={styles.inputMaterial} label="nombre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.nombre}/>
           <br />
-          <TextField name="Cod_IOE" className={styles.inputMaterial} label="Codigo" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.Cod_IOE}/>
+          <TextField name="id" className={styles.inputMaterial} label="id" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.id}/>
           <br />
           <div align="right">
             <Button color="primary" onClick={()=>peticionPut()}>Editar</Button>

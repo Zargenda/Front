@@ -54,7 +54,7 @@ const CreateSchedule = () => {
     const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal","Puntual"]);    
     const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
     const {selectedCareer, selectedGrade, selectedGroup, selectedSemester, selectedSubject,
-        selectedGenre, selectedLocation, selectedDay, startClock, endClock, selectedBuilding, selectedFrecuency} = React.useContext(ScheduleData);
+        selectedGenre, selectedLocation, selectedDay, startClock, endClock, selectedBuilding, selectedFrecuency, scheduleData} = React.useContext(ScheduleData);
     const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
     const [selectedGradeObj, setSelectedGradeObj] = selectedGrade
     const [selectedGroupObj, setSelectedGroupObj] = selectedGroup
@@ -67,6 +67,7 @@ const CreateSchedule = () => {
     const [startClockObj, setStartClockObj] = startClock
     const [endClockObj, setEndClockObj] = endClock
     const [selectedFrecuencyObj, setSelectedFrecuencyObj] = selectedFrecuency
+    const [scheduleDataObj, setScheduleDataObj] = scheduleData
     useEffect(() => {        
         fetchCareers()
     }, []);
@@ -142,6 +143,19 @@ const CreateSchedule = () => {
             });
     }
 
+    async function onGroupSelected(group){        
+        setSelectedGroupObj(group)
+        await axios.get("http://localhost:8080/horarios/getHorario?nombrePlan="+selectedCareerObj+"&semestre="+selectedSemesterObj+"&curso="+selectedGradeObj+"&grupo="+group)
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{              
+                    console.log("El data es:" +response.data)
+                    //setSubjects(response.data.subjects)
+                }                           
+            });
+    }
+
     const updateStartClock = async (clock) => { 
         setStartClockObj(clock)
     }
@@ -181,7 +195,7 @@ const CreateSchedule = () => {
                     <label style={{marginTop: '1vh', marginRight: '1vh'}}>Grupo:</label>
                     <DropdownButton id="dropdown-item-button"  title={selectedGroupObj}  variant="light">
                     {groups.map((group) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedGroupObj(group)}>{group}</Dropdown.Item>))}
+                        <Dropdown.Item as="button" onClick={() => onGroupSelected(group)}>{group}</Dropdown.Item>))}
                     </DropdownButton>
                 </div>
                 

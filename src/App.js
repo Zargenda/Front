@@ -34,6 +34,7 @@ function App() {
   const [startClock, setStartClock] = useState('10:00');
   const [endClock, setEndClock] = useState('10:00');
   const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
+  const [scheduleData, setScheduleData] = useState([]);
 
   const toggle = () => {
     setIsOpen(!isOpen)
@@ -48,7 +49,7 @@ function App() {
         , selectedLocation: [selectedLocation, setSelectedLocation], selectedSemester: [selectedSemester, setSelectedSemester]
         , selectedSubject: [selectedSubject, setSelectedSubject], selectedDay: [selectedDay, setSelectedDay]
         , selectedBuilding: [selectedBuilding, setSelectedBuilding], startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]
-        , selectedFrecuency: [selectedFrecuency, setSelectedFrecuency]}}>
+        , selectedFrecuency: [selectedFrecuency, setSelectedFrecuency], scheduleData: [scheduleData, setScheduleData]}}>
           <Router>
           <Sidebar isOpen={isOpen} toggle={toggle}/>
           <Navbar toggle={toggle}/>
