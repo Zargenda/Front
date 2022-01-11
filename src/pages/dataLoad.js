@@ -5,7 +5,8 @@ import { Col, Container} from "react-bootstrap";
 import { ReactExcel, readFile, generateObjects } from '@ramonak/react-excel';
 import { useHistory } from "react-router-dom";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-
+import axios from 'axios';
+import { Alert } from 'react-alert'
 
 const column = {
     display: 'flex',
@@ -38,31 +39,47 @@ const mobileTable = {
     overflow: "scroll", 
 };
 
+const baseUrl = "http://localhost:8080/mock"
+
 const DataLoad = () => {    
     const [initialData, setInitialData] = useState(undefined);
     const [currentSheet, setCurrentSheet] = useState({});
     const [errors, setErrors] = useState(["Error en la línea 12", "Error en la línea 64"]);
     const [error, setError] = useState(false);
     const history = useHistory();
+    const [file, setFile] = useState(undefined)
 
     const handleUpload = (event) => {
-        const file = event.target.files[0];
+        const selectedFile = event.target.files[0];
         //read excel file
-        readFile(file)
+        setFile(selectedFile)
+        readFile(selectedFile)        
         .then((readedData) => {            
             setInitialData(readedData)
             })
         .catch((error) => console.error(error));
     };
 
-    const save = () => {
+    async function save() {
         const result = generateObjects(currentSheet);
-        //save array of objects to backend
-        //fetch("/api/save", {
-        //    method: 'POST',
-        //    body: JSON.stringify(result)
-        //});
-        history.push("/dataEdit");
+        var formData = new FormData();
+        formData.append("file", file);
+        await axios.post(baseUrl+"/upload",
+            formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                if(!response.data){
+                    alert("Se ha producido un error, inténtelo de nuevo.")
+                }else{
+                    console.log("Success: " +JSON.stringify(response))
+                    history.push("/dataEdit");
+                }                           
+            }).catch(error =>{
+                alert("Se ha producido un error, inténtelo de nuevo.")
+            });        
     };
 
     const [width, setWidth] = useState(window.innerWidth);

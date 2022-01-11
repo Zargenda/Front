@@ -13,13 +13,29 @@ import DataEdit from './pages/dataEdit';
 import EditSchedule from './pages/editSchedule';
 import UserMenu from './pages/userMenu';
 import {Session, SessionRole, SessionEmail} from './pages/session';
+import {ScheduleData} from './pages/scheduleData';
 import UserCalendar from './pages/userCalendar';
+import Incompatibilities from './pages/incompatibilities';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
   const [sessionActive, setSessionActive] = useState(false);
   const [sessionEmail, setSessionEmail] = useState("");
   const [sessionRole, setSessionRole] = useState("");
+  const [selectedCareer, setSelectedCareer] = useState("Seleccione carrera");
+  const [selectedGrade, setSelectedGrade] = useState("Seleccione curso");
+  const [selectedGroup, setSelectedGroup] = useState("Seleccione grupo");
+  const [selectedSemester, setSelectedSemester] = useState("Seleccione semestre");
+  const [selectedSubject, setSelectedSubject] = useState("Seleccione una");
+  const [selectedBuilding, setSelectedBuilding] = useState("Ada Byron");
+  const [selectedGenre, setSelectedGenre] = useState("Teoría");
+  const [selectedLocation, setSelectedLocation] = useState("Seleccione una");
+  const [selectedDay, setSelectedDay] = useState("Lunes");
+  const [startClock, setStartClock] = useState('10:00');
+  const [endClock, setEndClock] = useState('10:00');
+  const [selectedFrecuency, setSelectedFrecuency] = useState("Semanal");
+  const [scheduleData, setScheduleData] = useState([]);
+
   const toggle = () => {
     setIsOpen(!isOpen)
   }
@@ -28,6 +44,12 @@ function App() {
     <Session.Provider value={{sessionActive, setSessionActive}}>
       <SessionEmail.Provider value={{sessionEmail, setSessionEmail}}>
         <SessionRole.Provider value={{sessionRole, setSessionRole}}>
+        <ScheduleData.Provider value={{ selectedCareer: [selectedCareer, setSelectedCareer], selectedGrade: [selectedGrade, setSelectedGrade]
+        , selectedGroup: [selectedGroup, setSelectedGroup], selectedGenre: [selectedGenre, setSelectedGenre]
+        , selectedLocation: [selectedLocation, setSelectedLocation], selectedSemester: [selectedSemester, setSelectedSemester]
+        , selectedSubject: [selectedSubject, setSelectedSubject], selectedDay: [selectedDay, setSelectedDay]
+        , selectedBuilding: [selectedBuilding, setSelectedBuilding], startClock: [startClock, setStartClock], endClock: [endClock, setEndClock]
+        , selectedFrecuency: [selectedFrecuency, setSelectedFrecuency], scheduleData: [scheduleData, setScheduleData]}}>
           <Router>
           <Sidebar isOpen={isOpen} toggle={toggle}/>
           <Navbar toggle={toggle}/>
@@ -42,8 +64,10 @@ function App() {
               <Route path='/editSchedule' component={EditSchedule} />
               <Route path='/user' component={UserMenu} />
               <Route path='/userCalendar' component={UserCalendar} />
+              <Route path='/incompatibilities' component={Incompatibilities} />
             </Switch>
           </Router>
+          </ScheduleData.Provider>
         </SessionRole.Provider>
       </SessionEmail.Provider>
     </Session.Provider>

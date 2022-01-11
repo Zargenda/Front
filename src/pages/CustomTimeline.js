@@ -3,10 +3,12 @@ import { Inject, ScheduleComponent, WorkWeek, ViewsDirective, ViewDirective, ICa
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-import { closest, isNullOrUndefined } from '@syncfusion/ej2-base';
+import { addClass, Browser, closest, extend, Internationalization, isNullOrUndefined, removeClass, remove, compile } from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-alert'
+import {ScheduleData} from './scheduleData';
+import axios from 'axios';
 
 const clickableButton = {
   display: 'flex',
@@ -37,39 +39,47 @@ const gen = {
   height: '5%', 
 }
 
-export default class App extends Component {
+export default class App extends Component {  
   constructor(props) {
     super(props);
-    const scheduleObj = null
-
-    this.data = [{
+    const scheduleObj = null    
+    this.state={
+      data : [{
           Id: 1,
           Subject: 'Laboratorio ing software',
           StartTime: new Date(2021, 8, 14, 9, 30),
           EndTime: new Date(2021, 8, 14, 11, 0),
           CalendarId: 1,
-          Description: "Aula 1.1"
+          Description: "Aula 1.1",
+          Frecuency: "Semanal"
       }, {
           Id: 2,
           Subject: 'Sistemas legados',
           StartTime: new Date(2021, 8, 13, 9, 30),
           EndTime: new Date(2021, 8, 13, 11, 0),
-          CalendarId: 2
+          CalendarId: 2,
+          Description: "Aula 1.3",
+          Frecuency: "Semanal"
       }, {
           Id: 3,
           Subject: 'Seguridad informática',
           StartTime: new Date(2021, 8, 13, 9, 30),
           EndTime: new Date(2021, 8, 13, 11, 0),
-          CalendarId: 1
-      }];
+          CalendarId: 1,
+          Description: "Aula 3.1",
+          Frecuency: "Semanal"
+      }]
+    };
+      
   }
-
   calendarCollections = [
     { CalendarText: 'Teoría', CalendarId: 1, CalendarColor: '#55B7EE' },
     { CalendarText: 'Prácticas', CalendarId: 2, CalendarColor: '#FB84F0' },
     { CalendarText: 'Problemas', CalendarId: 3, CalendarColor: '#55B7EE' },
     { CalendarText: 'Seminario', CalendarId: 4, CalendarColor: '#686464' }
   ];
+
+  intl = new Internationalization();
   
   contentTemplate = (props) => {
     return (
@@ -88,6 +98,8 @@ export default class App extends Component {
           <div className="event-content">
             <div className="meeting-subject-wrap">
               <span>{props.Description}</span>
+              <br></br>
+              <span>{props.Frecuency}</span>
             </div>
           </div>
         }
@@ -105,11 +117,11 @@ export default class App extends Component {
                 fields={{ text: "CalendarText", value: "CalendarId" }} id={1} placeholder="Tipo"  popupHeight="200px" />
       </td></tr>
       <tr><td className="e-textlabel">Desde</td><td style={{ colspan: '4' }}>
-        <DateTimePickerComponent id="StartTime" format='dd/MM/yy hh:mm a' data-name="StartTime" value={new Date(props.startTime || props.StartTime)}
+        <DateTimePickerComponent id="StartTime" strictMode={true} min={new Date(2021, 8, 13)} max={new Date(2021, 8, 17)} format='dd/MM/yy hh:mm a' data-name="StartTime" value={new Date(props.startTime || props.StartTime)}
           className="e-field"></DateTimePickerComponent>
       </td></tr>
       <tr><td className="e-textlabel">Hasta</td><td style={{ colspan: '4' }}>
-        <DateTimePickerComponent id="EndTime" format='dd/MM/yy hh:mm a' data-name="EndTime" value={new Date(props.endTime || props.EndTime)}
+        <DateTimePickerComponent id="EndTime" strictMode={true} min={new Date(2021, 8, 13)} max={new Date(2021, 8, 17)} format='dd/MM/yy hh:mm a' data-name="EndTime" value={new Date(props.endTime || props.EndTime)}
           className="e-field"></DateTimePickerComponent>
       </td></tr>
       <tr><td className="e-textlabel">Clase</td><td style={{ colspan: '4' }}>
@@ -119,7 +131,7 @@ export default class App extends Component {
   }
 
   getEventType (data) {
-    const resourceData = this.getResourceData(data);
+    const resourceData = this.getResourceData(this.state.data);
     let calendarText = '';
     if (resourceData) {
       calendarText = resourceData.CalendarText.toString();
@@ -156,18 +168,12 @@ export default class App extends Component {
     } else if ((e.target).id === 'delete') {
       const eventDetails = this.scheduleObj.activeEventData.event;
       let currentAction = 'Delete';
-      if (eventDetails.RecurrenceRule) {
-        currentAction = 'DeleteOccurrence';
-      }
       this.scheduleObj.deleteEvent(eventDetails, currentAction);
     } else {
       const isCellPopup = (quickPopup.firstElementChild).classList.contains('e-cell-popup');
       const eventDetails = isCellPopup ? getSlotData() :
         this.scheduleObj.activeEventData.event ;
       let currentAction = isCellPopup ? 'Add' : 'Save';
-      if (eventDetails.RecurrenceRule) {
-        currentAction = 'EditOccurrence';
-      }
       this.scheduleObj.openEditor(eventDetails, currentAction, true);
     }
     this.scheduleObj.closeQuickInfoPopup();
@@ -205,8 +211,32 @@ export default class App extends Component {
       this.scheduleObj.exportToICalendar();
   }
 
-  onCreateClick() {    
-      alert("El calendario se ha creado con éxito.")
+  async onCreateClick() {   
+    const map = new Map(); 
+    var scheduleAux = {id: 0, curso: this.context.selectedGrade[0], 
+      semestre: this.context.selectedSemester[0], 
+      grupo: this.context.selectedGroup[0],
+      nombrePlan: this.context.selectedCareer[0]
+    }
+    var dataAux = this.state.data
+    for (var i = 0; i < dataAux.length; i++) {
+      dataAux[i].StartTime = dataAux[i].StartTime.toISOString()
+      dataAux[i].EndTime = dataAux[i].EndTime.toISOString()
+      dataAux[i].idPadre = 1
+    }
+    scheduleAux.horarioAsignaturas = dataAux
+
+    await axios.post('http://localhost:8080/horarios/uploadHorarioA',
+                scheduleAux
+            ).then(response => {
+              if(!response.data){
+                  console.log("Error fetching data")
+              }else{
+                  alert("El calendario se ha creado con éxito.")
+                  console.log("Success: "+JSON.stringify(response))
+              }                           
+          });
+      
   }
 
   getGenre(genre){
@@ -250,51 +280,40 @@ export default class App extends Component {
     return dayNumber
   }
 
-  getRecurrence(frecuency, day){
-    var interval = "6"
-    var byday = "WE"
-    var recurrence = "FREQ=DAILY;BYDAY=WE;INTERVAL=14;"
-
-    switch(day){
-      case "Lunes":
-        byday = "MO"
-        break
-      case "Martes":
-        byday = "TU"
-        break
-      case "Miércoles":
-        byday = "WE"
-        break
-      case "Jueves":
-        byday = "TH"
-        break
-      case "Viernes":
-        byday = "FR"
-        break
-    }
-    switch(frecuency){
-      case "Semanal":
-        interval = 6
-        break
-      case "Quincenal":
-        interval = 14
-        break
-      case "Puntual":
-        return "Once"
-    }
-    recurrence = "FREQ=DAILY;BYDAY="+byday+";INTERVAL="+interval+";"
-    return recurrence
+  dateHeaderTemplate = (props) => {
+    var dateArray = this.getDateHeaderText(props.date).split(" ");
+    return (<div><div>{this.parseDay(dateArray[1])}</div></div>);
   }
 
-  async onAddClick() {    
-    var subjectName = await AsyncStorage.getItem("selectedSubject")
-    var startTime = await AsyncStorage.getItem("startClock")
-    var endTime = await AsyncStorage.getItem("endClock")
-    var genre = await AsyncStorage.getItem("selectedGenre")
-    var day = await AsyncStorage.getItem("selectedDay")
-    var location = await AsyncStorage.getItem("selectedLocation")
-    var frecuency = await AsyncStorage.getItem("selectedFrecuency")
-    var newId = this.data.at(-1).Id + 1
+  getDateHeaderText(value) {
+    return this.intl.formatDate(value, { skeleton: 'Ed' });
+  }
+
+  parseDay(day){
+    switch(day){
+      case "Mon":
+        return "Lunes"
+      case "Tue":
+        return "Martes"
+      case "Wed":
+        return "Miércoles"
+      case "Thu":
+        return "Jueves"
+      case "Fri":
+        return "Viernes"
+    }
+
+  }
+
+  async onAddClick() {        
+    var subjectName = this.context.selectedSubject[0]    
+    var startTime = this.context.startClock[0]   
+    var endTime = this.context.endClock[0]   
+    var genre = this.context.selectedGenre[0]   
+    var day = this.context.selectedDay[0]   
+    var location = this.context.selectedLocation[0]   
+    var frecuency = this.context.selectedFrecuency[0]   
+    var newId = this.state.data.at(-1).Id + 1
     var calendarId = 0
     var dayNumber = 13
     var startHour = parseInt(startTime.slice(0, 2))
@@ -304,7 +323,6 @@ export default class App extends Component {
 
     calendarId = this.getGenre(genre)
     dayNumber = this.getDay(day)
-    var recurrence = this.getRecurrence(frecuency, day)
     
     var newSubject = {
         Id: newId,
@@ -313,13 +331,14 @@ export default class App extends Component {
         EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
         CalendarId: calendarId,
         Description: location,
-        RecurrenceRule: (recurrence != "Once") ? recurrence : null
+        Frecuency: frecuency,
     }
-    this.data.push(newSubject)
+    var dataAux = this.state.data
+    dataAux.push(newSubject)
+    this.setState(dataAux)
   }
 
   render() {
-
     return (
       <div>
         <button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>
@@ -330,8 +349,8 @@ export default class App extends Component {
           <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
           <button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>
         </div>
-        <ScheduleComponent currentView='WorkWeek' selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
-        quickInfoTemplates={{
+        <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.state.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
+         dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
           footer: this.footerTemplate.bind(this)
         }}  editorTemplate={this.editorTemplate.bind(this)}>
@@ -349,3 +368,5 @@ export default class App extends Component {
     );
   }
 }
+
+App.contextType = ScheduleData
