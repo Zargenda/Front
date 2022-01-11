@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef }  from 'react';
 import { useState, useEffect } from "react";
 import 'react-datepicker/dist/react-datepicker.css';
 import 'js-year-calendar/dist/js-year-calendar.css';
@@ -8,7 +8,6 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import TimePicker from 'react-time-picker'
 import 'react-calendar-timeline/lib/Timeline.css'
 import CustomTimeline from './CustomTimeline'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScheduleData} from './scheduleData';
 import axios from 'axios';
 
@@ -68,6 +67,8 @@ const CreateSchedule = () => {
     const [endClockObj, setEndClockObj] = endClock
     const [selectedFrecuencyObj, setSelectedFrecuencyObj] = selectedFrecuency
     const [scheduleDataObj, setScheduleDataObj] = scheduleData
+    const [stateBustingKey, setStateBustingKey] = React.useState(undefined);
+    const childRef = React.createRef().current;
     useEffect(() => {        
         fetchCareers()
     }, []);
@@ -85,6 +86,7 @@ const CreateSchedule = () => {
 
     async function onCareerSelected(career){        
         setSelectedCareerObj(career)
+        setScheduleDataObj([])
         await axios.get(baseUrl+"/getSemestres?nombrePlan="+career)
             .then(response => {
                 if(!response.data){
@@ -98,6 +100,7 @@ const CreateSchedule = () => {
     async function onGradeOrSemesterSelected(grade, semester){        
         setSelectedGradeObj(grade)
         setSelectedSemesterObj(semester)
+        setScheduleDataObj([])
         await axios.get(baseUrl+"/getGroupsAndSubjects?nombrePlan="+selectedCareerObj+"&semestre="+semester+"&curso="+grade)
             .then(response => {
                 if(!response.data){
@@ -110,7 +113,7 @@ const CreateSchedule = () => {
                         arrayAux.push(i)
                     }
                     setGroups(arrayAux)
-                    setSubjects(response.data.subjects)
+                    setSubjects(response.data.subjects)           
                 }                           
             });
     }
@@ -151,7 +154,7 @@ const CreateSchedule = () => {
                     console.log("Error fetching data")
                 }else{              
                     console.log("El data es:" +JSON.stringify(response.data))
-                    //setSubjects(response.data.subjects)
+                    setScheduleDataObj(response.data)
                 }                           
             });
     }
@@ -165,7 +168,7 @@ const CreateSchedule = () => {
     const updateFrecuency = async (frecuency) => { 
         setSelectedFrecuencyObj(frecuency)
     }
-
+    
     return(
         <div style={body}>
             <div style={title}>

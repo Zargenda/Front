@@ -51,6 +51,7 @@ const DataLoad = () => {
 
     const handleUpload = (event) => {
         const selectedFile = event.target.files[0];
+        console.log("El file "+JSON.stringify(event.target.files[0]))
         //read excel file
         setFile(selectedFile)
         readFile(selectedFile)        
@@ -62,24 +63,25 @@ const DataLoad = () => {
 
     async function save() {
         const result = generateObjects(currentSheet);
-        var formData = new FormData();
-        formData.append("file", file);
-        await axios.post(baseUrl+"/upload",
-            formData, {
-                headers: {
-                'Content-Type': 'multipart/form-data'
-                }
-            })
-            .then(response => {
-                if(!response.data){
-                    alert("Se ha producido un error, inténtelo de nuevo.")
-                }else{
-                    console.log("Success: " +JSON.stringify(response))
-                    history.push("/dataEdit");
-                }                           
-            }).catch(error =>{
-                alert("Se ha producido un error, inténtelo de nuevo.")
-            });        
+        console.log("result" +JSON.stringify(currentSheet))
+        // var formData = new FormData();
+        // formData.append("file", file);
+        // await axios.post(baseUrl+"/upload",
+        //     formData, {
+        //         headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //         }
+        //     })
+        //     .then(response => {
+        //         if(!response.data){
+        //             alert("Se ha producido un error, inténtelo de nuevo.")
+        //         }else{
+        //             console.log("Success: " +JSON.stringify(response))
+        //             history.push("/dataEdit");
+        //         }                           
+        //     }).catch(error =>{
+        //         alert("Se ha producido un error, inténtelo de nuevo.")
+        //     });        
     };
 
     const [width, setWidth] = useState(window.innerWidth);

@@ -5,7 +5,6 @@ import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { addClass, Browser, closest, extend, Internationalization, isNullOrUndefined, removeClass, remove, compile } from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-alert'
 import {ScheduleData} from './scheduleData';
 import axios from 'axios';
@@ -42,36 +41,36 @@ const gen = {
 export default class App extends Component {  
   constructor(props) {
     super(props);
-    const scheduleObj = null    
+    const data = null    
+    {}
+    var i = this.props.data
     this.state={
-      data : [{
-          Id: 1,
-          Subject: 'Laboratorio ing software',
-          StartTime: new Date(2021, 8, 14, 9, 30),
-          EndTime: new Date(2021, 8, 14, 11, 0),
-          CalendarId: 1,
-          Description: "Aula 1.1",
-          Frecuency: "Semanal"
-      }, {
-          Id: 2,
-          Subject: 'Sistemas legados',
-          StartTime: new Date(2021, 8, 13, 9, 30),
-          EndTime: new Date(2021, 8, 13, 11, 0),
-          CalendarId: 2,
-          Description: "Aula 1.3",
-          Frecuency: "Semanal"
-      }, {
-          Id: 3,
-          Subject: 'Seguridad informática',
-          StartTime: new Date(2021, 8, 13, 9, 30),
-          EndTime: new Date(2021, 8, 13, 11, 0),
-          CalendarId: 1,
-          Description: "Aula 3.1",
-          Frecuency: "Semanal"
-      }]
-    };
-      
+      data : i,
+      ctx: undefined
+    };      
   }
+
+  componentWillUpdate() {
+    const newContext = this.context
+    const contextAux = this.state.ctx
+    
+    if(contextAux){ 
+      console.log("El contexto antiguo es_ "+JSON.stringify(contextAux.selectedGrade))
+      console.log("El contexto nuevo es_ "+JSON.stringify(newContext.selectedGrade))
+      if(contextAux.selectedCareer[0] != newContext.selectedCareer[0] || contextAux.selectedGrade[0] !=
+        newContext.selectedGrade[0] || contextAux.selectedSemester[0] != newContext.selectedSemester[0]
+        || contextAux.selectedGroup[0] != newContext.selectedGroup[0]){
+            const dataAux = []
+            this.state.data = dataAux
+            this.setState({data: dataAux, ctx: newContext})
+            console.log("El contexto es final es "+JSON.stringify(this.state.data)) 
+        }        
+      }else{
+            this.setState({data: this.state.data, ctx: newContext})
+            console.log("El data final es "+JSON.stringify(this.state.data)) 
+      }
+    }
+
   calendarCollections = [
     { CalendarText: 'Teoría', CalendarId: 1, CalendarColor: '#55B7EE' },
     { CalendarText: 'Prácticas', CalendarId: 2, CalendarColor: '#FB84F0' },
@@ -137,6 +136,45 @@ export default class App extends Component {
       calendarText = resourceData.CalendarText.toString();
     }
     return calendarText;
+  }
+
+  async loadSchedule(){    
+    //var dataAux = [{"idPadre":1,"Id":1,"Subject":"Laboratorio ing software","StartTime":"2021-09-14T07:30:00.000+00:00","EndTime":"2021-09-14T09:00:00.000+00:00","CalendarId":1,"Description":"Aula 1.1","Frecuency":"Semanal"},{"idPadre":1,"Id":2,"Subject":"Sistemas legados","StartTime":"2021-09-13T07:30:00.000+00:00","EndTime":"2021-09-13T09:00:00.000+00:00","CalendarId":2,"Description":"Aula 1.3","Frecuency":"Semanal"},{"idPadre":1,"Id":3,"Subject":"Seguridad informática","StartTime":"2021-08-13T07:30:00.000+00:00","EndTime":"2021-08-13T09:00:00.000+00:00","CalendarId":1,"Description":"Aula 3.1","Frecuency":"Semanal"}]
+    
+    await axios.get("http://localhost:8080/horarios/getHorario?nombrePlan="+this.context.selectedCareer[0]+"&semestre="+this.context.selectedSemester[0]+"&curso="+this.context.selectedGrade[0]+"&grupo="+this.context.selectedGroup[0])
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{              
+                  this.state.data = []
+                  var dataAux = response.data
+                  var dataAux2 = this.state.data
+                  var dataAux3
+                  for (var i = 0; i < dataAux.length; i++) {  
+                    dataAux3 = dataAux[i]
+                    dataAux3.StartTime = this.toJavascriptDate(dataAux[i].StartTime)
+                    dataAux3.EndTime = this.toJavascriptDate(dataAux[i].EndTime)
+                    dataAux2.push(dataAux3)          
+                  }
+                  this.state.data = dataAux2
+                  this.setState(dataAux2)
+                }                           
+            });    
+  }
+
+  toJavascriptDate(s) {
+    s = s + ''
+    var b = s.split(/\D+/);
+    var anyo = parseInt(b[0])
+    var mes = parseInt(b[1])
+    var dia = parseInt(b[2])
+    var hora = parseInt(b[3])
+    var minuto = parseInt(b[4])
+    console.log("La fecha es "+s)
+    //console.log("El mes es "+mes)
+    //console.log("La hora es "+hora)
+    var dateAux = new Date(Date.UTC(anyo, mes-1, dia, hora, minuto, 0))
+    return dateAux;
   }
 
   getResourceData(data) {
@@ -213,29 +251,35 @@ export default class App extends Component {
 
   async onCreateClick() {   
     const map = new Map(); 
-    var scheduleAux = {id: 0, curso: this.context.selectedGrade[0], 
+    var id
+    if(this.context.scheduleData.length == 0){
+        id = 0
+    }else{
+      id = this.state.data[0].idPadre
+    }
+    console.log("El length es: "+this.context.scheduleData.length)
+    var scheduleAux = {id: id, curso: this.context.selectedGrade[0], 
       semestre: this.context.selectedSemester[0], 
       grupo: this.context.selectedGroup[0],
       nombrePlan: this.context.selectedCareer[0]
     }
     var dataAux = this.state.data
-    for (var i = 0; i < dataAux.length; i++) {
-      dataAux[i].StartTime = dataAux[i].StartTime.toISOString()
-      dataAux[i].EndTime = dataAux[i].EndTime.toISOString()
-      dataAux[i].idPadre = 1
-    }
+     for (var i = 0; i < dataAux.length; i++) {
+       dataAux[i].StartTime = dataAux[i].StartTime.toISOString()
+       dataAux[i].EndTime = dataAux[i].EndTime.toISOString()      
+       dataAux[i].idPadre = 1
+     }
     scheduleAux.horarioAsignaturas = dataAux
-
-    await axios.post('http://localhost:8080/horarios/uploadHorarioA',
-                scheduleAux
-            ).then(response => {
-              if(!response.data){
-                  console.log("Error fetching data")
-              }else{
-                  alert("El calendario se ha creado con éxito.")
+     await axios.post('http://localhost:8080/horarios/uploadHorarioA',
+                 scheduleAux
+             ).then(response => {
+               if(!response.data){
+                   console.log("Error fetching data")
+               }else{
+                   alert("El calendario se ha creado con éxito.")
                   console.log("Success: "+JSON.stringify(response))
-              }                           
-          });
+               }                           
+           });
       
   }
 
@@ -304,7 +348,7 @@ export default class App extends Component {
     }
 
   }
-
+  
   async onAddClick() {        
     var subjectName = this.context.selectedSubject[0]    
     var startTime = this.context.startClock[0]   
@@ -313,19 +357,20 @@ export default class App extends Component {
     var day = this.context.selectedDay[0]   
     var location = this.context.selectedLocation[0]   
     var frecuency = this.context.selectedFrecuency[0]   
-    var newId = this.state.data.at(-1).Id + 1
+    if(this.state.data.length > 0){
+      var newId = this.state.data.at(-1).Id + 1
+    }
     var calendarId = 0
     var dayNumber = 13
     var startHour = parseInt(startTime.slice(0, 2))
     var startMin = parseInt(startTime.slice(3, 5))
     var endHour = parseInt(endTime.slice(0, 2))
     var endMin = parseInt(endTime.slice(3, 5))
-
     calendarId = this.getGenre(genre)
     dayNumber = this.getDay(day)
-    
+    var dataAux = this.state.data
     var newSubject = {
-        Id: newId,
+        Id: (dataAux.length == 0) ? 1 : newId,
         Subject: (calendarId != 4) ? subjectName : "Seminario",
         StartTime: new Date(2021, 8, dayNumber, startHour, startMin),
         EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
@@ -333,11 +378,10 @@ export default class App extends Component {
         Description: location,
         Frecuency: frecuency,
     }
-    var dataAux = this.state.data
+    
     dataAux.push(newSubject)
     this.setState(dataAux)
   }
-
   render() {
     return (
       <div>
@@ -348,6 +392,7 @@ export default class App extends Component {
         <div style={row}>
           <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
           <button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>
+          <button onClick={this.loadSchedule.bind(this)} style={clickableButton}> Cargar horario </button>
         </div>
         <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.state.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
          dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
