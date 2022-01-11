@@ -16,7 +16,7 @@ const START_QUARTER = "INICIO_CUATRIMESTRE"
 const WEEK_TOTAL = 7;
 const weekDayIndex = new Map([[MONDAY, 0], [TUESDAY, 1], [WEDNESDAY, 2], [THURSDAY, 3], [FRIDAY, 4], [SATURDAY,5], [SUNDAY,6]]);
 const weekDayNameConst = new Map([[MONDAY, LUNES], [TUESDAY, MARTES], [WEDNESDAY, MIERCOLES], [THURSDAY, JUEVES], [FRIDAY, VIERNES]]);
-const dayInSeconds = 60 * 60 * 24 * 1000
+export const dayInSeconds = 60 * 60 * 24 * 1000
 //Global variables
 var weekNumber = 1;
 var finalWeek = 1;

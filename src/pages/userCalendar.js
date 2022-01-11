@@ -12,7 +12,7 @@ import axios from 'axios';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 
-const baseUrl = 'https://localhost:8000';
+const baseUrl = 'https://localhost:8080';
 
 const body = {
     padding: '0.5rem calc((100vw - 165vh) / 3)',
@@ -49,16 +49,17 @@ const UserCalendar = () => {
     }, []);
 
     async function fetchCalendar() {
-        /*await axios.get(baseUrl+)
+        await axios.get(baseUrl + '/ObtenerC')
             .then(response => {
                 var calendarArray = response.data;
-                setFirstCalendarArray(getQuarterArray(calendarArray, 1))
-                setSecondCalendarArray(getQuarterArray(calendarArray,2))
+                setFirstCalendarArray(getQuarterArray(calendarArray, 1));
+                setSecondCalendarArray(getQuarterArray(calendarArray, 2));
                 //console.log("CALENDARARRAY--"+data)            
-            });*/
-        var calendarArray = ([])
+            });
+        /*var calendarArray = ([]);
         setFirstCalendarArray(getQuarterArray(calendarArray, 1));
-        setSecondCalendarArray(getQuarterArray(calendarArray, 2));
+        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
+        console.log("FETCHCALENDAR")*/
     }
 
 
@@ -67,7 +68,7 @@ const UserCalendar = () => {
         return (<div> <br />
             <h2> {title} </h2>
             <br />
-            <CalendarTable calendarArray={calendarArray} editable={true} />
+            <CalendarTable calendarArray={calendarArray} editable={true} fetchCalendar={fetchCalendar} />
             <br />
         </div>);
     };

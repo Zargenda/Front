@@ -12,7 +12,7 @@ import "../components/Calendar/calendar.css";
 import {
     SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, 
-    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear
+    ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear, dayInSeconds
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
 import { jsPDF } from "jspdf";
@@ -195,14 +195,23 @@ const Form = () => {
         setSecondCalendarArray(getQuarterArray(calendarArray, 2))
         console.log("FETCHCALENDAR")*/
     }
+    function addOneDay(date) {
+        return new Date(new Date(date).getTime() + dayInSeconds)
+    }
+    function addOneDayArray(array) {
+        return [...array].map(function (elem) {
+            return { startDate: addOneDay(elem.startDate), endDate: addOneDay(elem.endDate), comment: elem.comment }
+        })
+    }
     //Request
     async function saveCalendar() {
         const examWithoutAdditional = [...examList].map(function (exam) {
             if (exam.comment == ANOTHER_EXAM)
-                return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.additional }
-            return { startDate: exam.startDate, endDate: exam.endDate, comment: exam.comment }
+                return { startDate: addOneDay(exam.startDate), endDate: addOneDay(exam.endDate), comment: exam.additional }
+            return { startDate: addOneDay(exam.startDate), endDate: addOneDay(exam.endDate), comment: exam.comment }
         })
-        const total = festiveList.concat(changeDayList).concat(examWithoutAdditional)
+
+        const total = addOneDayArray(festiveList).concat(addOneDayArray(changeDayList)).concat(examWithoutAdditional)
         await axios.post(baseUrl+'/ModificarC', {total})
           .then(response=>{
             if(!response.data){
@@ -230,10 +239,10 @@ const Form = () => {
     async function saveQuarters() {
         let quarters = {
             //todo callendario controller 24l
-             startFirstQuarter: startFirstQuarter,
-             endFirstQuarter: endFirstQuarter,
-             startSecondQuarter: startSecondQuarter,
-             endSecondQuarter: endSecondQuarter
+            startFirstQuarter: addOneDay(startFirstQuarter),
+            endFirstQuarter: addOneDay(endFirstQuarter),
+            startSecondQuarter: addOneDay(startSecondQuarter),
+            endSecondQuarter: addOneDay(endSecondQuarter)
         }
         console.log("QUARTERS---"+JSON.stringify(quarters))
         await axios.post(baseUrl+"/IniciarC", {quarters})

@@ -125,8 +125,10 @@ const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
     }
     const saveModal = async () => {
         let opt = changeDateOption;
+        let date = new Date(changeDate.getTime() + dayInSeconds)
+
         let dateInfo = {
-            date: changeDate,
+            date: date,
             type: getTypeConst(),
             day: getWeekDay(),
             comment: changeDateComment,
@@ -282,13 +284,13 @@ const CalendarTable = ({ calendarArray, editable, fetchCalendar }) => {
                     {tBodies}
                 </table>
             </div> : null}
-                    <Modal
+                <Modal
                         open={changeModal}
                         onClose={toggleModal}>
                         {modal}
                     </Modal>
                     <div> {legendsList} </div>
-                </div> : null
+                </div>
     );
 };
 
