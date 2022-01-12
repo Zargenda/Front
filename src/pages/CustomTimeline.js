@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { Inject, ScheduleComponent, WorkWeek, ViewsDirective, ViewDirective, ICalendarExport, DragAndDrop, ResourcesDirective, ResourceDirective} from "@syncfusion/ej2-react-schedule";
+import { Inject, ScheduleComponent, Print, WorkWeek, ViewsDirective, ViewDirective, ICalendarExport, DragAndDrop, ResourcesDirective, ResourceDirective} from "@syncfusion/ej2-react-schedule";
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-import { addClass, Browser, closest, extend, Internationalization, isNullOrUndefined, removeClass, remove, compile } from '@syncfusion/ej2-base';
+import { closest, Internationalization, isNullOrUndefined} from '@syncfusion/ej2-base';
 import { DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { Alert } from 'react-alert'
 import {ScheduleData} from './scheduleData';
 import axios from 'axios';
+import html2canvas from 'html2canvas';
+import { jsPDF } from "jspdf";
 
 const clickableButton = {
   display: 'flex',
@@ -41,11 +43,9 @@ const gen = {
 export default class App extends Component {  
   constructor(props) {
     super(props);
-    const data = null    
-    {}
-    var i = this.props.data
+    
     this.state={
-      data : i,
+      data : [],
       ctx: undefined
     };      
   }
@@ -55,19 +55,15 @@ export default class App extends Component {
     const contextAux = this.state.ctx
     
     if(contextAux){ 
-      console.log("El contexto antiguo es_ "+JSON.stringify(contextAux.selectedGrade))
-      console.log("El contexto nuevo es_ "+JSON.stringify(newContext.selectedGrade))
       if(contextAux.selectedCareer[0] != newContext.selectedCareer[0] || contextAux.selectedGrade[0] !=
         newContext.selectedGrade[0] || contextAux.selectedSemester[0] != newContext.selectedSemester[0]
         || contextAux.selectedGroup[0] != newContext.selectedGroup[0]){
             const dataAux = []
             this.state.data = dataAux
             this.setState({data: dataAux, ctx: newContext})
-            console.log("El contexto es final es "+JSON.stringify(this.state.data)) 
         }        
       }else{
             this.setState({data: this.state.data, ctx: newContext})
-            console.log("El data final es "+JSON.stringify(this.state.data)) 
       }
     }
 
@@ -382,18 +378,32 @@ export default class App extends Component {
     dataAux.push(newSubject)
     this.setState(dataAux)
   }
+
+  savePdf () {
+      const input = document.getElementById('Schedule');
+      html2canvas(input)
+          .then((canvas) => {
+              let imgWidth = 300;
+              let imgHeight = 240;
+              const imgData = canvas.toDataURL('img/png');
+              const pdf = new jsPDF('p', 'mm', 'a4');
+              pdf.addImage(imgData, 'PNG', 5, -180, imgWidth * 0.8, imgHeight * 0.8, "","", 270); pdf.save("horario.pdf");
+          });
+  }
   render() {
+    console.log("Eres "+this.context.sessionEmail[0])
     return (
-      <div>
-        <button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>
+      <div >
+        {(this.context.sessionRole[0] == "Administrador" && window.location.pathname == "/createSchedule") ?<button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>:<div></div>}
             <br/>
             <br/>
             <br/>
         <div style={row}>
-          <button onClick={this.onExportClick.bind(this)} style={clickableButton}> Exportar a iCalendar </button>
-          <button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>
+          <button onClick={this.savePdf.bind(this)} style={clickableButton}> Exportar </button>
+          {this.context.sessionRole[0] == "Administrador"?<button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>:<div></div>}
           <button onClick={this.loadSchedule.bind(this)} style={clickableButton}> Cargar horario </button>
         </div>
+        <div id='Schedule'>
         <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.state.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
          dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
           content: this.contentTemplate.bind(this),
@@ -407,8 +417,9 @@ export default class App extends Component {
            <ViewsDirective>
             <ViewDirective option='WorkWeek' />
           </ViewsDirective>
-          <Inject services={[WorkWeek, ICalendarExport, DragAndDrop]}/>
+          <Inject services={[WorkWeek, ICalendarExport, DragAndDrop, Print]}/>
         </ScheduleComponent>
+        </div>
       </div>
     );
   }

@@ -57,7 +57,7 @@ const baseUrl= "http://localhost:8080/asignaturas"
 const DataEdit = () => {   
     const styles = useStyles(); 
     const [data, setData] = useState([]);
-    const columns = [{title: 'Código', field: 'id'}, {title: 'Asignatura', field: 'nombre'}];
+    const columns = [{title: 'Código', field: 'id'}, {title: 'Asignatura', field: 'nombre'}, {title: 'Curso', field: 'curso'}, {title: 'Semestre', field: 'semestre'}, {title: 'Grupo', field: 'grupo'}];
     const [modalEditar, setModalEditar]=useState(false);
     const [modalEliminar, setModalEliminar]=useState(false);
     const [modalInsertar, setModalInsertar]=useState(false);
@@ -65,6 +65,9 @@ const DataEdit = () => {
     const [asignaturaSeleccionada, setAsignaturaSeleccionada]=useState({
         id: '',
         nombre:'',
+        curso: '',
+        semestre: '',
+        grupo: ''
       })
     function handleWindowSizeChange() {
         setWidth(window.innerWidth);
@@ -108,30 +111,27 @@ const DataEdit = () => {
         abrirCerrarModalEliminar();
     }
 
-    const peticionPost=async()=>{
-        await axios.post(baseUrl)
-        .then(response=>{
-          //setData(data.concat(response.data))
-          abrirCerrarModalInsertar()
-        })
-    }
 
-    const peticionPut=async()=>{
-        /*await axios.put(baseUrl)
-        .then(response=>{
-          var dataNueva=data;
-          dataNueva.map(asignatura=>{
-            if(asignaturaSeleccionada.id===asignatura.id){
-              asignatura.nombre=asignaturaSeleccionada.nombre;
-              asignatura.lanzamiento=asignaturaSeleccionada.codigo;
-            }
-          })
-          setData(dataNueva);
-          abrirCerrarModalEditar();
-        })
-        */
-        abrirCerrarModalEditar();
-      }
+    const onEditData = async(id, name, grade, semester, group)=> {
+      abrirCerrarModalInsertar()
+      let subjectsInfo = {
+        id: id,
+        name: name,
+        grade: grade,
+        semester: semester,
+        group: group
+    };
+      await axios.post(baseUrl+"/updateAsignatura", subjectsInfo)
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{
+                  console.log("El data essss "+JSON.stringify(response.data))
+                  setData(response.data)
+                  fetchData()
+                }                           
+            });
+    }
 
     const abrirCerrarModalEliminar=()=>{
         setModalEliminar(!modalEliminar);
@@ -145,33 +145,23 @@ const DataEdit = () => {
     setModalEditar(!modalEditar);
     }
 
-    const bodyInsertar=(
-    <div className={styles.modal}>
-        <h3>Agregar nueva asignatura</h3>
-        <TextField name="nombre" className={styles.inputMaterial} label="Nombre" onChange={handleChange}/>
-        <br />
-        <TextField name="empresa" className={styles.inputMaterial} label="Empresa" onChange={handleChange}/>
-        <br />
-        <TextField name="lanzamiento" className={styles.inputMaterial} label="Lanzamiento" onChange={handleChange}/>
-        <br />
-        <TextField name="unidades_vendidas" className={styles.inputMaterial} label="Unidades Vendidas" onChange={handleChange}/>
-        <br /><br />
-        <div align="right">
-        <Button color="primary" onClick={()=>peticionPost()}>Insertar</Button>
-        <Button onClick={()=>abrirCerrarModalInsertar()}>Cancelar</Button>
-        </div>
-    </div>
-    )
-
     const bodyEditar=(
         <div className={styles.modal}>
           <h3>Editar asignatura</h3>
-          <TextField name="nombre" className={styles.inputMaterial} label="nombre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.nombre}/>
+          <TextField name="id" InputProps={{
+            readOnly: true,
+          }} className={styles.inputMaterial} label="id" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.id}/>
           <br />
-          <TextField name="id" className={styles.inputMaterial} label="id" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.id}/>
+          <TextField name="nombre" className={styles.inputMaterial} label="nombre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.nombre}/>
+          <br />          
+          <TextField name="curso" className={styles.inputMaterial} label="curso" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.curso}/>
+          <br />
+          <TextField name="semestre" className={styles.inputMaterial} label="semestre" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.semestre}/>
+          <br />
+          <TextField name="grupo" className={styles.inputMaterial} label="grupo" onChange={handleChange} value={asignaturaSeleccionada && asignaturaSeleccionada.grupo}/>
           <br />
           <div align="right">
-            <Button color="primary" onClick={()=>peticionPut()}>Editar</Button>
+            <Button color="primary" onClick={()=>onEditData(asignaturaSeleccionada.id, asignaturaSeleccionada.nombre, asignaturaSeleccionada.curso, asignaturaSeleccionada.semestre, asignaturaSeleccionada.grupo)}>Editar</Button>
             <Button onClick={()=>abrirCerrarModalEditar()}>Cancelar</Button>
           </div>
         </div>
@@ -235,12 +225,6 @@ const DataEdit = () => {
                         />
                 </Col>
             </Container>
-
-            <Modal
-                open={modalInsertar}
-                onClose={abrirCerrarModalInsertar}>
-                {bodyInsertar}
-            </Modal>
 
             <Modal
                 open={modalEliminar}

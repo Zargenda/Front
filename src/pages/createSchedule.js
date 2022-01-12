@@ -50,7 +50,7 @@ const CreateSchedule = () => {
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState([]);
     const [days, setDays] = useState(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]);
-    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal","Puntual"]);    
+    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal"]);    
     const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
     const {selectedCareer, selectedGrade, selectedGroup, selectedSemester, selectedSubject,
         selectedGenre, selectedLocation, selectedDay, startClock, endClock, selectedBuilding, selectedFrecuency, scheduleData} = React.useContext(ScheduleData);

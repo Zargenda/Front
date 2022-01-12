@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaBars } from 'react-icons/fa';
-import {Session, SessionEmail, SessionRole} from '../../pages/session';
+import {ScheduleData} from '../../pages/scheduleData';
 import {
     Nav,
     NavLink,
@@ -12,10 +12,30 @@ import {
   } from './NavBarElements';
 
 const Navbar = ({toggle}) => {
-    const {sessionActive, setSessionActive} = React.useContext(Session);
-    const {sessionEmail, setSessionEmail} = React.useContext(SessionEmail);
-    const {sessionRole, setSessionRole} = React.useContext(SessionRole);
+    const {sessionActive, sessionRole, sessionEmail,
+        selectedCareer, selectedGrade, selectedGroup, 
+        selectedSemester, selectedSubject} = React.useContext(ScheduleData);
+    const [sessionActiveObj, setSessionActiveObj] = sessionActive
+    const [sessionEmailObj, setSessionEmailObj] = sessionEmail
+    const [sessionRoleObj, setSessionRoleObj] = sessionRole
+
+    const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
+    const [selectedGradeObj, setSelectedGradeObj] = selectedGrade
+    const [selectedGroupObj, setSelectedGroupObj] = selectedGroup
+    const [selectedSemesterObj, setSelectedSemesterObj] = selectedSemester
+    const [selectedSubjectObj, setSelectedSubjectObj] = selectedSubject
     
+    async function logout(){
+        setSessionActiveObj(false)
+        setSessionEmailObj("")
+        setSessionRoleObj("")
+
+        setSelectedCareerObj("Seleccione carrera")
+        setSelectedGradeObj("Seleccione curso")
+        setSelectedGroupObj("Seleccione grupo")
+        setSelectedSemesterObj("Seleccione semestre")
+        setSelectedSubjectObj("Seleccione una")
+    }
     return (
         <>
             <Nav>
@@ -25,13 +45,13 @@ const Navbar = ({toggle}) => {
                 <Bars onClick={toggle}>
                     <FaBars />
                 </Bars>
-                {sessionActive ?
+                {sessionActiveObj ?
                 <NavMenu>
-                    <NavLink to={sessionRole == "Administrador" ? '/admin' : '/user'} activeStyle>
-                        {sessionRole +" "+sessionEmail}
+                    <NavLink to={sessionRoleObj == "Administrador" ? '/admin' : '/user'} activeStyle>
+                        {sessionRoleObj +" "+sessionEmailObj}
                     </NavLink>
                     <NavBtn>
-                    <NavBtnLinkRed onClick={() =>setSessionActive(false)} to="/"> Cerrar sesión</NavBtnLinkRed>
+                    <NavBtnLinkRed onClick={() =>logout()} to="/"> Cerrar sesión</NavBtnLinkRed>
                     </NavBtn> 
                 </NavMenu>
                 : <NavMenu>

@@ -3,7 +3,8 @@ import { ReactComponent as Logo } from '../images/zargenda.svg';
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Session, SessionRole, SessionEmail} from './session';
+import {ScheduleData} from './scheduleData';
+import axios from 'axios';
 
 const column = {
   display: 'flex',
@@ -27,38 +28,48 @@ const button = {
   alignItems: 'center',
   marginTop: '5vh'
 };
+const baseUrl= "http://localhost:8080"
 const Home = () => {
   var [email, setEmail] = useState("");
   var [pass, setPass] = useState("");
-
+  const {sessionActive, sessionRole, sessionEmail} = React.useContext(ScheduleData);
+  const [sessionActiveObj, setSessionActiveObj] = sessionActive
+  const [sessionEmailObj, setSessionEmailObj] = sessionEmail
+  const [sessionRoleObj, setSessionRoleObj] = sessionRole
   const history = useHistory();
-  const {sessionActive, setSessionActive} = React.useContext(Session);
-  const {sessionEmail, setSessionEmail} = React.useContext(SessionEmail);
-  const {sessionRole, setSessionRole} = React.useContext(SessionRole);
+  
 
   async function handleClick(e) {
     e.preventDefault();
-    /*await axios.get(baseUrl)
+    let loginInfo = {
+      email: email,
+      pass: pass,
+      }
+    await axios.post(baseUrl+'/login',{loginInfo})
       .then(response=>{
         if(!response.data){
-          //error
+          alert("Datos incorrectos.");
         }else{
-          //éxito
-          await AsyncStorage.setItem("email", email)
+          if(response.data == 0){
+            alert("Datos incorrectos.");
+          }else if(response.data == 1){
+            setSessionActiveObj(true)
+            setSessionEmailObj(email)
+            setSessionRoleObj("Usuario")
+            changeScreen("/user")  
+          }else{
+            setSessionActiveObj(true)
+            setSessionEmailObj(email)
+            setSessionRoleObj("Administrador")            
+            changeScreen("/admin")  
+          }
         }
-      })*/
-    if(email == "user"){
-      await AsyncStorage.setItem("email", email)
-      setSessionActive(true)
-      setSessionEmail(email)
-      setSessionRole("Usuario")
-      history.push("/user");      
-    } else{
-      setSessionActive(true)
-      setSessionEmail(email)
-      setSessionRole("Administrador")
-      history.push("/admin");
-    }   
+      })
+  }
+
+  async function changeScreen(screen){
+    console.log("El rol "+sessionEmailObj)
+    history.push(screen);
   }
 
   return (

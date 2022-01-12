@@ -1,13 +1,32 @@
 import React from 'react'
 import { SidebarContainer, Icon, CloseIcon, SidebarWrapper, SidebarMenu, SidebarLink, SideBtnWrap, SidebarRoute, SidebarRouteRed } from './SidebarElement'
-import {Session} from '../../pages/session';
+import {ScheduleData} from '../../pages/scheduleData';
 
 const Sidebar = ({isOpen, toggle}) => {
-    const {sessionActive, setSessionActive} = React.useContext(Session);
+    const {sessionActive, sessionRole, sessionEmail,
+        selectedCareer, selectedGrade, selectedGroup, 
+        selectedSemester, selectedSubject} = React.useContext(ScheduleData);
+    const [sessionActiveObj, setSessionActiveObj] = sessionActive
+    const [sessionEmailObj, setSessionEmailObj] = sessionEmail
+    const [sessionRoleObj, setSessionRoleObj] = sessionRole
 
-    async function handleClick(){
+    const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
+    const [selectedGradeObj, setSelectedGradeObj] = selectedGrade
+    const [selectedGroupObj, setSelectedGroupObj] = selectedGroup
+    const [selectedSemesterObj, setSelectedSemesterObj] = selectedSemester
+    const [selectedSubjectObj, setSelectedSubjectObj] = selectedSubject
+
+    async function logout(){
         toggle()
-        setSessionActive(false)
+        setSessionActiveObj(false)
+        setSessionEmailObj("")
+        setSessionRoleObj("")
+
+        setSelectedCareerObj("Seleccione carrera")
+        setSelectedGradeObj("Seleccione curso")
+        setSelectedGroupObj("Seleccione grupo")
+        setSelectedSemesterObj("Seleccione semestre")
+        setSelectedSubjectObj("Seleccione una")
     }
     return (
         <SidebarContainer isOpen={isOpen} >
@@ -15,9 +34,9 @@ const Sidebar = ({isOpen, toggle}) => {
                 <CloseIcon/>
             </Icon>
             <SidebarWrapper>
-                {sessionActive ?<SidebarMenu>
+                {sessionActiveObj ?<SidebarMenu>
                     <SideBtnWrap>
-                        <SidebarRouteRed to='' onClick={() =>handleClick()}>Cerrar sesión</SidebarRouteRed>
+                        <SidebarRouteRed to='' onClick={() =>logout()}>Cerrar sesión</SidebarRouteRed>
                     </SideBtnWrap>
                 </SidebarMenu>:
                 <SidebarMenu>

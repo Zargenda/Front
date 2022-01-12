@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactComponent as Logo } from '../images/zargenda.svg';
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import axios from 'axios';
 
 const column = {
   display: 'flex',
@@ -26,6 +27,8 @@ const button = {
   marginTop: '5vh'
 };
 
+const baseUrl= "http://localhost:8080"
+
 const SignUp = () => {
   var [email, setEmail] = useState("");
   var [pass, setPass] = useState("");
@@ -35,16 +38,34 @@ const SignUp = () => {
 
   async function handleClick(e) {
     e.preventDefault();
-    /*await axios.post(baseUrl)
-      .then(response=>{
-        if(!response.data){
-          //error
-        }else{
-          //éxito
+    if (pass !== repeatedPass) {
+      alert("Las contraseñas no coinciden");
+    }else if(!validateEmail(email)){
+      alert("El email no pertenece a Unizar.");
+    } else {
+      let registerInfo = {
+        email: email,
+        pass: pass,
         }
-      })*/
-    history.push("/");     
+      await axios.post(baseUrl+'/registro',{registerInfo})
+        .then(response=>{
+          if(!response.data){
+            alert("El usuario ya existe.");
+          }else{
+            alert("Usuario registrado con éxito.");
+            history.push("/");  
+          }
+        })
+    }       
   }
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /.+@unizar.es/
+      );
+  };
 
   return (
     <>
@@ -56,7 +77,7 @@ const SignUp = () => {
       <label style={{marginLeft: '-200px'}}>Correo: </label>
     </div>
     <div style={button}>
-      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="email" value={email} onChange={e => setEmail(e.target.value)} />
+      <input style={{height: '50px', width: '260px', marginLeft: '5px'}} type="email" pattern=".+@unizar.es" required value={email} onChange={e => setEmail(e.target.value)} />
     </div>
     <div style={form}>
       <label style={{marginLeft: '-160px'}} htmlFor="password">Contraseña: </label>

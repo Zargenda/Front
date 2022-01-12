@@ -1,12 +1,13 @@
 import React from 'react'
 //import {ExcelRenderer, OutTable} from 'react-excel-renderer';
 import { useState, useEffect } from "react";
-import { Col, Container} from "react-bootstrap";
+import { Col, Row, Container} from "react-bootstrap";
 import { ReactExcel, readFile, generateObjects } from '@ramonak/react-excel';
 import { useHistory } from "react-router-dom";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import axios from 'axios';
 import { Alert } from 'react-alert'
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 const column = {
     display: 'flex',
@@ -39,8 +40,6 @@ const mobileTable = {
     overflow: "scroll", 
 };
 
-const baseUrl = "http://localhost:8080/mock"
-
 const DataLoad = () => {    
     const [initialData, setInitialData] = useState(undefined);
     const [currentSheet, setCurrentSheet] = useState({});
@@ -48,10 +47,11 @@ const DataLoad = () => {
     const [error, setError] = useState(false);
     const history = useHistory();
     const [file, setFile] = useState(undefined)
+    const [fileDropdown, setFileDropdown] = useState(["Aulas", "Asignaturas"]);
+    const [selectedFileDropdown, setSelectedFileDropdown] = useState("Aulas");
 
     const handleUpload = (event) => {
         const selectedFile = event.target.files[0];
-        console.log("El file "+JSON.stringify(event.target.files[0]))
         //read excel file
         setFile(selectedFile)
         readFile(selectedFile)        
@@ -63,25 +63,35 @@ const DataLoad = () => {
 
     async function save() {
         const result = generateObjects(currentSheet);
-        console.log("result" +JSON.stringify(currentSheet))
-        // var formData = new FormData();
-        // formData.append("file", file);
-        // await axios.post(baseUrl+"/upload",
-        //     formData, {
-        //         headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //         }
-        //     })
-        //     .then(response => {
-        //         if(!response.data){
-        //             alert("Se ha producido un error, inténtelo de nuevo.")
-        //         }else{
-        //             console.log("Success: " +JSON.stringify(response))
-        //             history.push("/dataEdit");
-        //         }                           
-        //     }).catch(error =>{
-        //         alert("Se ha producido un error, inténtelo de nuevo.")
-        //     });        
+        var baseUrl = "http://localhost:8080/mock"
+        var formData = new FormData();
+
+        formData.append("file", file);        
+
+        if(selectedFileDropdown == "Aulas"){
+            baseUrl = "http://localhost:8080/aulas/uploadAula"
+        }else{
+            baseUrl = "http://localhost:8080/asignaturas/upload"
+        }
+        await axios.post(baseUrl,
+            formData, {
+                headers: {
+               'Content-Type': 'multipart/form-data'
+                }
+            })
+           .then(response => {
+               if(!response.data){
+                   alert("Se ha producido un error, inténtelo de nuevo.")
+               }else{
+                   if(selectedFileDropdown == "Asignaturas"){
+                    history.push("/dataEdit");
+                   }else{
+                    alert("Archivo subido con éxito.")
+                   }                   
+               }                           
+            }).catch(error =>{
+               alert("Se ha producido un error, inténtelo de nuevo.")
+            });        
     };
 
     const [width, setWidth] = useState(window.innerWidth);
@@ -104,11 +114,17 @@ const DataLoad = () => {
                     <div style={{justifyContent: "flex-start"}}>
                         <h1>Carga de datos</h1>
                     </div>
+                    <DropdownButton id="dropdown-item-button" title={selectedFileDropdown}  variant="dark">
+                    {fileDropdown.map((name) => (
+                        <Dropdown.Item as="button" onClick={() => setSelectedFileDropdown(name)}>{name}</Dropdown.Item>))}
+                    </DropdownButton>
+                    <div class="row">
                     <input
                         type='file'
                         accept='.xlsx'
                         onChange={handleUpload}
-                    />
+                    />                    
+                    </div>
                     <div style={!isMobile ? table : mobileTable}>
                         <ReactExcel
                             initialData={initialData}
