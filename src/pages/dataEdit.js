@@ -102,43 +102,35 @@ const DataEdit = () => {
         }))
     }
 
-    const peticionDelete=async()=>{
-        //await axios.delete(baseUrl)
-        //.then(response=>{
-        //  setData(data.filter(asginatura=>asginatura.id!==asginaturaSeleccionada.id));
-        //  abrirCerrarModalEliminar();
-        //})
-        abrirCerrarModalEliminar();
-    }
-
-
-    const onEditData = async(id, name, grade, semester, group)=> {
-      abrirCerrarModalInsertar()
-      let subjectsInfo = {
-        id: id,
-        name: name,
-        grade: grade,
-        semester: semester,
-        group: group
-    };
-      await axios.post(baseUrl+"/updateAsignatura", subjectsInfo)
+    const onDeleteData = async(id)=> {
+      setModalEliminar(!modalEliminar);
+      await axios.post(baseUrl+"/delete?id="+id)
             .then(response => {
                 if(!response.data){
                     console.log("Error fetching data")
                 }else{
                   console.log("El data essss "+JSON.stringify(response.data))
-                  setData(response.data)
-                  fetchData()
+                  fetchData()                  
+                }                           
+            });
+    }
+
+
+    const onEditData = async(id, name, grade, semester, group)=> {
+      setModalEditar(!modalEditar);
+      await axios.post(baseUrl+"/update?id="+id+"&name="+name+"&grade="+grade+"&semester="+semester+"&group="+group)
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{
+                  console.log("El data essss "+JSON.stringify(response.data))
+                  fetchData()                  
                 }                           
             });
     }
 
     const abrirCerrarModalEliminar=()=>{
         setModalEliminar(!modalEliminar);
-    }
-
-    const abrirCerrarModalInsertar=()=>{
-        setModalInsertar(!modalInsertar);
     }
 
     const abrirCerrarModalEditar=()=>{
@@ -171,9 +163,8 @@ const DataEdit = () => {
         <div className={styles.modal}>
           <p>Estás seguro que deseas eliminar la asignatura <b></b> ? </p>
           <div align="right">
-            <Button color="secondary" onClick={()=>peticionDelete()} >Sí</Button>
-            <Button onClick={()=>abrirCerrarModalEliminar()}>No</Button>
-    
+            <Button color="secondary" onClick={()=>onDeleteData(asignaturaSeleccionada.id)} >Sí</Button>
+            <Button onClick={()=>abrirCerrarModalEliminar()}>No</Button>    
           </div>
     
         </div>

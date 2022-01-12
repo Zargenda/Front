@@ -36,51 +36,39 @@ const mobileTable = {
     overflow: "scroll", 
 };
 
-const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
-
 const Incompatibilities = () => {    
-    const [schedules, setSchedules] = useState(["Horario semestre otoño","Horario semestre primavera"]);
-    const [selectedSchedule, setSelectedSchedule] = useState("Semestre otoño");
     const [incompatibilities, setIncompatibilities] = useState([]);
-    const [width, setWidth] = useState(window.innerWidth);
 
-    function handleWindowSizeChange() {
-        setWidth(window.innerWidth);
-    }
     useEffect(() => {
-        window.addEventListener('resize', handleWindowSizeChange);
+        loadIncompatibilities()
         return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
 
-    async function fetchData(schedule){
-        await axios.get(baseUrl)        
-        .then(response=>{
-            setIncompatibilities(response.data)
-            console.log(response.data)            
-        })
+    async function loadIncompatibilities(){           
+        await axios.get("http://localhost:8080/horarios/getConflictos")
+                .then(response => {
+                    if(!response.data){
+                        console.log("Error fetching data")
+                    }else{     
+                    console.log("El data es "+JSON.stringify(response.data))
+                    var aux = []
+                    for(var i = 0; i < response.data.length; i++){
+                        aux.push(response.data[i].descripcion)
+                    }         
+                    setIncompatibilities(aux)
+                    }                           
+                });    
     }
 
-    async function getIncompatibilities(schedule){
-        setSelectedSchedule(schedule)
-        fetchData(schedule)
-    }
-
-    let isMobile = (width <= 768);
     return (
         <div class="row" style={column}>
             <Container fluid="md">
-                <Col>
-                    <DropdownButton id="dropdown-item-button"  title={selectedSchedule}  variant="light">
-                    {schedules.map((schedule) => (
-                        <Dropdown.Item as="button" onClick={() => getIncompatibilities(schedule)}>{schedule}</Dropdown.Item>))}
-                    </DropdownButton>
-                    
+                <Col>                    
                     <div style={{justifyContent: "flex-start", marginTop: "40px", marginBottom: "40px"}}>
                         <h1>LISTADO DE INCOMPATIBILIDADES EXISTENTES</h1>
                     </div>          
-                    {incompatibilities.map(incompatibility => <label style={{color: "black", display: "flex"}}>{incompatibility.Nombre}</label>)}          
+                    {incompatibilities.map(incompatibility => <label style={{color: "black", display: "flex", marginTop: "20px"}}>{incompatibility}</label>)}          
                 </Col>
             </Container>
         </div>

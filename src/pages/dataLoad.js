@@ -137,9 +137,7 @@ const DataLoad = () => {
                     <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
                         <button onClick={save} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
                     </div>
-                    { error ? <div>
-                        <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Lista de errores</label>
-                        {errors.map(error => <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>{error}</label>) }</div> : null }
+                    
                 </Col>
             </Container>
         </div>

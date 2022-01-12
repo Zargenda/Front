@@ -46,25 +46,27 @@ export default class App extends Component {
     
     this.state={
       data : [],
-      ctx: undefined
+      ctx: {}
     };      
   }
-
   componentWillUpdate() {
     const newContext = this.context
     const contextAux = this.state.ctx
-    
-    if(contextAux){ 
-      if(contextAux.selectedCareer[0] != newContext.selectedCareer[0] || contextAux.selectedGrade[0] !=
-        newContext.selectedGrade[0] || contextAux.selectedSemester[0] != newContext.selectedSemester[0]
-        || contextAux.selectedGroup[0] != newContext.selectedGroup[0]){
-            const dataAux = []
-            this.state.data = dataAux
-            this.setState({data: dataAux, ctx: newContext})
-        }        
-      }else{
-            this.setState({data: this.state.data, ctx: newContext})
-      }
+    console.log("Llego aqui despues"+JSON.stringify(this.state.data))
+    if(Object.keys(this.state.ctx).length != 0){ 
+        if(contextAux.selectedCareer[0] != newContext.selectedCareer[0] || contextAux.selectedGrade[0] !=
+          newContext.selectedGrade[0] || contextAux.selectedSemester[0] != newContext.selectedSemester[0]
+          || contextAux.selectedGroup[0] != newContext.selectedGroup[0]){
+              const dataAux = []
+              this.state.data = dataAux
+              console.log("Entro en este"+JSON.stringify(this.state.data))
+              this.setState({data: dataAux, ctx: newContext})
+          }
+    }else{
+        console.log("Lo meto vacio"+JSON.stringify(this.state.data))
+          this.setState({data: this.state.data, ctx: newContext})
+    }
+    console.log("Final"+JSON.stringify(this.state.data))
     }
 
   calendarCollections = [
@@ -153,7 +155,7 @@ export default class App extends Component {
                     dataAux2.push(dataAux3)          
                   }
                   this.state.data = dataAux2
-                  this.setState(dataAux2)
+                  this.setState({data: dataAux2, ctx: this.state.ctx})
                 }                           
             });    
   }
@@ -246,14 +248,12 @@ export default class App extends Component {
   }
 
   async onCreateClick() {   
-    const map = new Map(); 
-    var id
-    if(this.context.scheduleData.length == 0){
+    var id = 0
+    if(this.context.scheduleData[0].length == 0){
         id = 0
     }else{
       id = this.state.data[0].idPadre
     }
-    console.log("El length es: "+this.context.scheduleData.length)
     var scheduleAux = {id: id, curso: this.context.selectedGrade[0], 
       semestre: this.context.selectedSemester[0], 
       grupo: this.context.selectedGroup[0],
@@ -265,7 +265,9 @@ export default class App extends Component {
        dataAux[i].EndTime = dataAux[i].EndTime.toISOString()      
        dataAux[i].idPadre = 1
      }
+     
     scheduleAux.horarioAsignaturas = dataAux
+    console.log("Horario enviado: "+JSON.stringify(scheduleAux))
      await axios.post('http://localhost:8080/horarios/uploadHorarioA',
                  scheduleAux
              ).then(response => {
@@ -355,6 +357,8 @@ export default class App extends Component {
     var frecuency = this.context.selectedFrecuency[0]   
     if(this.state.data.length > 0){
       var newId = this.state.data.at(-1).Id + 1
+    }else{
+      var newId = 1      
     }
     var calendarId = 0
     var dayNumber = 13
@@ -366,7 +370,7 @@ export default class App extends Component {
     dayNumber = this.getDay(day)
     var dataAux = this.state.data
     var newSubject = {
-        Id: (dataAux.length == 0) ? 1 : newId,
+        Id: newId,
         Subject: (calendarId != 4) ? subjectName : "Seminario",
         StartTime: new Date(2021, 8, dayNumber, startHour, startMin),
         EndTime: new Date(2021, 8, dayNumber, endHour, endMin),
@@ -376,7 +380,10 @@ export default class App extends Component {
     }
     
     dataAux.push(newSubject)
-    this.setState(dataAux)
+    console.log("Data aux "+JSON.stringify(dataAux))
+    this.state.data = dataAux    
+    await this.setState({data: dataAux, ctx: this.state.ctx})
+    console.log("Hago esto antes")
   }
 
   savePdf () {
@@ -391,7 +398,6 @@ export default class App extends Component {
           });
   }
   render() {
-    console.log("Eres "+this.context.sessionEmail[0])
     return (
       <div >
         {(this.context.sessionRole[0] == "Administrador" && window.location.pathname == "/createSchedule") ?<button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>:<div></div>}
@@ -420,6 +426,7 @@ export default class App extends Component {
           <Inject services={[WorkWeek, ICalendarExport, DragAndDrop, Print]}/>
         </ScheduleComponent>
         </div>
+        
       </div>
     );
   }

@@ -50,8 +50,7 @@ const CreateSchedule = () => {
     const [genres, setGenres] = useState(["Teoría", "Problemas", "Prácticas", "Seminario"]);
     const [locations, setLocations] = useState([]);
     const [days, setDays] = useState(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]);
-    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal"]);    
-    const [errors, setErrors] = useState(["Error de ejemplo 1", "Error de ejemplo 2"]);
+    const [frecuency, setFrecuency] = useState(["Semanal", "Quincenal"]);        
     const {selectedCareer, selectedGrade, selectedGroup, selectedSemester, selectedSubject,
         selectedGenre, selectedLocation, selectedDay, startClock, endClock, selectedBuilding, selectedFrecuency, scheduleData} = React.useContext(ScheduleData);
     const [selectedCareerObj, setSelectedCareerObj] = selectedCareer
@@ -276,10 +275,7 @@ const CreateSchedule = () => {
             <br/>
             
             <CustomTimeline/>
-            <div>
-                <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Listado de incompatibilidades pendientes</label>
-                {errors.map(error => <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>{error}</label>) }
-            </div>
+            
         </div>
 
     )
