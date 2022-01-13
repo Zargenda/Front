@@ -160,10 +160,6 @@ const EditSchedule = () => {
             <br/>
             
             <CustomTimeline/>
-            <div>
-                <label style={{marginTop: "20px", display: "flex", justifyContent: 'center', alignItems: 'center'}}>Listado de incompatibilidades pendientes</label>
-                {errors.map(error => <label style={{color: "red", display: "flex", justifyContent: 'center', alignItems: 'center'}}>{error}</label>) }
-            </div>
         </div>
 
     )
