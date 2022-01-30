@@ -47,10 +47,10 @@ const UserMenu = () => {
   return (
     <>
     <div style={column}>
-      <Logo/>
+        <Logo/>
     </div>
     <div style={button}>  
-              <button onClick={(e) => handleClick(e, "/UserCalendar")} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '40px', width: '300px' }}> Consultar Calendario Académico </button>
+        <button onClick={(e) => handleClick(e, "/UserCalendar")} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '40px', width: '300px' }}> Consultar Calendario Académico </button>
     </div>
     <div style={form}>
     </div>

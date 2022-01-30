@@ -17,6 +17,7 @@ const baseUrl = 'http://localhost:8080';
 const body = {
     padding: '0.5rem calc((100vw - 165vh) / 3)',
 };
+
 const buttonRow = {
     display: 'flex',
     flexDirection: 'row',
@@ -36,9 +37,6 @@ const gen = {
 
 }
 
-const doc = new jsPDF();
-
-
 const UserCalendar = () => {
     const [firstCalendarArray, setFirstCalendarArray] = useState([]);
     const [secondCalendarArray, setSecondCalendarArray] = useState([]);
@@ -56,17 +54,8 @@ const UserCalendar = () => {
                 setFirstCalendarArray(getQuarterArray(calendarArray, 1));
                 setSecondCalendarArray(getQuarterArray(calendarArray, 2));
                 setThirdCalendarArray(getQuarterArray(calendarArray, 3))
-                //console.log("CALENDARARRAY--"+data)            
             });
-
-        /*var calendarArray = ([]);
-        setFirstCalendarArray(getQuarterArray(calendarArray, 1));
-        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
-        setThirdCalendarArray(getQuarterArray(calendarArray, 3))
-        console.log("FETCHCALENDAR")*/
     }
-
-
 
     const calendarComponent = (title, calendarArray, enable) => {
         return (<div> <br />
@@ -94,7 +83,8 @@ const UserCalendar = () => {
                     const year = getStartYear();
                     const imgData = canvas.toDataURL('img/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8); pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
+                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8);
+                    pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
                 });
         }
     }
@@ -103,7 +93,6 @@ const UserCalendar = () => {
         <div style={body}>
             <div style={buttonRow}>
                 <button onClick={savePdf} style={gen}>Exportar a PDF</button>
-                {/*<button onClick={saveICS} style={gen}>Exportar a iCalendar</button>*/}
             </div>
             <CalendarRender />
         </div>

@@ -68,6 +68,7 @@ const CreateSchedule = () => {
     const [scheduleDataObj, setScheduleDataObj] = scheduleData
     const [stateBustingKey, setStateBustingKey] = React.useState(undefined);
     const childRef = React.createRef().current;
+
     useEffect(() => {        
         fetchCareers()
     }, []);
@@ -75,40 +76,41 @@ const CreateSchedule = () => {
     async function fetchCareers() {
         await axios.get(baseUrl+"/getAreas")
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{
+                } else {
                     setCareers(response.data)
                 }                           
             });
     }
 
-    async function onCareerSelected(career){        
+    async function onCareerSelected(career) {        
         setSelectedCareerObj(career)
         setScheduleDataObj([])
         await axios.get(baseUrl+"/getSemestres?nombrePlan="+career)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{                  
+                } else {                  
                     setSemesters(response.data.Semester)
                     setGrades(response.data.Grade)
                 }                           
             });
     }
-    async function onGradeOrSemesterSelected(grade, semester){        
+
+    async function onGradeOrSemesterSelected(grade, semester) {        
         setSelectedGradeObj(grade)
         setSelectedSemesterObj(semester)
         setScheduleDataObj([])
         await axios.get(baseUrl+"/getGroupsAndSubjects?nombrePlan="+selectedCareerObj+"&semestre="+semester+"&curso="+grade)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                     var largest = Math.max.apply(0, response.data.groups);
                     var dataInt = parseInt(largest)  
                     var arrayAux = []
-                    for(var i = 1; i <= dataInt; i++){
+                    for(var i = 1; i <= dataInt; i++) {
                         arrayAux.push(i)
                     }
                     setGroups(arrayAux)
@@ -117,10 +119,10 @@ const CreateSchedule = () => {
             });
     }
 
-    async function onBuildingSelected(building){        
+    async function onBuildingSelected(building) {        
         setSelectedBuildingObj(building)
         var buildingId = 0
-        switch(building){
+        switch(building) {
             case "Ada Byron":
                 buildingId = 1
                 break
@@ -137,21 +139,21 @@ const CreateSchedule = () => {
 
         await axios.get("http://localhost:8080/aulas/getAulas?edificio="+buildingId)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                     setLocations(response.data)
                 }                           
             });
     }
 
-    async function onGroupSelected(group){        
+    async function onGroupSelected(group) {        
         setSelectedGroupObj(group)
         await axios.get("http://localhost:8080/horarios/getHorario?nombrePlan="+selectedCareerObj+"&semestre="+selectedSemesterObj+"&curso="+selectedGradeObj+"&grupo="+group)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                     console.log("El data es:" +JSON.stringify(response.data))
                     setScheduleDataObj(response.data)
                 }                           
@@ -174,11 +176,10 @@ const CreateSchedule = () => {
                 <h1>Creación del horario</h1>
             </div>
             <div style={row}>
-                
-                    <DropdownButton id="dropdown-item-button" title={selectedCareerObj}  variant="light">
+                <DropdownButton id="dropdown-item-button" title={selectedCareerObj}  variant="light">
                     {careers.map((career) => (
                         <Dropdown.Item as="button" onClick={() => onCareerSelected(career)}>{career}</Dropdown.Item>))}
-                    </DropdownButton>
+                </DropdownButton>
                 <div style={label3}>
                     <label style={{marginTop: '1vh', marginRight: '1vh'}}>Curso:</label>
                     <DropdownButton id="dropdown-item-button"  title={selectedGradeObj}  variant="light">

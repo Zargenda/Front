@@ -68,9 +68,9 @@ const DataLoad = () => {
 
         formData.append("file", file);        
 
-        if(selectedFileDropdown == "Aulas"){
+        if (selectedFileDropdown == "Aulas") {
             baseUrl = "http://localhost:8080/aulas/uploadAula"
-        }else{
+        } else {
             baseUrl = "http://localhost:8080/asignaturas/upload"
         }
         await axios.post(baseUrl,
@@ -80,12 +80,12 @@ const DataLoad = () => {
                 }
             })
            .then(response => {
-               if(!response.data){
+               if (!response.data) {
                    alert("Se ha producido un error, inténtelo de nuevo.")
-               }else{
-                   if(selectedFileDropdown == "Asignaturas"){
+               } else {
+                   if (selectedFileDropdown == "Asignaturas") {
                     history.push("/dataEdit");
-                   }else{
+                   } else {
                     alert("Archivo subido con éxito.")
                    }                   
                }                           
@@ -115,8 +115,10 @@ const DataLoad = () => {
                         <h1>Carga de datos</h1>
                     </div>
                     <DropdownButton id="dropdown-item-button" title={selectedFileDropdown}  variant="dark">
-                    {fileDropdown.map((name) => (
-                        <Dropdown.Item as="button" onClick={() => setSelectedFileDropdown(name)}>{name}</Dropdown.Item>))}
+                        {fileDropdown.map((name) => (
+                            <Dropdown.Item as="button" onClick={() => setSelectedFileDropdown(name)}>
+                                {name}
+                            </Dropdown.Item>))}
                     </DropdownButton>
                     <div class="row">
                     <input
@@ -137,7 +139,6 @@ const DataLoad = () => {
                     <div style={!isMobile ? button : { display: "flex", justifyContent: 'center', alignItems: 'center',}}>  
                         <button onClick={save} style={{ backgroundColor: "#685cf4", color: 'whitesmoke', borderRadius: '4px', height: '50px', width: '130px' }}> Importar </button>
                     </div>
-                    
                 </Col>
             </Container>
         </div>

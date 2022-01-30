@@ -49,15 +49,12 @@ const useStyles = makeStyles((theme) => ({
 
 const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar }) => {
     const styles = useStyles();
-
     const [changeModal, setChangeModal] = useState(false);
     const [changeDate, setChangeDate] = useState("09/12/2021");
     const [changeDateOption, setChangeDateOption] = useState("Normal");
     const [changeDateType, setChangeDateType] = useState("Festivo");
     const [changeDateComment, setChangeDateComment] = useState("Comment");
     const [changeDayInfo, setChangeDayInfo] = useState({});
-    //console.log("TBODY--" + JSON.stringify(calendarArray))
-
     const changeWeekOptions = ["a", "b", "Normal"];
     const CHANGE_DAY_OPTION = "Cambio de día", FESTIVO = "Festivo", NORMAL = "Normal", EVALUACION = "Evaluación";
     const typeOptions = [NORMAL, FESTIVO, CHANGE_DAY_OPTION, EVALUACION];
@@ -65,7 +62,6 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
     const yearCalendar = Object.values(getConvertedData(calendarArray));
     const legendInfo = getLegends();
     const getTypeName = (type) => {
-        //let map = new Map([[CHANGE_DAY, CHANGE_DAY_OPTION], [FESTIVE, FESTIVO]]);
         switch (type) {
             case FESTIVE:
                 return FESTIVO
@@ -80,6 +76,7 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
                 return NORMAL
         }
     }
+
     const openModal = (date) => {
         let dateInfo = calendarArray.find(d => d.date == date)
         setChangeDayInfo(dateInfo)
@@ -91,7 +88,6 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
         else 
             setChangeDateComment(dateInfo.comment)
         let letter = dateInfo.week.charAt(0);
-        console.log("--"+letter)
         if (!(letter == 'a' || letter == 'b')) setChangeDateOption("Normal");
         else setChangeDateOption(letter)
         toggleModal();
@@ -111,9 +107,9 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
                 return CONTINUE_CONVOCATORY
             else if (changeDateComment.includes("1"))
                 return CONVOCATORY
-            else if(changeDateComment.includes("2"))
+            else if (changeDateComment.includes("2"))
                 return SECOND_CONVOCATORY
-            else if(changeDateComment.includes("CULM"))
+            else if (changeDateComment.includes("CULM"))
                 return CULM_EXAM
     }
 
@@ -123,10 +119,9 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
         else
             return getWeekConst(changeDateComment);
     }
-    const saveModal = async () => {
-        let opt = changeDateOption;
-        let date = new Date(changeDate.getTime() + dayInSeconds)
 
+    const saveModal = async () => {
+        let date = new Date(changeDate.getTime() + dayInSeconds)
         let dateInfo = {
             date: date,
             type: getTypeConst(),
@@ -134,12 +129,11 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
             comment: changeDateComment,
             week: changeDateOption
         };
-        console.log("MODAL---" + JSON.stringify(dateInfo))
         await axios.post(baseUrl+'/ModificarC', dateInfo)
         .then(response=>{
-            if(!response.data){
+            if (!response.data){
             //error
-            }else{
+            } else {
             //éxito
             }
         })
@@ -197,7 +191,6 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
             </div>
         </div>
     );
-
 
     const tBodies = yearCalendar.map((monthValues, index) => {
         const weekValues = Object.values(monthValues.weeks);
@@ -272,25 +265,27 @@ const CalendarTable = ({ calendarArray, editable, enableHeader, fetchCalendar })
     });
 
     return (
-                <div class="calendarRow">
-            {calendarArray.length > 0? <div>
-                <table class="calendarTable">
-                     <thead>
-                        <tr>
-                            <th class="header">{getStartYear()}</th>
-                            {getWeekHeader(enableHeader)}
-                        </tr>
-                    </thead>
-                    {tBodies}
-                </table>
-            </div> : null}
+            <div class="calendarRow">
+            {calendarArray.length > 0 ?
+                <div>
+                    <table class="calendarTable">
+                         <thead>
+                            <tr>
+                                <th class="header">{getStartYear()}</th>
+                                {getWeekHeader(enableHeader)}
+                            </tr>
+                        </thead>
+                        {tBodies}
+                    </table>
+                </div>
+                : null}
                 <Modal
                         open={changeModal}
                         onClose={toggleModal}>
                         {modal}
-                    </Modal>
-                    <div> {legendsList} </div>
-                </div>
+                </Modal>
+                <div> {legendsList} </div>
+            </div>
     );
 };
 

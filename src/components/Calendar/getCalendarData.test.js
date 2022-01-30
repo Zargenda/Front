@@ -4,9 +4,9 @@
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, getLegends, SECOND_CONVOCATORY, getRealWeekNumber
 } from "./getCalendarData";
 
-test('get converted calendar data', () => {
+test('get converted calendar data and legends', () => {
     const calendarArray = [
-        { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1' },
+        { date: "2021/09/13", type: NO_SCHOOL, day: MONDAY, week: 'a1', comment:"INICIO_CUATRIMESTRE"},
         { date: "2021/09/14", type: NO_SCHOOL, day: TUESDAY, week: 'a1' },
         { date: "2021/09/15", type: SCHOOL, day: WEDNESDAY, week: 'a1' },
         { date: "2021/09/16", type: SCHOOL, day: THURSDAY, week: 'a1' },
@@ -45,7 +45,6 @@ test('get converted calendar data', () => {
     const expectedCalendar = [
         {
             month: "Sept",
-            finalMonthDay: 30,
             weeks: [
                 {
                     weekNumber: 1,
@@ -91,7 +90,6 @@ test('get converted calendar data', () => {
         },
         {
             month: "Oct",
-            finalMonthDay: 31,
             weeks: [
                 {
                     weekNumber: 3,
@@ -125,44 +123,84 @@ test('get converted calendar data', () => {
     ];
     const convertedData = getConvertedData(calendarArray);
     expect(convertedData).toEqual(expectedCalendar);
+
+    const expectedLegends = [
+        { comment: "Festividad de todos los Santos", endDate: null, startDate: "27/9/21", type: FESTIVE },
+        { comment: "horario de lunes", endDate: null, startDate: "28/9/21", type: CHANGE_DAY },
+        { comment: "Exámenes 2ª conv", endDate: null, startDate: "29/9/21", type: "SECOND_CONVOCATORY" },
+        { comment: "Exámenes 1ª conv", endDate: null, startDate: "1/10/21", type: "CONVOCATORY" },
+        { comment: "Festividad del Pilar", endDate: "14/10/21", startDate: "11/10/21", type: "FESTIVE" },
+        { comment: "Exámenes CULM", endDate: null, startDate: "15/10/21", type: "CULM_EXAM" }
+    ];
+    expect(getLegends()).toEqual(expectedLegends);
 });
 
 test('get startYear', () => {
     expect(getStartYear()).toEqual(2021);
 });
 
-test('get legends information', () => {
-    const expectedLegends = [
-        { comment: "Festividad de todos los Santos", endDate: null, startDate: "27/9/21", type: FESTIVE},
-        { comment: "horario de lunes", endDate: null, startDate: "28/9/21", type: CHANGE_DAY },
-        { comment: "Exámenes 2ª conv", endDate: null, startDate: "29/9/21", type: "SECOND_CONVOCATORY" },
-        { comment: "Exámenes 1ª conv", endDate: null, startDate: "1/10/21", type: "CONVOCATORY" },
-        { comment: "Festividad del Pilar", endDate: "14/10/21", startDate: "11/10/21", type: "FESTIVE" },
-        { comment: "Exámenes CULM", endDate: null, startDate: "15/10/21", type: "CULM_EXAM" }
-    ]
-    expect(getLegends()).toEqual(expectedLegends);
-});
-
 test('get border style', () => {
-    const finalDay = 30;
+    //cualquier domingo que no es el ultimo del mes
+    expect(getBorderStyle("2021-09-19", SUNDAY)).toEqual("rightBorder")
+    //de la ultima semana del mes y no es domingo
+    expect(getBorderStyle("2021-09-27", MONDAY)).toEqual("bottomBorder")
+    //ultimo domingo del mes
+    expect(getBorderStyle("2021-09-26", SUNDAY)).toEqual("rightBottomBorder")
     //ultimo dia del mes
-    expect(getBorderStyle(finalDay, MONDAY, finalDay, false)).toEqual("rightBottomBorder")
-    //ultimo domingo del calendario
-    expect(getBorderStyle(finalDay, MONDAY, finalDay, false)).toEqual("rightBottomBorder")
+    expect(getBorderStyle("2021-09-30", THURSDAY)).toEqual("rightBottomBorder")
+    //de la primera semana del mes
+    expect(getBorderStyle("2021-10-01", FRIDAY)).toEqual("");
 
-    for (let i = 1; i < 6; i++) {
-        //ultima semana del mes
-        expect(getBorderStyle(finalDay - i, MONDAY, finalDay, false)).toEqual("bottomBorder")
-        //es domingo y ultima semana del mes
-        expect(getBorderStyle(finalDay - i, SUNDAY, finalDay, false)).toEqual("rightBottomBorder")
-        //primera semana del siguiente mes
-        expect(getBorderStyle(i, MONDAY, finalDay, false)).toEqual("");
-        //ultima semana del calendario
-        expect(getBorderStyle(15 + i, MONDAY, finalDay, true)).toEqual("bottomBorder");
-        //cualquier domingo que no es de la última semana del mes, ni del calendario
-        expect(getBorderStyle(15 + i, SUNDAY, finalDay, false)).toEqual("rightBorder")
-
-    }
+    getConvertedData([
+        {
+            "date": "2021-09-15",
+            "type": "SCHOOL",
+            "day": "X",
+            "week": "0",
+            "comment": "INICIO_CUATRIMESTRE"
+        },
+        {
+            "date": "2021-09-16",
+            "type": "SCHOOL",
+            "day": "J",
+            "week": "0",
+            "comment": null
+        },
+        {
+            "date": "2021-09-17",
+            "type": "SCHOOL",
+            "day": "V",
+            "week": "0",
+            "comment": null
+        },
+        {
+            "date": "2021-09-18",
+            "type": "FESTIVE",
+            "day": "S",
+            "week": "",
+            "comment": null
+        },
+        {
+            "date": "2021-09-19",
+            "type": "FESTIVE",
+            "day": "D",
+            "week": "",
+            "comment": null
+        },
+        {
+            "date": "2021-09-20",
+            "type": "SCHOOL",
+            "day": "L",
+            "week": "a1",
+            "comment": null
+        }
+    ])
+    //ultimo dia del calendario
+    expect(getBorderStyle("2021-09-20", MONDAY)).toEqual("rightBottomBorder");
+    //de la ultima semana del calendario y no es domingo
+    expect(getBorderStyle("2021-09-16", THURSDAY)).toEqual("bottomBorder");
+    //domingo de la ultima semana del calendario
+    expect(getBorderStyle("2021-09-19", SUNDAY)).toEqual("rightBottomBorder");
 })
 
 test('get real week number', () => {
@@ -171,3 +209,5 @@ test('get real week number', () => {
         expect(getRealWeekNumber(weekArray[i])).toBe(i+1)
     }
 })
+
+

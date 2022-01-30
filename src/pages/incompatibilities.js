@@ -47,18 +47,18 @@ const Incompatibilities = () => {
 
     async function loadIncompatibilities(){           
         await axios.get("http://localhost:8080/horarios/getConflictos")
-                .then(response => {
-                    if(!response.data){
-                        console.log("Error fetching data")
-                    }else{     
-                    console.log("El data es "+JSON.stringify(response.data))
-                    var aux = []
-                    for(var i = 0; i < response.data.length; i++){
-                        aux.push(response.data[i].descripcion)
-                    }         
-                    setIncompatibilities(aux)
-                    }                           
-                });    
+            .then(response => {
+                if(!response.data){
+                    console.log("Error fetching data")
+                }else{     
+                console.log("El data es "+JSON.stringify(response.data))
+                var aux = []
+                for(var i = 0; i < response.data.length; i++){
+                    aux.push(response.data[i].descripcion)
+                }         
+                setIncompatibilities(aux)
+                }                           
+            });    
     }
 
     return (

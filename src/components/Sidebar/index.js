@@ -1,5 +1,8 @@
 import React from 'react'
-import { SidebarContainer, Icon, CloseIcon, SidebarWrapper, SidebarMenu, SidebarLink, SideBtnWrap, SidebarRoute, SidebarRouteRed } from './SidebarElement'
+import {
+    SidebarContainer, Icon, CloseIcon, SidebarWrapper, SidebarMenu,
+    SidebarLink, SideBtnWrap, SidebarRoute, SidebarRouteRed
+} from './SidebarElement'
 import {ScheduleData} from '../../pages/scheduleData';
 
 const Sidebar = ({isOpen, toggle}) => {
@@ -28,23 +31,25 @@ const Sidebar = ({isOpen, toggle}) => {
         setSelectedSemesterObj("Seleccione semestre")
         setSelectedSubjectObj("Seleccione una")
     }
+
     return (
         <SidebarContainer isOpen={isOpen} >
             <Icon onClick={toggle}>
                 <CloseIcon/>
             </Icon>
             <SidebarWrapper>
-                {sessionActiveObj ?<SidebarMenu>
-                    <SideBtnWrap>
-                        <SidebarRouteRed to='' onClick={() =>logout()}>Cerrar sesión</SidebarRouteRed>
-                    </SideBtnWrap>
-                </SidebarMenu>:
-                <SidebarMenu>
-                <SidebarLink to='signup' onClick={toggle}>Registrarse</SidebarLink>
-                <SideBtnWrap>
-                    <SidebarRoute to='' onClick={toggle}>Iniciar sesión</SidebarRoute>
-                </SideBtnWrap>
-            </SidebarMenu>}
+                {sessionActiveObj ?
+                    <SidebarMenu>
+                        <SideBtnWrap>
+                            <SidebarRouteRed to='' onClick={() =>logout()}>Cerrar sesión</SidebarRouteRed>
+                        </SideBtnWrap>
+                    </SidebarMenu>:
+                    <SidebarMenu>
+                        <SidebarLink to='signup' onClick={toggle}>Registrarse</SidebarLink>
+                        <SideBtnWrap>
+                            <SidebarRoute to='' onClick={toggle}>Iniciar sesión</SidebarRoute>
+                        </SideBtnWrap>
+                    </SidebarMenu>}
             </SidebarWrapper>
         </SidebarContainer>
     )

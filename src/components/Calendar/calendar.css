@@ -38,6 +38,7 @@
         flex-direction: row;
         text-align:right
     }
+
     .calendarTable preHeader {
         font-family: Tahoma;
         font-size: larger;
@@ -106,29 +107,36 @@
         border-right-width: medium;
         border-bottom-width: medium;
     }
+
     .calendarTable .rightTopBorder {
         border-right-color: black;
         border-top-color: black;
         border-right-width: medium;
         border-top-width: medium;
     }
+
     .calendarTable .rightBorder {
         border-right-width: medium;
         border-right-color: black;
     }
+
     .calendarTable .weekNumber {
         text-align: center;
     }
+
     .calendarTable .whiteLetter {
         color:white;
     }
-
 
 .legendHeader {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
+    .legendHeader pre {
+        max-width: 25vw;
+        white-space: pre-wrap;
+    }
 
 .legendRow {
     display: flex;
@@ -146,10 +154,7 @@
     height: 2.8vh;
     border: 0.3vh solid black;
 }
-.legendHeader pre {
-    max-width: 25vw;
-    white-space: pre-wrap; 
-}
+
 .legendText {
     font-family: Tahoma;
     font-size: large;

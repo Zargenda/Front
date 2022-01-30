@@ -1,7 +1,5 @@
 ﻿import { SCHOOL, FESTIVE, CHANGE_DAY, CONTINUE_CONVOCATORY, CONVOCATORY, SECOND_CONVOCATORY, getTypeColor } from "./getCalendarData";
 
-
-
 const LegendHeader = () => {
     const legendInfo = [
         {
@@ -44,4 +42,5 @@ const LegendHeader = () => {
         </div>
         );
 }
+
 export default LegendHeader;

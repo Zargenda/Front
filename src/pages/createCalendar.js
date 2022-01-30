@@ -9,20 +9,14 @@ import CalendarTable from '../components/Calendar/calendar';
 import LegendHeader from '../components/Calendar/legendHeader';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import "../components/Calendar/calendar.css";
-import {
-    SCHOOL, NO_SCHOOL, CONVOCATORY, CONTINUE_CONVOCATORY, FESTIVE, CHANGE_DAY, CULM_EXAM,
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, SECOND_CONVOCATORY, 
+import { 
     ANOTHER_EXAM, examOptions, changeDayOptions, getQuarterArray, getStartYear, dayInSeconds
 } from "../components/Calendar/getCalendarData";
 import axios from 'axios';
 import { jsPDF } from "jspdf";
-import UserCalendar from '../pages/userCalendar';
 import html2canvas from 'html2canvas';
-import { Inject, ScheduleComponent, WorkWeek, ViewsDirective, ViewDirective, ICalendarExport, DragAndDrop, ResourcesDirective, ResourceDirective } from "@syncfusion/ej2-react-schedule";
-
 
 const baseUrl = 'http://localhost:8080'
-
 
 const title = {
     display: 'flex',
@@ -153,9 +147,6 @@ const dropList = {
     width: '10vh',
 }
 
-const doc = new jsPDF();
-
-
 const Form = () => {
     const [startFirstQuarter, setStartFirstQuarter] = useState("");
     const [endFirstQuarter, setEndFirstQuarter] = useState("");
@@ -182,23 +173,19 @@ const Form = () => {
                 setFirstCalendarArray(getQuarterArray(calendarArray, 1))
                 setSecondCalendarArray(getQuarterArray(calendarArray, 2))
                 setThirdCalendarArray(getQuarterArray(calendarArray, 3))
-                //console.log("CALENDARARRAY--"+data)            
             });
-        console.log((JSON.stringify(firstCalendarArray)).length)
-        /*var calendarArray = ([]);
-        setFirstCalendarArray(getQuarterArray(calendarArray, 1));
-        setSecondCalendarArray(getQuarterArray(calendarArray, 2))
-        setThirdCalendarArray(getQuarterArray(calendarArray, 3))*/
-        console.log("FETCHCALENDAR")
     }
+
     function addOneDay(date) {
         return new Date(new Date(date).getTime() + dayInSeconds)
     }
+
     function addOneDayArray(array) {
         return [...array].map(function (elem) {
             return { startDate: addOneDay(elem.startDate), endDate: addOneDay(elem.endDate), comment: elem.comment }
         })
     }
+
     //Request
     async function saveCalendar() {
         const examWithoutAdditional = [...examList].map(function (exam) {
@@ -210,14 +197,13 @@ const Form = () => {
         const total = addOneDayArray(festiveList).concat(addOneDayArray(changeDayList)).concat(examWithoutAdditional)
         await axios.post(baseUrl+'/ModificarC', {total})
           .then(response=>{
-            if(!response.data){
+            if (!response.data) {
               //error
-            }else{
+            } else {
               //éxito
             }
           })
         await fetchCalendar()
-        console.log("TOTAL----------"+JSON.stringify(total))
     }
 
     async function deleteCalendar() {
@@ -234,7 +220,6 @@ const Form = () => {
 
     async function saveQuarters() {
         let quarters = {
-            //todo callendario controller 24l
             startFirstQuarter: addOneDay(startFirstQuarter),
             endFirstQuarter: addOneDay(endFirstQuarter),
             startSecondQuarter: addOneDay(startSecondQuarter),
@@ -242,20 +227,18 @@ const Form = () => {
             startSecondConvocatory: addOneDay(startSecondConvocatory),
             endSecondConvocatory: addOneDay(endSecondConvocatory)
         }
-        console.log("QUARTERS---"+JSON.stringify(quarters))
         await axios.post(baseUrl+"/IniciarC", {quarters})
           .then(response=>{
-            if(!response.data){
+            if (!response.data) {
               //error
-            }else{
+            } else {
               //éxito
             }
           })
         await fetchCalendar()
-        //history.push("/");
     }
 
-    //Scroll list
+    //---Scrollable lists
     const scrollFestive = useRef(null);
     const scrollExam = useRef(null);
     const scrollChange = useRef(null);
@@ -382,6 +365,7 @@ const Form = () => {
             </div>
         );
     });
+
     //---ExamList functions
     const setExamStartDate = (i, startDate) => {
         let newList = [...examList];
@@ -396,7 +380,6 @@ const Form = () => {
     };
 
     const setExamComment = (i, comment) => {
-        console.log(comment);
         let newList = [...examList];
         newList[i].comment = comment;
         setExamList(newList);
@@ -459,6 +442,7 @@ const Form = () => {
         );
     });
 
+    //Calendar
     const calendarComponent = (title, calendarArray, enable) => {
         return (<div> <br />
             <h2> {title} </h2>
@@ -485,15 +469,12 @@ const Form = () => {
                     const year = getStartYear();
                     const imgData = canvas.toDataURL('img/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8); pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
+                    pdf.addImage(imgData, 'PNG', imgWidth * 0.1, imgHeight * 0.02, imgWidth * 0.8, imgHeight * 0.8);
+                    pdf.save("calendario_" + (year - 1) + "_" + year + ".pdf");
                 });
         }
     }
-    const [scheduleObj, setScheduleObj] = useState(new ScheduleComponent())
-    const saveICS = () => {
-        
-    }
-    
+
     return(
         <div style={body}>
             <div style={title}>
@@ -592,7 +573,6 @@ const Form = () => {
                         <button onClick={() => saveCalendar()} style={gen}>Modificar</button>
                 }
                 {firstCalendarArray.length > 0 ? <button onClick={() => deleteCalendar()} style={gen}>Eliminar</button> :null}
-                {/*<button onClick={saveICS} style={gen}>Exportar a iCalendar</button>*/}
             </div>
             <br />
             <CalendarRender/>

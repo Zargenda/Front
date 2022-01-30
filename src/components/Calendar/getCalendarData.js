@@ -1,7 +1,6 @@
 import { Calendar } from "@syncfusion/ej2-react-calendars";
 
 export const MONDAY = "L", TUESDAY = "M", WEDNESDAY = "X", THURSDAY = "J", FRIDAY = "V", SATURDAY = "S", SUNDAY = "D";
-
 export const weekDayName = ["sem",MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY];
 export const monthName = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sept", "Oct", "Nov", "Dic"];
 export const WEEK_A = "WEEK_A", WEEK_B = "WEEK_B", FESTIVE = "FESTIVE", CONVOCATORY = "CONVOCATORY",
@@ -59,7 +58,6 @@ function getDifferenceInDays(start, end) {
 
 const addLegend = (day) => {
     let comment = day.comment;
-    //console.log("LEGEND"+comment)
     if (comment != null && comment!=START_QUARTER) {
         let d = new Date(day.date);
         let formatDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear().toString().substr(-2);
@@ -71,7 +69,6 @@ const addLegend = (day) => {
             lastDate[2] = formatDate;
             legendList.set(comment, lastDate);
         }
-        //console.log(legendList.get(comment));
     }
 }
 
@@ -86,8 +83,7 @@ const getDayInfo = (weekArray) => {
     for (let i = 0; i < weekArray.length; i++) {
         let weekDay = weekArray[i].day;
         let dayType = weekArray[i].type;
-        if(dayType==SCHOOL || dayType==CHANGE_DAY )countByWeekDay[weekDayIndex.get(weekDay)]++;
-        console.log("LEGEND2" + JSON.stringify(weekArray[i]))
+        if (dayType==SCHOOL || dayType==CHANGE_DAY )countByWeekDay[weekDayIndex.get(weekDay)]++;
         addLegend(weekArray[i])
         dayInfo.push(
             {
@@ -103,14 +99,10 @@ const getDayInfo = (weekArray) => {
 
 const getWeeks = (monthArray) => {
     let weeks = [];
-    //console.log("MONTHARRAY" + JSON.stringify(monthArray))
-
     for (let i = 0; i < (monthArray.length / WEEK_TOTAL); i++) {
         let dayInfo = getDayInfo(monthArray.slice(i * WEEK_TOTAL, (i + 1) * WEEK_TOTAL));
         let thisWeekNumber = null;
         let isFinalWeek = weekNumber == finalWeek;
-        console.log("FINALWEEK " + weekNumber + "+" + finalWeek + "=" + isFinalWeek)
-
         if (!isFestiveWeek(dayInfo)) {
             thisWeekNumber = weekNumber;
             weekNumber++;
@@ -118,7 +110,6 @@ const getWeeks = (monthArray) => {
             finalWeek--;
             isFinalWeek = weekNumber - 1 == finalWeek;
         }
-        console.log("FINALWEEK2 "+ weekNumber + "+" + finalWeek + "=" + isFinalWeek)
         weeks.push(
             {
                 weekNumber: thisWeekNumber,
@@ -127,7 +118,6 @@ const getWeeks = (monthArray) => {
             }
         );
     }
-    //console.log("WEEKend"+JSON.stringify(weeks))
     return weeks;
 }
 
@@ -137,13 +127,10 @@ export function getWeekDayByIndex(index) {
 
 const alignFirstWeek = (array) => {
     let firstDay = array.find(d => d.comment == START_QUARTER);
-    console.log("FIRSTDAY" + JSON.stringify(array));
     var calendarArray = [...array]
-            console.log("FIRSTDAY" + JSON.stringify(calendarArray))
 
     if (firstDay.day != MONDAY) {
         let date = new Date(firstDay.date)
-        console.log((weekDayIndex.get(firstDay.day)-1))
         for (let i = weekDayIndex.get(firstDay.day)-1; 0 <= i ; i--) {
             date.setDate(date.getDate() - 1);
             let newDate = {
@@ -154,7 +141,6 @@ const alignFirstWeek = (array) => {
                 week: ""
             }
             calendarArray.push(newDate)
-            console.log("NEWDATE "+ JSON.stringify(newDate))
         }
     }
     return calendarArray;
@@ -184,8 +170,6 @@ export const getQuarterArray = (array, number) => {
     let calendarArray = array.sort(sortByDate);
     let secondIndex = calendarArray.slice(1, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER) + 1;
     let thirdIndex = calendarArray.slice(secondIndex + 2, calendarArray.length - 1).findIndex(d => d.comment == START_QUARTER) + secondIndex + 2;
-    console.log("INDICES--" + secondIndex + "/" + thirdIndex
-        + JSON.stringify(calendarArray.slice(secondIndex + 1, calendarArray.length - 1)))
     let quarterArray;
     if (number == 1) 
         quarterArray = calendarArray.slice(0, secondIndex)
@@ -193,13 +177,11 @@ export const getQuarterArray = (array, number) => {
         quarterArray = calendarArray.slice(secondIndex, thirdIndex)
     else 
         quarterArray = calendarArray.slice(thirdIndex, calendarArray.length)
-    //console.log("QUARTERAR"+JSON.stringify(quarterArray))
     return quarterArray
 }
 
 export const getConvertedData = (array) => {
-    //console.log("GETCONVERT"+JSON.stringify(array))
-    if(array==null || array.length==0) return []
+    if (array == null || array.length == 0) return []
     setSchoolYears(array[0].date);
     legendList = new Map();
     countByWeekDay = [0, 0, 0, 0, 0]
@@ -207,11 +189,9 @@ export const getConvertedData = (array) => {
 
     let firstWeekCalendar = alignFirstWeek(array)
     firstWeekCalendar.sort(sortByDate);
-    //console.log("firstWeek" + JSON.stringify(firstWeekCalendar))
 
     let calendarArray = alignEndWeek(firstWeekCalendar)
     calendarArray.sort(sortByDate);
-    //console.log("ENDCALENDAR" + JSON.stringify(calendarArray))
 
     weekNumber = 1;
     finalWeek = Math.ceil(getDifferenceInDays(calendarArray[0].date, calendarArray[calendarArray.length - 1].date) / WEEK_TOTAL);
@@ -219,17 +199,14 @@ export const getConvertedData = (array) => {
     let firstDayIndex = 0, firstDayMonth, lastDayMonth, lastDayIndex;
     let calendarData = [];
     for (let i = 0; i < numberMonths; i++) {
-        //console.log("TAMALO" + calendarArray.length + "--" + firstDayIndex)
         if (firstDayIndex >= calendarArray.length) break;
         firstDayMonth = calendarArray[firstDayIndex].date;
         lastDayMonth = getLastDayMonth(firstDayMonth);
 
         lastDayIndex = firstDayIndex + Math.ceil(getDifferenceInDays(firstDayMonth, lastDayMonth) / WEEK_TOTAL) * WEEK_TOTAL;
         let monthArray = calendarArray.slice(firstDayIndex, lastDayIndex);
-       // console.log("MONTHARRAY" + JSON.stringify(monthArray))
         let secondWeek = new Date(new Date(firstDayMonth).getTime() + 7 * dayInSeconds)
         let monthInfo = lastday(secondWeek.getFullYear(), secondWeek.getMonth(), 1)
-        //console.log("INDEXS--" + firstDayIndex + "--" + getDifferenceInDays(firstDayMonth, lastDayMonth) + "//"+ monthInfo)
 
         calendarData.push(
             {
@@ -237,18 +214,14 @@ export const getConvertedData = (array) => {
                 weeks: getWeeks(monthArray)
             }
         );
-
         firstDayIndex = lastDayIndex;
-        //console.log("MONTHARRAY2" + JSON.stringify(calendarData));
-
     }
-    //console.log("-------------------------" + JSON.stringify(calendarData));
     return calendarData;
 };
 
 const setSchoolYears = (date) => {
     let startYear = new Date(date).getFullYear();
-    schoolYears={
+    schoolYears = {
         startYear: startYear,
         endYear: startYear + 1
     };
@@ -257,6 +230,7 @@ const setSchoolYears = (date) => {
 export const getStartYear = (date) => {
     return schoolYears.startYear;
 }
+
 export const getLegends = () => {
     var legends = [];
     for (const [key, value] of legendList) {
@@ -313,7 +287,6 @@ export const getBorderStyle = (date, day) => {
     var style = "";
     var thisDate = new Date(date)
     let finalDay = lastday(thisDate.getFullYear(), thisDate.getMonth(),1).getDate()
-    console.log("DATEDAY " + date + "||" + finalDayOfQuarter.getTime() + "||" + (finalDayOfQuarter.getTime() - 7 * dayInSeconds) + "||" + thisDate.getTime() + "||" + "--")
     var finalWeek = ((finalDayOfQuarter.getTime() - 7 * dayInSeconds) < thisDate.getTime())
     if (finalDay != 0) {
         if (thisDate.getDate() == finalDay || finalDayOfQuarter.getTime() == thisDate.getTime())
@@ -331,13 +304,11 @@ export const getBorderStyle = (date, day) => {
             style = "bottomBorder";
         }
     }
-    console.log("DATEDAY"+style)
     return style;
 };
 
 export const getMonthHeader = (index, length, month) => {
     let header = null;
-    //console.log("HEADER"+index+"||"+length+"||"+month)
     if (month != JANUARY && index == 0)
         header = (<td class="header" rowSpan={length}>{month}</td>);
     else if (month == JANUARY && index == 1)
@@ -348,9 +319,9 @@ export const getMonthHeader = (index, length, month) => {
 }
 
 export const getWeekHeader = (enable) => {
-    if(enable)
+    if (enable)
         return weekDayName.map((day, i) => {
-            if(i==0)
+            if (i == 0)
                 return (<th key={i}>{day}</th>);
             else 
                 return (<th key={i}>
@@ -364,7 +335,6 @@ export const getWeekHeader = (enable) => {
 }
 
 export const getWeekNumberStyle = (index, finalWeek) => {
-    console.log("fw"+finalWeek+"--"+index)
     let header = "rightBorder";
     if (finalWeek) {
         header = "rightBottomBorder";

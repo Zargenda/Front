@@ -63,40 +63,40 @@ const EditSchedule = () => {
     async function fetchCareers() {
         await axios.get(baseUrl+"/getAreas")
             .then(response => {
-                if(!response.data){
-                    console.log("Error fetching data")
-                }else{
+                if (!response.data) {
+                    console.log("Error fetching data");
+                } else {
                     setCareers(response.data)
                 }                           
             });
     }
 
-    async function onCareerSelected(career){        
+    async function onCareerSelected(career) {        
         setSelectedCareerObj(career)
         setScheduleDataObj([])
         await axios.get(baseUrl+"/getSemestres?nombrePlan="+career)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{                  
+                } else {                  
                     setSemesters(response.data.Semester)
                     setGrades(response.data.Grade)
                 }                           
             });
     }
-    async function onGradeOrSemesterSelected(grade, semester){        
+    async function onGradeOrSemesterSelected(grade, semester) {        
         setSelectedGradeObj(grade)
         setSelectedSemesterObj(semester)
         setScheduleDataObj([])
         await axios.get(baseUrl+"/getGroupsAndSubjects?nombrePlan="+selectedCareerObj+"&semestre="+semester+"&curso="+grade)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                     var largest = Math.max.apply(0, response.data.groups);
                     var dataInt = parseInt(largest)  
                     var arrayAux = []
-                    for(var i = 1; i <= dataInt; i++){
+                    for(var i = 1; i <= dataInt; i++) {
                         arrayAux.push(i)
                     }
                     setGroups(arrayAux)
@@ -105,13 +105,13 @@ const EditSchedule = () => {
             });
     }
 
-    async function onGroupSelected(group){        
+    async function onGroupSelected(group) {        
         setSelectedGroupObj(group)
         await axios.get("http://localhost:8080/horarios/getHorario?nombrePlan="+selectedCareerObj+"&semestre="+selectedSemesterObj+"&curso="+selectedGradeObj+"&grupo="+group)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                     console.log("El data es:" +JSON.stringify(response.data))
                     setScheduleDataObj(response.data)
                 }                           
@@ -132,10 +132,10 @@ const EditSchedule = () => {
             </div>
 
             <div style={row}>
-                    <DropdownButton id="dropdown-item-button"  title={selectedCareer}  variant="light">
-                    {careers.map((career) => (
-                        <Dropdown.Item as="button" onClick={() => onCareerSelected(career)}>{career}</Dropdown.Item>))}
-                    </DropdownButton>
+                <DropdownButton id="dropdown-item-button"  title={selectedCareer}  variant="light">
+                {careers.map((career) => (
+                    <Dropdown.Item as="button" onClick={() => onCareerSelected(career)}>{career}</Dropdown.Item>))}
+                </DropdownButton>
                 <div style={label3}>
                     <DropdownButton id="dropdown-item-button"  title={selectedGrade}  variant="light">
                     {grades.map((grade) => (

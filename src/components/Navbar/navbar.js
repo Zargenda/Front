@@ -36,33 +36,31 @@ const Navbar = ({toggle}) => {
         setSelectedSemesterObj("Seleccione semestre")
         setSelectedSubjectObj("Seleccione una")
     }
+
     return (
         <>
             <Nav>
-                <NavLink to="/">
-                    
-                </NavLink>
+                <NavLink to="/"></NavLink>
                 <Bars onClick={toggle}>
                     <FaBars />
                 </Bars>
                 {sessionActiveObj ?
                 <NavMenu>
-                    <NavLink to={sessionRoleObj == "Administrador" ? '/admin' : '/user'} activeStyle>
+                    <NavLink to={sessionRoleObj == "Administrador" ? '/admin' : '/user'} >
                         {sessionRoleObj +" "+sessionEmailObj}
                     </NavLink>
                     <NavBtn>
-                    <NavBtnLinkRed onClick={() =>logout()} to="/"> Cerrar sesión</NavBtnLinkRed>
+                        <NavBtnLinkRed onClick={() =>logout()} to="/"> Cerrar sesión</NavBtnLinkRed>
                     </NavBtn> 
                 </NavMenu>
                 : <NavMenu>
-                    <NavLink to='/signup' activeStyle>
+                    <NavLink to='/signup' >
                         Registrarse
                     </NavLink>
                     <NavBtn>
                          <NavBtnLink to="/"> Iniciar sesión</NavBtnLink>                        
                     </NavBtn>                    
                 </NavMenu>}
-                
             </Nav>
         </>
     )

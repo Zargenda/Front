@@ -61,6 +61,7 @@ const AdminMenu = () => {
   function handleWindowSizeChange() {
       setWidth(window.innerWidth);
   }
+
   useEffect(() => {
       window.addEventListener('resize', handleWindowSizeChange);
       return () => {
@@ -71,32 +72,31 @@ const AdminMenu = () => {
   let isMobile = (width <= 768);
   return (
     <>
-    <div style={column}>
-    <div style={isMobile ? column : row}> 
-      
-      <div style={column}>
-        <button disabled='true' style={unclickableButton}> Datos </button>
-        <button onClick={(e) => handleClick(e, "/dataLoad")} style={clickableButton}> Carga de datos </button>
-        <button onClick={(e) => handleClick(e, "/dataEdit")} style={clickableButton}> Edición de datos </button>
-      </div>
-    </div> 
-    <div style={isMobile ? column : row}> 
-      <div style={column}>
-          <button disabled='true' style={unclickableButton}> Calendarios </button>
-          <button onClick={(e) => handleClickCal(e)} style={clickableButton}> Crear calendarios </button>
-      </div>
-    </div>  
-    <div style={isMobile ? column : row}>
-      
-      <div style={column}>
-        <button disabled='true' style={unclickableButton}> Horarios </button>
-        <button onClick={(e) => handleClick(e, "/createSchedule")} style={clickableButton}> Crear horarios </button>
-        <button onClick={(e) => handleClick(e, "/editSchedule")} style={clickableButton}> Modificar horarios </button>
-        <button  onClick={(e) => handleClick(e, "/incompatibilities")} style={clickableButton}> Consultar incompatibilidades </button>
-      </div>
-
-    </div>
-    </div>
+        <div style={column}>
+            <div style={isMobile ? column : row}> 
+                <div style={column}>
+                    <button disabled='true' style={unclickableButton}> Datos </button>
+                    <button onClick={(e) => handleClick(e, "/dataLoad")} style={clickableButton}> Carga de datos </button>
+                    <button onClick={(e) => handleClick(e, "/dataEdit")} style={clickableButton}> Edición de datos </button>
+                </div>
+            </div> 
+            <div style={isMobile ? column : row}> 
+                <div style={column}>
+                    <button disabled='true' style={unclickableButton}> Calendarios </button>
+                    <button onClick={(e) => handleClickCal(e)} style={clickableButton}> Crear calendarios </button>
+                </div>
+            </div>  
+            <div style={isMobile ? column : row}>
+                <div style={column}>
+                    <button disabled='true' style={unclickableButton}> Horarios </button>
+                    <button onClick={(e) => handleClick(e, "/createSchedule")} style={clickableButton}> Crear horarios </button>
+                    <button onClick={(e) => handleClick(e, "/editSchedule")} style={clickableButton}> Modificar horarios </button>
+                    <button onClick={(e) => handleClick(e, "/incompatibilities")} style={clickableButton}>
+                          Consultar incompatibilidades
+                    </button>
+                </div>
+            </div>
+        </div>
     </>
           
   );

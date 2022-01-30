@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { Col, Container} from "react-bootstrap";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import MaterialTable from 'material-table';
-
-
 import Search from '@material-ui/icons/Search'
 import SaveAlt from '@material-ui/icons/SaveAlt'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
@@ -51,16 +49,15 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-//const baseUrl='https://servicios.ine.es/wstempus/js/ES/OPERACIONES_DISPONIBLES'
 const baseUrl= "http://localhost:8080/asignaturas"
 
 const DataEdit = () => {   
     const styles = useStyles(); 
     const [data, setData] = useState([]);
-    const columns = [{title: 'Código', field: 'id'}, {title: 'Asignatura', field: 'nombre'}, {title: 'Curso', field: 'curso'}, {title: 'Semestre', field: 'semestre'}, {title: 'Grupo', field: 'grupo'}];
+    const columns = [{ title: 'Código', field: 'id' }, { title: 'Asignatura', field: 'nombre' }, { title: 'Curso', field: 'curso' },
+    { title: 'Semestre', field: 'semestre' }, { title: 'Grupo', field: 'grupo' }];
     const [modalEditar, setModalEditar]=useState(false);
     const [modalEliminar, setModalEliminar]=useState(false);
-    const [modalInsertar, setModalInsertar]=useState(false);
     const [width, setWidth] = useState(window.innerWidth);
     const [asignaturaSeleccionada, setAsignaturaSeleccionada]=useState({
         id: '',
@@ -80,12 +77,12 @@ const DataEdit = () => {
         }
     }, []);
 
-    async function fetchData(){
+    async function fetchData() {
       await axios.get(baseUrl+"/getAsignaturas")
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{
+                } else {
                   console.log("El data essss "+JSON.stringify(response.data))
                   setData(response.data)
                 }                           
@@ -106,9 +103,9 @@ const DataEdit = () => {
       setModalEliminar(!modalEliminar);
       await axios.post(baseUrl+"/delete?id="+id)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{
+                } else {
                   console.log("El data essss "+JSON.stringify(response.data))
                   fetchData()                  
                 }                           
@@ -120,9 +117,9 @@ const DataEdit = () => {
       setModalEditar(!modalEditar);
       await axios.post(baseUrl+"/update?id="+id+"&name="+name+"&grade="+grade+"&semester="+semester+"&group="+group)
             .then(response => {
-                if(!response.data){
+                if (!response.data) {
                     console.log("Error fetching data")
-                }else{
+                } else {
                   console.log("El data essss "+JSON.stringify(response.data))
                   fetchData()                  
                 }                           
@@ -166,13 +163,12 @@ const DataEdit = () => {
             <Button color="secondary" onClick={()=>onDeleteData(asignaturaSeleccionada.id)} >Sí</Button>
             <Button onClick={()=>abrirCerrarModalEliminar()}>No</Button>    
           </div>
-    
         </div>
     )
 
     const seleccionarAsignatura=(asignatura, caso)=>{
         setAsignaturaSeleccionada(asignatura);
-        (caso==='Editar')?abrirCerrarModalEditar():abrirCerrarModalEliminar()
+        (caso ==='Editar')?abrirCerrarModalEditar():abrirCerrarModalEliminar()
     }
 
     return (

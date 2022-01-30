@@ -43,7 +43,6 @@ const gen = {
 export default class App extends Component {  
   constructor(props) {
     super(props);
-    
     this.state={
       data : [],
       ctx: {}
@@ -52,22 +51,18 @@ export default class App extends Component {
   componentWillUpdate() {
     const newContext = this.context
     const contextAux = this.state.ctx
-    console.log("Llego aqui despues"+JSON.stringify(this.state.data))
     if(Object.keys(this.state.ctx).length != 0){ 
         if(contextAux.selectedCareer[0] != newContext.selectedCareer[0] || contextAux.selectedGrade[0] !=
           newContext.selectedGrade[0] || contextAux.selectedSemester[0] != newContext.selectedSemester[0]
           || contextAux.selectedGroup[0] != newContext.selectedGroup[0]){
               const dataAux = []
               this.state.data = dataAux
-              console.log("Entro en este"+JSON.stringify(this.state.data))
               this.setState({data: dataAux, ctx: newContext})
           }
-    }else{
-        console.log("Lo meto vacio"+JSON.stringify(this.state.data))
+    } else {
           this.setState({data: this.state.data, ctx: newContext})
     }
-    console.log("Final"+JSON.stringify(this.state.data))
-    }
+}
 
   calendarCollections = [
     { CalendarText: 'Teoría', CalendarId: 1, CalendarColor: '#55B7EE' },
@@ -137,13 +132,11 @@ export default class App extends Component {
   }
 
   async loadSchedule(){    
-    //var dataAux = [{"idPadre":1,"Id":1,"Subject":"Laboratorio ing software","StartTime":"2021-09-14T07:30:00.000+00:00","EndTime":"2021-09-14T09:00:00.000+00:00","CalendarId":1,"Description":"Aula 1.1","Frecuency":"Semanal"},{"idPadre":1,"Id":2,"Subject":"Sistemas legados","StartTime":"2021-09-13T07:30:00.000+00:00","EndTime":"2021-09-13T09:00:00.000+00:00","CalendarId":2,"Description":"Aula 1.3","Frecuency":"Semanal"},{"idPadre":1,"Id":3,"Subject":"Seguridad informática","StartTime":"2021-08-13T07:30:00.000+00:00","EndTime":"2021-08-13T09:00:00.000+00:00","CalendarId":1,"Description":"Aula 3.1","Frecuency":"Semanal"}]
-    
     await axios.get("http://localhost:8080/horarios/getHorario?nombrePlan="+this.context.selectedCareer[0]+"&semestre="+this.context.selectedSemester[0]+"&curso="+this.context.selectedGrade[0]+"&grupo="+this.context.selectedGroup[0])
             .then(response => {
                 if(!response.data){
                     console.log("Error fetching data")
-                }else{              
+                } else {              
                   this.state.data = []
                   var dataAux = response.data
                   var dataAux2 = this.state.data
@@ -168,18 +161,12 @@ export default class App extends Component {
     var dia = parseInt(b[2])
     var hora = parseInt(b[3])
     var minuto = parseInt(b[4])
-    console.log("La fecha es "+s)
-    //console.log("El mes es "+mes)
-    //console.log("La hora es "+hora)
     var dateAux = new Date(Date.UTC(anyo, mes-1, dia, hora, minuto, 0))
     return dateAux;
   }
 
   getResourceData(data) {
     let resources = this.scheduleObj.getResourceCollections().slice(-1)[0];
-    //let resourceData = (resources.dataSource).filter((resource) =>
-    //  resource.CalendarId === data.CalendarId)[0];
-    //return resourceData;
   }
 
   buttonClickActions = (e) => {
@@ -251,7 +238,7 @@ export default class App extends Component {
     var id = 0
     if(this.context.scheduleData[0].length == 0){
         id = 0
-    }else{
+    } else {
       id = this.state.data[0].idPadre
     }
     var scheduleAux = {id: id, curso: this.context.selectedGrade[0], 
@@ -267,15 +254,13 @@ export default class App extends Component {
      }
      
     scheduleAux.horarioAsignaturas = dataAux
-    console.log("Horario enviado: "+JSON.stringify(scheduleAux))
      await axios.post('http://localhost:8080/horarios/uploadHorarioA',
                  scheduleAux
              ).then(response => {
                if(!response.data){
                    console.log("Error fetching data")
-               }else{
-                   alert("El calendario se ha creado con éxito.")
-                  console.log("Success: "+JSON.stringify(response))
+               } else {
+
                }                           
            });
       
@@ -357,7 +342,7 @@ export default class App extends Component {
     var frecuency = this.context.selectedFrecuency[0]   
     if(this.state.data.length > 0){
       var newId = this.state.data.at(-1).Id + 1
-    }else{
+    } else {
       var newId = 1      
     }
     var calendarId = 0
@@ -377,13 +362,10 @@ export default class App extends Component {
         CalendarId: calendarId,
         Description: location,
         Frecuency: frecuency,
-    }
-    
+    }    
     dataAux.push(newSubject)
-    console.log("Data aux "+JSON.stringify(dataAux))
     this.state.data = dataAux    
     await this.setState({data: dataAux, ctx: this.state.ctx})
-    console.log("Hago esto antes")
   }
 
   savePdf () {
@@ -396,37 +378,39 @@ export default class App extends Component {
               const pdf = new jsPDF('p', 'mm', 'a4');
               pdf.addImage(imgData, 'PNG', 5, -180, imgWidth * 0.8, imgHeight * 0.8, "","", 270); pdf.save("horario.pdf");
           });
-  }
+    }
+
   render() {
     return (
       <div >
-        {(this.context.sessionRole[0] == "Administrador" && window.location.pathname == "/createSchedule") ?<button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>:<div></div>}
+            {(this.context.sessionRole[0] == "Administrador" && window.location.pathname == "/createSchedule") ?
+                <button onClick={this.onAddClick.bind(this)} style={gen}>Añadir</button>
+                : <div></div>}
             <br/>
             <br/>
             <br/>
-        <div style={row}>
-          <button onClick={this.savePdf.bind(this)} style={clickableButton}> Exportar </button>
-          {this.context.sessionRole[0] == "Administrador"?<button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>:<div></div>}
-          <button onClick={this.loadSchedule.bind(this)} style={clickableButton}> Cargar horario </button>
-        </div>
-        <div id='Schedule'>
-        <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.state.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
-         dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
-          content: this.contentTemplate.bind(this),
-          footer: this.footerTemplate.bind(this)
-        }}  editorTemplate={this.editorTemplate.bind(this)}>
-          <ResourcesDirective>
-              <ResourceDirective field='CalendarId' title='Calendars' name='Calendars' dataSource={this.calendarCollections}
-                 textField='CalendarText' idField='CalendarId' colorField='CalendarColor' >
-              </ResourceDirective>
-            </ResourcesDirective>
-           <ViewsDirective>
-            <ViewDirective option='WorkWeek' />
-          </ViewsDirective>
-          <Inject services={[WorkWeek, ICalendarExport, DragAndDrop, Print]}/>
-        </ScheduleComponent>
-        </div>
-        
+            <div style={row}>
+                <button onClick={this.savePdf.bind(this)} style={clickableButton}> Exportar </button>
+                {this.context.sessionRole[0] == "Administrador"?<button onClick={this.onCreateClick.bind(this)} style={clickableButton}> Guardar horario </button>:<div></div>}
+                <button onClick={this.loadSchedule.bind(this)} style={clickableButton}> Cargar horario </button>
+            </div>
+            <div id='Schedule'>
+                <ScheduleComponent currentView='WorkWeek' showHeaderBar={false} selectedDate={new Date(2021, 8, 13)} eventSettings={{ dataSource: this.state.data }} startHour='09:00' endHour='21:00' ref={(schedule) => this.scheduleObj = schedule} 
+                 dateHeaderTemplate={this.dateHeaderTemplate.bind(this)} quickInfoTemplates={{
+                  content: this.contentTemplate.bind(this),
+                  footer: this.footerTemplate.bind(this)
+                }}  editorTemplate={this.editorTemplate.bind(this)}>
+                    <ResourcesDirective>
+                        <ResourceDirective field='CalendarId' title='Calendars' name='Calendars' dataSource={this.calendarCollections}
+                            textField='CalendarText' idField='CalendarId' colorField='CalendarColor' >
+                        </ResourceDirective>
+                    </ResourcesDirective>
+                    <ViewsDirective>
+                        <ViewDirective option='WorkWeek' />
+                    </ViewsDirective>
+                    <Inject services={[WorkWeek, ICalendarExport, DragAndDrop, Print]}/>
+                </ScheduleComponent>
+            </div>
       </div>
     );
   }
